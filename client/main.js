@@ -2,18 +2,11 @@ var Client = require ('./client.js').Client;
 
 var client = new Client ();
 
-client.register ({
-    'user': 'fool',
+client.auth ({
+	'user': 'fool',
     'password': '1234'
 }, function (error, message) {
-    console.error (error, message);
-});
-
-client.auth ({
-	'user': 'zcbenz',
-    'password': '123'
-}, function (error, message) {
-    if (!error) {
+    if (error == undefined) {
         getSession (message.token);
     }
     else {

@@ -1,5 +1,9 @@
 var crypto = require ('crypto');
 
+// Currently we can't set ext fields in `subscribe`,
+// so we store `ext` field in this global map.
+var map = {};
+
 function ClientExt () {
     var self = this;
 
@@ -10,7 +14,7 @@ function ClientExt () {
                 return callback (message);
 
             // Add ext fields
-            message.ext = self._extra;
+            message.ext = map[message.subscription];
 
             // hash password automatically
             if (message.ext.password) {
@@ -26,6 +30,10 @@ function ClientExt () {
 }
 
 exports.ClientExt = ClientExt;
+
+ClientExt.prototype.set = function (path, field) {
+    map[path] = field;
+}
 
 String.prototype.startsWith = function(prefix) {
     return this.indexOf(prefix) === 0;

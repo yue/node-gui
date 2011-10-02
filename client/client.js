@@ -17,45 +17,32 @@ require ('util').inherits (Client, EventEmitter);
 
 exports.Client = Client;
 
-Client.prototype.register = function (ext, callback) {
-    this.ext._extra = ext;
+Client.prototype.publish = function (path, ext, callback) {
+    this.ext.set (path, ext);
 
     var subscription = 
-    this.protocol.subscribe ('/register/' + ext.user, function (message) {
+    this.protocol.subscribe (path, function (message) {
         callback (message.error, message);
+
+        subscription.cancel ();
     });
 
     subscription.errback (function (error) {
         callback ('Connect timout');
     });
+}
+
+Client.prototype.register = function (ext, callback) {
+    var path = '/register/' + ext.user;
+    this.publish (path, ext, callback);
 }
 
 Client.prototype.auth = function (ext, callback) {
-    this.ext._extra = ext;
-
-    var subscription = 
-    this.protocol.subscribe ('/auth/' + ext.user, function (message) {
-        callback (message.error, message);
-
-        subscription.cancel ();
-    });
-
-    subscription.errback (function (error) {
-        callback ('Connect timout');
-    });
+    var path = '/auth/' + ext.user;
+    this.publish (path, ext, callback);
 }
 
 Client.prototype.session = function (ext, callback) {
-    this.ext._extra = ext;
-
-    var subscription = 
-    this.protocol.subscribe ('/session/' + ext.token, function (message) {
-        callback (message.error, message);
-
-        subscription.cancel ();
-    });
-
-    subscription.errback (function (error) {
-        callback ('Connect timout');
-    });
+    var path = '/session/' + ext.token;
+    this.publish (path, ext, callback);
 }
