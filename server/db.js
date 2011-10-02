@@ -19,26 +19,57 @@ function Collection (db, name) {
     this.con = db.collection (name);
 }
 
-Collection.prototype.register = function (data, success, failure) {
+Collection.prototype.register = function (data, callback) {
     // Check parameters
     if (!data.user || !data.password) {
-        failure ('Invalid arguments');
+        callback ('Invalid arguments');
     }
 
     var con = this.con;
 
     // Find exsiting user
-    var cursor = con.find ({ 'user': data.user });
-    cursor.nextObject (function (err, doc) {
+    con.findOne ({
+        'user': data.user
+    }, function (err, doc) {
         if (err != null || doc != null) { // Exsiting one
-            failure ('User already exists');
+            callback ('User already exists');
         } else {
             // Hook creation time (use UNIX timestamp)
             data.create_time = new Date ();
             // Insert user
             con.insert (data);
 
-            success ();
+            callback ();
+        }
+    });
+}
+
+Collection.prototype.auth = function (data, callback) {
+    // Check parameters
+    if (!data.user || !data.password) {
+        callback ('Invalid arguments');
+    }
+
+    // Find exsiting user
+    this.con.findOne ({
+        'user': data.user,
+        'password': data.password
+    }, function (err, doc) {
+        if (err == null && doc != null) { // Exsiting one
+            callback (undefined, doc);
+        } else {
+            callback ('User not found');
+        }
+    });
+}
+
+// Return item by id
+Collection.prototype.token = function (message, callback) {
+    this.con.findById (message.token, function (err, doc) {
+        if (err == null && doc != null) {
+            callback (undefined, doc);
+        } else {
+            callback ('User not found');
         }
     });
 }

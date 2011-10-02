@@ -1,7 +1,9 @@
 function ServerAuth (server) {
     var messageMap = {
         // `channel name`: `event name`
-        'register': 'register'
+        'register': 'register',
+        'auth': 'auth',
+        'session': 'session'
     };
 
     // Implement faye's incoming filter
@@ -17,16 +19,18 @@ function ServerAuth (server) {
 
                 // Found match
                 if (message.subscription.startsWith (prefix)) {
-                    console.log (message);
                     // Validate '/register/:user' == message.ext.user
-                    if (prefix + message.ext.user != message.subscription)
+                    prefix = message.ext.user ? 
+                        prefix + message.ext.user : 
+                        prefix + message.ext.token;
+                    if (prefix!= message.subscription)
                         return;
 
                     // Create channel
                     callback (message);
 
                     // Notify the creation
-                    server.emit (messageMap[channel], message.ext);
+                    server.emit (messageMap[channel], message);
                     return;
                 }
             }

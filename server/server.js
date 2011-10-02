@@ -34,8 +34,44 @@ Server.prototype.register = function (info, flag) {
     if (flag != 'OK')
         message = {
             'status': 'error',
-            'message': flag
+            'error': flag
         };
 
     this.protocol.publish ('/register/' + info.user, message);
+}
+
+Server.prototype.auth = function (info, error, doc) {
+    if (error) {
+        var message = {
+            'status': 'error',
+            'error': error
+        };
+
+        this.protocol.publish ('/auth/' + info.user, message);
+    } else {
+        var message = {
+            'status': 'ok',
+            'token': doc._id
+        };
+
+        this.protocol.publish ('/auth/' + info.user, message);
+    }
+}
+
+Server.prototype.session = function (session, error) {
+    if (error) {
+        var message = {
+            'status': 'error',
+            'error': error
+        };
+
+        this.protocol.publish ('/session/' + session.token, message);
+    } else {
+        var message = {
+            'status': 'ok',
+            'session': session.id
+        };
+
+        this.protocol.publish ('/session/' + session.token, message);
+    }
 }
