@@ -16,6 +16,10 @@ Protocol.prototype.subscribe = function (path, call) {
     this.bayeux.getClient ().subscribe (path, call);
 }
 
+Protocol.prototype.publish = function (path) {
+    this.bayeux.getClient ().publish (path);
+}
+
 Protocol.prototype.addHook = function (hook) {
     hook.bayeux = this.bayeux;
     this.bayeux.addExtension (hook.extension);
