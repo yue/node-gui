@@ -8,11 +8,11 @@ function Protocol (address) {
 exports.Protocol = Protocol;
 
 Protocol.prototype.subscribe = function (path, call) {
-    this.bayeux.subscribe (path, call);
+    return this.bayeux.subscribe (path, call);
 }
 
 Protocol.prototype.publish = function (path) {
-    this.bayeux.publish (path);
+    return this.bayeux.publish (path);
 }
 
 Protocol.prototype.addHook = function (hook) {

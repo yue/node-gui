@@ -19,7 +19,43 @@ exports.Client = Client;
 
 Client.prototype.register = function (ext, callback) {
     this.ext._extra = ext;
+
+    var subscription = 
     this.protocol.subscribe ('/register/' + ext.user, function (message) {
-        callback (message);
+        callback (message.error, message);
+    });
+
+    subscription.errback (function (error) {
+        callback ('Connect timout');
+    });
+}
+
+Client.prototype.auth = function (ext, callback) {
+    this.ext._extra = ext;
+
+    var subscription = 
+    this.protocol.subscribe ('/auth/' + ext.user, function (message) {
+        callback (message.error, message);
+
+        subscription.cancel ();
+    });
+
+    subscription.errback (function (error) {
+        callback ('Connect timout');
+    });
+}
+
+Client.prototype.session = function (ext, callback) {
+    this.ext._extra = ext;
+
+    var subscription = 
+    this.protocol.subscribe ('/session/' + ext.token, function (message) {
+        callback (message.error, message);
+
+        subscription.cancel ();
+    });
+
+    subscription.errback (function (error) {
+        callback ('Connect timout');
     });
 }

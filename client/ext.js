@@ -1,3 +1,5 @@
+var crypto = require ('crypto');
+
 function ClientExt () {
     var self = this;
 
@@ -8,8 +10,13 @@ function ClientExt () {
                 return callback (message);
 
             // Add ext fields
-            if (message.subscription.startsWith ('/register/')) {
-                message.ext = self._extra;
+            message.ext = self._extra;
+
+            // hash password automatically
+            if (message.ext.password) {
+                message.ext.password = 
+                    crypto.createHash ('sha1').update (
+                            message.ext.password).digest ("hex");
             }
 
             // No matches
