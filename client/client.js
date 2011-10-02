@@ -1,13 +1,25 @@
-var http = require('http'),
-    faye = require('faye');
+var EventEmitter = require ('events').EventEmitter;
+var Protocol     = require ('./protocol.js').Protocol;
+var ClientExt    = require ('./ext.js').ClientExt;
 
-var client = new faye.Client('http://localhost:8000/faye');
+function Client () {
+    EventEmitter.call(this);
 
-client.publish('/email/new', {
-    text:       'New email has arrived!',
-    inboxSize:  34
-});
+    // Bayeux protocol implementation
+    this.protocol = new Protocol ('http://localhost:8000/faye');
 
-client.subscribe('/auth', function (message) {
-    console.log (message);
-});
+    // Add extension
+    this.ext = new ClientExt ();
+    this.protocol.addHook (this.ext);
+}
+
+require ('util').inherits (Client, EventEmitter);
+
+exports.Client = Client;
+
+Client.prototype.register = function (ext, callback) {
+    this.ext._extra = ext;
+    this.protocol.subscribe ('/register/' + ext.user, function (message) {
+        callback (message);
+    });
+}

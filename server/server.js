@@ -1,3 +1,5 @@
+var config         = require ('./options.js').config;
+
 var EventEmitter   = require ('events').EventEmitter;
 var Protocol       = require ('./protocol.js').Protocol;
 
@@ -21,9 +23,19 @@ exports.Server = Server;
 
 // Run Server! Run!
 Server.prototype.run = function () {
-    this.protocol.listen (8000);
+    this.protocol.listen (config.listenPort);
+}
 
-    this.protocol.subscribe ('/register/test',  function (back) {
+Server.prototype.register = function (info, flag) {
+    var message = {
+        'status': 'ok'
+    };
 
-    });
+    if (flag != 'OK')
+        message = {
+            'status': 'error',
+            'message': flag
+        };
+
+    this.protocol.publish ('/register/' + info.user, message);
 }

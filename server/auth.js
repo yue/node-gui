@@ -7,7 +7,7 @@ function ServerAuth (server) {
     // Implement faye's incoming filter
     this.extension = {
         incoming: function (message, callback) {
-            // Deal only `/auth` subscribe
+            console.log (message);
             if (message.channel !== '/meta/subscribe')
                 return callback (message);
 
@@ -17,11 +17,15 @@ function ServerAuth (server) {
 
                 // Found match
                 if (message.subscription.startsWith (prefix)) {
-                    // TODO
-                    // validate '/register/:user' == message.ext.user
+                    console.log (message);
+                    // Validate '/register/:user' == message.ext.user
+                    if (prefix + message.ext.user != message.subscription)
+                        return;
 
+                    // Create channel
                     callback (message);
 
+                    // Notify the creation
                     server.emit (messageMap[channel], message.ext);
                     return;
                 }

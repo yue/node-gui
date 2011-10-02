@@ -1,7 +1,8 @@
-var mongo = require('mongoskin');
+var config = require ('./options.js').config;
+var mongo = require ('mongoskin');
 
 function Database () {
-    this.db = mongo.db ('localhost:27017/clip?auto_reconnect');
+    this.db = mongo.db (config.database);
 
     // Main collections
     this.users = new Collection (this.db, 'users');
@@ -21,7 +22,7 @@ function Collection (db, name) {
 Collection.prototype.register = function (data, success, failure) {
     // Check parameters
     if (!data.user || !data.password) {
-        failure ();
+        failure ('Invalid arguments');
     }
 
     var con = this.con;
@@ -30,10 +31,10 @@ Collection.prototype.register = function (data, success, failure) {
     var cursor = con.find ({ 'user': data.user });
     cursor.nextObject (function (err, doc) {
         if (err != null || doc != null) { // Exsiting one
-            failure ();
+            failure ('User already exists');
         } else {
             // Hook creation time (use UNIX timestamp)
-            data.create_time = Math.round(new Date().getTime() / 1000);
+            data.create_time = new Date ();
             // Insert user
             con.insert (data);
 

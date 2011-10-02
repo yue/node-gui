@@ -1,8 +1,12 @@
+var config = require ('./options.js').config;
 var http = require ('http'),
     faye = require ('faye');
 
 function Protocol () {
-    this.bayeux = new faye.NodeAdapter ({ mount: '/faye', timeout: 45 });
+    this.bayeux = new faye.NodeAdapter ({
+	   	mount: config.listenUri,
+	   	timeout: 45
+   	});
 }
 
 exports.Protocol = Protocol;
@@ -16,8 +20,8 @@ Protocol.prototype.subscribe = function (path, call) {
     this.bayeux.getClient ().subscribe (path, call);
 }
 
-Protocol.prototype.publish = function (path) {
-    this.bayeux.getClient ().publish (path);
+Protocol.prototype.publish = function (path, message) {
+    this.bayeux.getClient ().publish (path, message);
 }
 
 Protocol.prototype.addHook = function (hook) {
