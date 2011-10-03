@@ -25,11 +25,17 @@ exports.Server = Server;
 
 // Run Server! Run!
 Server.prototype.run = function () {
+    var self = this;
+
     this.protocol.listen (config.listenPort);
 
-    // Setup /copy channel
+    // Setup /copy and /logout channel
     this.protocol.subscribe ('/copy', function (message) {
-        console.log (message);
+        self.emit ('copy', message.ext);
+    });
+
+    this.protocol.subscribe ('/logout', function (message) {
+        self.emit ('logout', message.ext);
     });
 }
 

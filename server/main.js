@@ -25,4 +25,22 @@ server.on ('session', function (message) {
     });
 });
 
+server.on ('copy', function (message) {
+    // Guard
+    if (!message || !message.session || !message.clip)
+        return;
+
+    // Get session
+    var session = Session.get (message.session);
+    if (!session) // TODO tell the client session is outdated
+        return;
+
+    // Push the new Clip
+    db.users.copy (session)
+});
+
+server.on ('logout', function (message) {
+
+});
+
 server.run ();

@@ -73,3 +73,18 @@ Collection.prototype.token = function (message, callback) {
         }
     });
 }
+
+// Add a new Clip
+Collection.prototype.copy = function (message, callback) {
+    var clip = {
+        'type': message.clip.type,
+        'time': message.clip.time,
+        'data': message.clip.data
+    };
+
+    this.con.updateById (message.token, {
+        $push: { 'clips': clip }
+    }, function (err, doc) {
+        console.log (err, doc);
+    });
+}
