@@ -36,6 +36,13 @@ Collection.prototype.register = function (data, callback) {
         } else {
             // Hook creation time (use UNIX timestamp)
             data.create_time = new Date ();
+
+            // Preserve fixed array of clips
+            data.clips = [];
+            for (var i = 0; i < 10; i++) {
+                data.clips.push (i);
+            }
+
             // Insert user
             con.insert (data);
 
@@ -82,10 +89,24 @@ Collection.prototype.copy = function (message, callback) {
         'data': message.clip.data
     };
 
+    // Pop oldest clip
+    this.con.updateById (message.session.token, {
+        '$pop': { 'clips': -1 }
+    }, function (err, doc) {
+    });
+
+    // Push new clip
     this.con.updateById (message.session.token, {
         '$push': { 'clips': clip }
     }, function (err, doc) {
     });
+}
 
-    // TODO erase clips that out of 10th
+Collection.prototype.lastClip = function (token, callback) {
+    this.con.findById (token, {
+        'clips': { '$slice': -1 }
+    }, function (err, doc) {
+        if (!err && doc.clips[0] != null)
+            callback (doc.clips[0]);
+    });
 }

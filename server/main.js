@@ -45,6 +45,18 @@ server.on ('copy', function (message) {
     server.paste (message.session.token, message.clip);
 });
 
+// Send last clip to newly client
+server.on ('client', function (session) {
+    var session = Session.get (session);
+    if (!session)
+        return;
+
+    db.users.lastClip (session.token, function (clip) {
+        console.log ('ssssssssssssssssssss', clip);
+        server.paste (session.token, clip);
+    });
+});
+
 server.on ('logout', function (message) {
     Session.erase (message.session);
 });

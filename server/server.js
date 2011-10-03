@@ -1,11 +1,12 @@
-var config         = require ('./options.js').config;
+var config = require ('./options.js').config;
 
-var EventEmitter   = require ('events').EventEmitter;
-var Protocol       = require ('./protocol.js').Protocol;
+var EventEmitter    = require ('events').EventEmitter;
+var Protocol        = require ('./protocol.js').Protocol;
 
-var ServerAuth     = require ('./auth.js').ServerAuth;
-var ServerProctect = require ('./protect.js').ServerProctect;
-var ServerLogger   = require ('./log.js').Loggger;
+var ServerAuth      = require ('./auth.js').ServerAuth;
+var ServerProctect  = require ('./protect.js').ServerProctect;
+var ServerLogger    = require ('./log.js').Loggger;
+var ServerPasteHook = require ('./paste.js').ServerPasteHook;
 
 function Server () {
     EventEmitter.call(this);
@@ -17,6 +18,7 @@ function Server () {
     this.protocol.addHook (new ServerLogger (this));
     this.protocol.addHook (new ServerProctect (this));
     this.protocol.addHook (new ServerAuth (this));
+    this.protocol.addHook (new ServerPasteHook (this));
 }
 
 require ('util').inherits (Server, EventEmitter);
