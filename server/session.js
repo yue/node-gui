@@ -18,3 +18,7 @@ exports.generate = function (message, db) {
 
     return session;
 }
+
+exports.erase = function (id) {
+    delete pool[id];
+}

@@ -15,10 +15,12 @@ agent.on ('paste', function (clip) {
 	console.log (clip);
 });
 
-process.on ('exit', onExit);
-process.on ('SIGINT', function () { process.exit (0); });
+process.on ('SIGINT', exit);
 
 // Hook to clean everything when exiting
-function onExit () {
+function exit () {
 	agent.destroy ();
+
+    // Delay exiting to send logout infomation
+    setTimeout (function () { process.exit (0); }, 1000);
 }

@@ -9,6 +9,11 @@ function ClientExt () {
 
     // Implement faye's outgoing filter
     this.extension = {
+        imcoming: function (message, callback) {
+            console.log (message);
+            callback (message);
+        },
+
         outgoing: function (message, callback) {
             if (message.channel !== '/meta/subscribe') {
                 callback (message);

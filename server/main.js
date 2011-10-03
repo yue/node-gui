@@ -46,7 +46,7 @@ server.on ('copy', function (message) {
 });
 
 server.on ('logout', function (message) {
-
+    Session.erase (message.session);
 });
 
 server.run ();
