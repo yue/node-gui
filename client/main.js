@@ -1,35 +1,20 @@
-var Client = require ('./client.js').Client;
+var ClipAgent = require ('./clip.js').ClipAgent;
 
-var client = new Client ();
+var agent = new ClipAgent ();
 
-client.auth ({
-    'user': 'fool',
-    'password': '1234'
-}, function (error, message) {
-    if (error == undefined) {
-        getSession (message.token);
-    }
-    else {
-        console.error (error);
-    }
+agent.login ('fool', '1234');
+
+agent.on ('login', function () {
+	agent.copy ({
+		'type': 'text',
+		'data': '意外滴到了北津学院一游。意外发现中学同学在这边。'
+	});
 });
 
-function getSession (token) {
-    client.session ({
-        'token': token
-    }, function (error, message) {
-        if (error) {
-            console.error (error);
-        } else {
-            testCopy (message.session);
-        }
-    });
-}
+process.on ('exit', onExit);
+process.on ('SIGINT', function () { process.exit (0); });
 
-function testCopy (session) {
-    client.copy (session, {
-        'type': 'text',
-        'data': 'hahahaha'
-    });
+// Hook to clean everything when exiting
+function onExit () {
+	agent.destroy ();
 }
-

@@ -1,10 +1,7 @@
-var EventEmitter = require ('events').EventEmitter;
 var Protocol     = require ('./protocol.js').Protocol;
 var ClientExt    = require ('./ext.js').ClientExt;
 
 function Client () {
-    EventEmitter.call(this);
-
     // Bayeux protocol implementation
     this.protocol = new Protocol ('http://localhost:8000/faye');
 
@@ -12,8 +9,6 @@ function Client () {
     this.ext = new ClientExt ();
     this.protocol.addHook (this.ext);
 }
-
-require ('util').inherits (Client, EventEmitter);
 
 exports.Client = Client;
 
@@ -51,13 +46,14 @@ Client.prototype.session = function (ext, callback) {
     this.subscribe (path, ext, callback);
 }
 
-Client.prototype.copy = function (session, clip) {
+Client.prototype.copy = function (ext) {
     // Add decorations here
-    clip.time = new Date ();
+    ext.clip.time = new Date ();
 
     // Publish to server
-    this.publish ('/copy', {
-        'session': session,
-        'clip': clip
-    });
+    this.publish ('/copy', ext);
+}
+
+Client.prototype.logout = function (ext) {
+    this.publish ('/logout', ext);
 }

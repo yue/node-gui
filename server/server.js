@@ -88,7 +88,8 @@ Server.prototype.session = function (session, error) {
     } else {
         var message = {
             'status': 'ok',
-            'session': session.id
+            'session': session.id,
+            'user': session.user
         };
 
         this.protocol.publish ('/session/' + session.token, message);
