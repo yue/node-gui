@@ -11,16 +11,20 @@ Impl::~Impl () {
     pthread_mutex_destroy (&lock_);
 }
 
+void Impl::set_data (const char *data) {
+    Gtk::Clipboard::get ()->set_text (data);
+}
+
 void *Impl::main (void *arg) {
     Impl *self = static_cast<Impl*> (arg);
 
-    Gtk::Main kit ();
+    Gtk::Main kit (NULL, NULL);
 
     Glib::RefPtr<Gtk::Clipboard> refClipboard = Gtk::Clipboard::get();
     refClipboard->signal_owner_change ().connect (
             sigc::bind (sigc::ptr_fun (on_changed), self));
 
-    Gtk::Main::run();
+    Gtk::Main::run ();
 
     return NULL;
 }

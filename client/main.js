@@ -1,6 +1,14 @@
 var ClipAgent = require ('./clip.js').ClipAgent;
+var Clipboard = require ('clipboard').Clipboard;
 
 var agent = new ClipAgent ();
+var clipboard = new Clipboard ();
+
+//clipboard.paste ('test');
+
+clipboard.on ('copy', function (data) {
+    console.log (data);
+});
 
 agent.login ('fool', '1234');
 

@@ -13,6 +13,8 @@ public:
     Clipboard ();
     virtual ~Clipboard ();
 
+    static void Init (Handle<Object> target);
+
 protected:
     static Handle<Value> New (const Arguments& args);
     static Handle<Value> Paste (const Arguments& args);

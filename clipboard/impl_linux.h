@@ -19,6 +19,8 @@ public:
         pthread_mutex_unlock (&lock_);
     }
 
+    void set_data (const char *data);
+
     const char *get_data () const {
         // Should lock when read
         return buffer_.c_str ();
