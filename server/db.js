@@ -82,9 +82,8 @@ Collection.prototype.copy = function (message, callback) {
         'data': message.clip.data
     };
 
-    this.con.updateById (message.token, {
-        $push: { 'clips': clip }
+    this.con.updateById (message.session.token, {
+        '$push': { 'clips': clip }
     }, function (err, doc) {
-        console.log (err, doc);
     });
 }

@@ -31,11 +31,11 @@ Server.prototype.run = function () {
 
     // Setup /copy and /logout channel
     this.protocol.subscribe ('/copy', function (message) {
-        self.emit ('copy', message.ext);
+        self.emit ('copy', message);
     });
 
     this.protocol.subscribe ('/logout', function (message) {
-        self.emit ('logout', message.ext);
+        self.emit ('logout', message);
     });
 }
 

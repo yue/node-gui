@@ -3,7 +3,7 @@ var pool = { };
 function Session (message, db) {
     this.id = message.clientId;
     this.user = db.user;
-    this.token = db._id;
+    this.token = String (db._id);
 
     pool[this.id] = this;
 }

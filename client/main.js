@@ -18,7 +18,18 @@ function getSession (token) {
     client.session ({
         'token': token
     }, function (error, message) {
-        console.log (error, message);
+        if (error) {
+            console.error (error);
+        } else {
+            testCopy (message.session);
+        }
+    });
+}
+
+function testCopy (session) {
+    client.copy (session, {
+        'type': 'text',
+        'data': 'hahahaha'
     });
 }
 

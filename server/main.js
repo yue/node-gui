@@ -31,12 +31,12 @@ server.on ('copy', function (message) {
         return;
 
     // Get session
-    var session = Session.get (message.session);
-    if (!session) // TODO tell the client session is outdated
+    message.session = Session.get (message.session);
+    if (!message.session) // TODO tell the client session is outdated
         return;
 
     // Push the new Clip
-    db.users.copy (session)
+    db.users.copy (message);
 });
 
 server.on ('logout', function (message) {
