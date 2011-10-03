@@ -22,8 +22,10 @@ function ServerAuth (server) {
                     prefix = message.ext.user ? 
                         prefix + message.ext.user : 
                         prefix + message.ext.token;
-                    if (prefix!= message.subscription)
+                    if (prefix != message.subscription) {
+                        console.log ('[filter]', prefix);
                         return;
+                    }
 
                     // Create channel
                     callback (message);

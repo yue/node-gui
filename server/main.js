@@ -37,6 +37,12 @@ server.on ('copy', function (message) {
 
     // Push the new Clip
     db.users.copy (message);
+
+    // Mark out the author (so the author can filter his own clip)
+    message.clip.author = message.session.id;
+
+    // Dispatch the new clip
+    server.paste (message.session.token, message.clip);
 });
 
 server.on ('logout', function (message) {

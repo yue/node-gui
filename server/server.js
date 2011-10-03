@@ -95,3 +95,12 @@ Server.prototype.session = function (session, error) {
         this.protocol.publish ('/session/' + session.token, message);
     }
 }
+
+Server.prototype.paste = function (token, clip) {
+    var message = {
+        'status': 'ok',
+        'clip': clip
+    };
+
+    this.protocol.publish ('/paste/' + token, message);
+}

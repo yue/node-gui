@@ -11,6 +11,10 @@ agent.on ('login', function () {
 	});
 });
 
+agent.on ('paste', function (clip) {
+	console.log (clip);
+});
+
 process.on ('exit', onExit);
 process.on ('SIGINT', function () { process.exit (0); });
 

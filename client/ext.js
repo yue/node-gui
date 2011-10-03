@@ -16,14 +16,16 @@ function ClientExt () {
             }
 
             // Add ext fields
-            message.ext = map[message.subscription];
+			if (map[message.subscription]) {
+				message.ext = map[message.subscription];
 
-            // hash password automatically
-            if (message.ext.password) {
-                message.ext.password = 
-                    crypto.createHash ('sha1').update (
-                            message.ext.password).digest ("hex");
-            }
+				// hash password automatically
+				if (message.ext.password) {
+					message.ext.password = 
+						crypto.createHash ('sha1').update (
+								message.ext.password).digest ("hex");
+				}
+			}
 
             callback (message);
         }

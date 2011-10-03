@@ -9,8 +9,8 @@ function ClipAgent () {
     this.session = null;
     this.user    = null;
     this.token   = null;
+    this.paste   = null;
 }
-
 require ('util').inherits (ClipAgent, EventEmitter);
 
 exports.ClipAgent = ClipAgent;
@@ -54,6 +54,7 @@ ClipAgent.prototype.login = function (user, password) {
 // Login by user token
 ClipAgent.prototype.autoLogin = function (token) {
     var self = this;
+    this.token = token;
 
     this.client.session ({
         'token': token
@@ -62,11 +63,35 @@ ClipAgent.prototype.autoLogin = function (token) {
             self.emit ('error', error);
         } else {
             self.user = message.user;
-            self.token = message.token;
             self.session = message.session;
+            self._setPasteHook ();
 
             self.emit ('login');
         }
+    });
+}
+
+// Subscribe to /paste channel
+ClipAgent.prototype._setPasteHook = function () {
+    var self = this;
+
+    var subscription = 
+    this.client.onPaste (self.token, {
+        'session': self.session
+    }, function (error, message) {
+        if (error) {
+            self.emit ('error', error);
+        } else {
+            // Filter out my own clip
+            if (message.clip.author == self.session)
+                return;
+
+            self.emit ('paste', message.clip);
+        }
+    });
+
+    subscription.errback (function (error) {
+        self.emit ('error', error);
     });
 }
 

@@ -46,6 +46,12 @@ Client.prototype.session = function (ext, callback) {
     this.subscribe (path, ext, callback);
 }
 
+Client.prototype.onPaste = function (token, ext, callback) {
+    return this.protocol.subscribe ('/paste/' + token, function (message) {
+        callback (message.error, message);
+    });
+}
+
 Client.prototype.copy = function (ext) {
     // Add decorations here
     ext.clip.time = new Date ();
