@@ -1,23 +1,14 @@
-#include <stdio.h>
-#include <gtkmm/main.h>
-#include <gtkmm/clipboard.h>
+#include <clipboard.h>
 
-void on_received (const Glib::ustring& data) {
-    fprintf (stdout, "data: %s\n", data.c_str());
-}
-
-void on_changed (GdkEventOwnerChange*) {
-    Gtk::Clipboard::get()->request_text (sigc::ptr_fun (on_received));
-}
-
-int main(int argc, char *argv[])
+extern "C" void
+init (Handle<Object> target)
 {
-  Gtk::Main kit(argc, argv);
+    HandleScope scope;
 
-  Glib::RefPtr<Gtk::Clipboard> refClipboard = Gtk::Clipboard::get();
-  refClipboard->signal_owner_change ().connect (sigc::ptr_fun (on_changed));
+    Local<FunctionTemplate> t = FunctionTemplate::New (Clipboard::New);
+    t->InstanceTemplate()->SetInternalFieldCount (1);
 
-  Gtk::Main::run();
+    NODE_SET_PROTOTYPE_METHOD (t, "paste", Clipboard::Paste);
 
-  return 0;
+    target->Set (String::NewSymbol ("Clipboard"), t->GetFunction ());
 }
