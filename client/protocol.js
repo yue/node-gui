@@ -11,8 +11,8 @@ Protocol.prototype.subscribe = function (path, call) {
     return this.bayeux.subscribe (path, call);
 }
 
-Protocol.prototype.publish = function (path) {
-    return this.bayeux.publish (path);
+Protocol.prototype.publish = function (path, data) {
+    return this.bayeux.publish (path, data);
 }
 
 Protocol.prototype.addHook = function (hook) {
