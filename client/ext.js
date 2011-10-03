@@ -1,5 +1,3 @@
-var crypto = require ('crypto');
-
 // Currently we can't set ext fields in `subscribe`,
 // so we store `ext` field in this global map.
 var map = {};
@@ -23,13 +21,6 @@ function ClientExt () {
             // Add ext fields
 			if (map[message.subscription]) {
 				message.ext = map[message.subscription];
-
-				// hash password automatically
-				if (message.ext.password) {
-					message.ext.password = 
-						crypto.createHash ('sha1').update (
-								message.ext.password).digest ("hex");
-				}
 			}
 
             callback (message);

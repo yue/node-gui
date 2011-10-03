@@ -43,6 +43,9 @@ Collection.prototype.register = function (data, callback) {
                 data.clips.push (i);
             }
 
+            // encrypt
+            data.password = encryptPassword (data.password);
+
             // Insert user
             con.insert (data);
 
@@ -60,7 +63,7 @@ Collection.prototype.auth = function (data, callback) {
     // Find exsiting user
     this.con.findOne ({
         'user': data.user,
-        'password': data.password
+        'password': encryptPassword (data.password)
     }, function (err, doc) {
         if (err == null && doc != null) { // Exsiting one
             callback (undefined, doc);
@@ -110,3 +113,9 @@ Collection.prototype.lastClip = function (token, callback) {
             callback (doc.clips[0]);
     });
 }
+
+function encryptPassword (password) {
+    return require ('crypto').createHash ('sha1').
+        update (password).digest ("hex");
+}
+
