@@ -10,8 +10,10 @@ function ClientExt () {
     // Implement faye's outgoing filter
     this.extension = {
         outgoing: function (message, callback) {
-            if (message.channel !== '/meta/subscribe')
-                return callback (message);
+            if (message.channel !== '/meta/subscribe') {
+                callback (message);
+                return;
+            }
 
             // Add ext fields
             message.ext = map[message.subscription];
@@ -23,7 +25,6 @@ function ClientExt () {
                             message.ext.password).digest ("hex");
             }
 
-            // No matches
             callback (message);
         }
     };

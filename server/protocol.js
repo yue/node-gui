@@ -28,3 +28,7 @@ Protocol.prototype.addHook = function (hook) {
     hook.bayeux = this.bayeux;
     this.bayeux.addExtension (hook.extension);
 }
+
+Protocol.prototype.getClientId = function () {
+    return this.bayeux.getClient ().getClientId ();
+}

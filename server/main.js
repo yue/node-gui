@@ -7,7 +7,7 @@ var server = new Server ();
 
 server.on ('register', function (message) {
     db.users.register (message.ext, function (error) {
-        server.register (message.ext, error ? error : 'OK');
+        server.register (message.ext, error);
     });
 });
 

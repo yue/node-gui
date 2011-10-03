@@ -3,7 +3,7 @@ var Client = require ('./client.js').Client;
 var client = new Client ();
 
 client.auth ({
-	'user': 'fool',
+    'user': 'fool',
     'password': '1234'
 }, function (error, message) {
     if (error == undefined) {

@@ -9,7 +9,6 @@ function ServerAuth (server) {
     // Implement faye's incoming filter
     this.extension = {
         incoming: function (message, callback) {
-            console.log (message);
             if (message.channel !== '/meta/subscribe')
                 return callback (message);
 

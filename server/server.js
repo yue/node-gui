@@ -5,6 +5,7 @@ var Protocol       = require ('./protocol.js').Protocol;
 
 var ServerAuth     = require ('./auth.js').ServerAuth;
 var ServerProctect = require ('./protect.js').ServerProctect;
+var ServerLogger   = require ('./log.js').Loggger;
 
 function Server () {
     EventEmitter.call(this);
@@ -13,6 +14,7 @@ function Server () {
     this.protocol = new Protocol ();
 
     // Add extension for auth
+    this.protocol.addHook (new ServerLogger (this));
     this.protocol.addHook (new ServerProctect (this));
     this.protocol.addHook (new ServerAuth (this));
 }
@@ -24,20 +26,31 @@ exports.Server = Server;
 // Run Server! Run!
 Server.prototype.run = function () {
     this.protocol.listen (config.listenPort);
+
+    // Setup /copy channel
+    this.protocol.subscribe ('/copy', function (message) {
+        console.log (message);
+    });
 }
 
-Server.prototype.register = function (info, flag) {
+// Server's unique id
+Server.prototype.id = function () {
+    return this.protocol.getClientId ();
+}
+
+Server.prototype.register = function (info, error) {
+    var path = '/register/' + info.user;
     var message = {
         'status': 'ok'
     };
 
-    if (flag != 'OK')
+    if (error)
         message = {
             'status': 'error',
-            'error': flag
+            'error': error
         };
 
-    this.protocol.publish ('/register/' + info.user, message);
+    this.protocol.publish (path, message);
 }
 
 Server.prototype.auth = function (info, error, doc) {

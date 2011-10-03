@@ -17,7 +17,7 @@ require ('util').inherits (Client, EventEmitter);
 
 exports.Client = Client;
 
-Client.prototype.publish = function (path, ext, callback) {
+Client.prototype.subscribe = function (path, ext, callback) {
     this.ext.set (path, ext);
 
     var subscription = 
@@ -34,15 +34,15 @@ Client.prototype.publish = function (path, ext, callback) {
 
 Client.prototype.register = function (ext, callback) {
     var path = '/register/' + ext.user;
-    this.publish (path, ext, callback);
+    this.subscribe (path, ext, callback);
 }
 
 Client.prototype.auth = function (ext, callback) {
     var path = '/auth/' + ext.user;
-    this.publish (path, ext, callback);
+    this.subscribe (path, ext, callback);
 }
 
 Client.prototype.session = function (ext, callback) {
     var path = '/session/' + ext.token;
-    this.publish (path, ext, callback);
+    this.subscribe (path, ext, callback);
 }
