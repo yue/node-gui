@@ -86,4 +86,6 @@ Collection.prototype.copy = function (message, callback) {
         '$push': { 'clips': clip }
     }, function (err, doc) {
     });
+
+    // TODO erase clips that out of 10th
 }
