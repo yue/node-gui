@@ -8,8 +8,8 @@ Impl::Impl (ev_async *clip_changed):
 }
 
 Impl::~Impl () {
-    // TODO need to terminate the thread
-    //thread_.join ();
+    signal_quit_->emit ();
+    thread_.join ();
 }
 
 void Impl::set_data (const char *data) {
@@ -29,7 +29,11 @@ void Impl::main () {
     refClipboard->signal_owner_change ().connect (
             sigc::mem_fun (*this, &Impl::on_changed));
 
-    // An inter-thread signal
+    // An inter-thread signal for quit main thread
+    signal_quit_.reset (new Glib::Dispatcher ());
+    signal_quit_->connect (sigc::ptr_fun (Gtk::Main::quit));
+
+    // An inter-thread signal for pasting
     signal_paste_.reset (new Glib::Dispatcher ());
     signal_paste_->connect (sigc::mem_fun (*this, &Impl::on_paste));
 
@@ -50,11 +54,5 @@ void Impl::on_received (const Glib::ustring& data) {
 
 void Impl::on_paste () {
     // Peek new paste to clipboard
-    if (!paste_.empty ()) {
-        Gtk::Clipboard::get ()->set_text (paste_);
-
-        // Clear it
-        std::lock_guard<std::mutex> lock (locker ());
-        paste_.clear ();
-    }
+    Gtk::Clipboard::get ()->set_text (paste_);
 }

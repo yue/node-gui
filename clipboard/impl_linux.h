@@ -26,6 +26,7 @@ private:
     std::string paste_;
 
     std::unique_ptr<Glib::Dispatcher> signal_paste_;
+    std::unique_ptr<Glib::Dispatcher> signal_quit_;
 
     ev_async *clip_changed_;
 
