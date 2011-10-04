@@ -4,28 +4,26 @@ var Clipboard = require ('clipboard').Clipboard;
 var agent = new ClipAgent ();
 var clipboard = new Clipboard ();
 
-clipboard.on ('copy', function (data) {
-    console.log (data);
-});
-
 agent.login ('fool', '1234');
 
 agent.on ('login', function () {
-	agent.copy ({
-		'type': 'text',
-		'data': 'Multithreading in C++0x part 3: Starting Threads with Member Functions and Reference Arguments'
-	});
+    clipboard.on ('copy', function (data) {
+        agent.copy ({
+            'type': 'text',
+            'data': data
+        });
+    });
 });
 
 agent.on ('paste', function (clip) {
-	console.log (clip);
+    clipboard.paste (clip.data);
 });
 
 process.on ('SIGINT', exit);
 
 // Hook to clean everything when exiting
 function exit () {
-	agent.destroy ();
+    agent.destroy ();
 
     // Delay exiting to send logout infomation
     setTimeout (function () { process.exit (0); }, 1000);
