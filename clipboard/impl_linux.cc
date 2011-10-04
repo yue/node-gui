@@ -3,6 +3,7 @@
 
 Impl::Impl (ev_async *clip_changed):
     thread_ (&Impl::main, this),
+    i_changed_board_ (false),
     clip_changed_ (clip_changed)
 {
 }
@@ -17,8 +18,10 @@ void Impl::set_data (const char *data) {
     paste_ = data;
 
     // Tell the gtk thread to read the paste
-    if (signal_paste_)
+    if (signal_paste_) {
+        i_changed_board_ = true;
         signal_paste_->emit ();
+    }
 }
 
 void Impl::main () {
@@ -41,6 +44,12 @@ void Impl::main () {
 }
 
 void Impl::on_changed (GdkEventOwnerChange*) {
+    // Guard from own changes
+    if (i_changed_board_) {
+        i_changed_board_ = false;
+        return;
+    }
+
     Gtk::Clipboard::get()->request_text (
             sigc::mem_fun (*this, &Impl::on_received));
 }

@@ -7,7 +7,6 @@
 Persistent<FunctionTemplate> Clipboard::constructor_template;
 
 Clipboard::Clipboard () :
-    ObjectWrap (),
     impl_ (new Impl (&clip_changed_))
 {
 }
@@ -39,7 +38,7 @@ Handle<Value> Clipboard::New (const Arguments& args) {
     ev_async_start (EV_DEFAULT_UC_ &clip->clip_changed_);
 
     clip->Wrap (args.This ());
-    clip->Ref (); // Clipboard should never be garbege collected
+    clip->Ref (); // Clipboard should never be garbage collected
     return args.This ();
 }
 

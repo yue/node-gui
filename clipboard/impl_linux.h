@@ -13,10 +13,11 @@ public:
     Impl (ev_async *clip_changed);
     virtual ~Impl ();
 
+    // Set clipboard's data
     void set_data (const char *data);
 
+    // Get clipboard's data
     const char *get_data () const {
-        // Should lock when read
         return buffer_.c_str ();
     }
 
@@ -24,6 +25,8 @@ private:
     std::thread thread_;
     std::string buffer_;
     std::string paste_;
+
+    bool i_changed_board_;
 
     std::unique_ptr<Glib::Dispatcher> signal_paste_;
     std::unique_ptr<Glib::Dispatcher> signal_quit_;
