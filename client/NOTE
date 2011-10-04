@@ -1,0 +1,8 @@
+// get last clip
+db.users.find({user:'test'}, {clips: {$slice: -1}})
+
+// pop oldest clip
+db.users.update ({user:'fool'}, {$pop: {clips: -1}})
+
+// push new clip
+db.users.update ({user:'test'}, {$push: {clips: 'test'}})
