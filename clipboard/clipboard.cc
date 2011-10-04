@@ -4,8 +4,11 @@
     #include "impl_linux.h"
 #endif
 
-Clipboard::Clipboard ()
-    : impl_ (new Impl (&clip_changed_))
+Persistent<FunctionTemplate> Clipboard::constructor_template;
+
+Clipboard::Clipboard () :
+    ObjectWrap (),
+    impl_ (new Impl (&clip_changed_))
 {
 }
 
@@ -17,10 +20,11 @@ void Clipboard::Init (Handle<Object> target) {
     HandleScope scope;
 
     Local<FunctionTemplate> t = FunctionTemplate::New (New);
-    t->SetClassName (String::NewSymbol ("Clipboard"));
-    t->InstanceTemplate()->SetInternalFieldCount (1);
+    constructor_template = Persistent<FunctionTemplate>::New(t);
+    constructor_template->InstanceTemplate()->SetInternalFieldCount(1);
+    constructor_template->SetClassName(String::NewSymbol("Clipboard"));
 
-    NODE_SET_PROTOTYPE_METHOD (t, "paste", Paste);
+    NODE_SET_PROTOTYPE_METHOD (constructor_template, "paste", Paste);
     target->Set (String::NewSymbol ("Clipboard"), t->GetFunction ());
 }
 
@@ -28,15 +32,15 @@ Handle<Value> Clipboard::New (const Arguments& args) {
     HandleScope scope;
 
     Clipboard *clip = new Clipboard ();
-    clip->Wrap (args.This ());
     clip->clip_changed_.data = clip;
 
     // Init libev stuff
     ev_async_init (&clip->clip_changed_, on_clip_changed);
     ev_async_start (EV_DEFAULT_UC_ &clip->clip_changed_);
-    ev_unref (EV_DEFAULT_UC);
 
-    return scope.Close (args.This ());
+    clip->Wrap (args.This ());
+    clip->Ref (); // Clipboard should never be garbege collected
+    return args.This ();
 }
 
 Handle<Value> Clipboard::Paste (const Arguments& args) {
@@ -45,8 +49,6 @@ Handle<Value> Clipboard::Paste (const Arguments& args) {
     if (args.Length () == 1 && args[0]->IsString ()) {
         Clipboard *self = ObjectWrap::Unwrap<Clipboard> (args.This());
 
-        // TODO
-        // Should be called in the gtk main thread
         self->impl_->set_data (*String::Utf8Value (args[0]));
     }
 
@@ -59,9 +61,7 @@ void Clipboard::on_clip_changed (EV_P_ ev_async *w, int revents) {
     HandleScope scope;
 
     // Read data from clipboard
-    self->impl_->lock ();
     Local<String> data = String::New (self->impl_->get_data ());
-    self->impl_->unlock ();
 
     // Then send it
     Local<Value> argv[] = { String::New ("copy"), data };

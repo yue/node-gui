@@ -2,22 +2,16 @@
 #define IMPL_LINUX_H
 
 #include <node.h>
-#include <pthread.h>
+#include <thread>
+#include <memory>
 #include <gtkmm/main.h>
 #include <gtkmm/clipboard.h>
+#include <glibmm/dispatcher.h>
 
 class Impl {
 public:
-    Impl (ev_async *ev);
+    Impl (ev_async *clip_changed);
     virtual ~Impl ();
-
-    void lock () {
-        pthread_mutex_lock (&lock_);
-    }
-
-    void unlock () {
-        pthread_mutex_unlock (&lock_);
-    }
 
     void set_data (const char *data);
 
@@ -27,14 +21,18 @@ public:
     }
 
 private:
-    pthread_t handle_;
-    pthread_mutex_t lock_;
-    Glib::ustring buffer_;
-    ev_async *ev_;
+    std::thread thread_;
+    std::string buffer_;
+    std::string paste_;
 
-    static void *main (void *);
-    static void on_changed (GdkEventOwnerChange*, Impl*);
-    static void on_received (const Glib::ustring& data, Impl*);
+    std::unique_ptr<Glib::Dispatcher> signal_paste_;
+
+    ev_async *clip_changed_;
+
+    void main ();
+    void on_changed (GdkEventOwnerChange*);
+    void on_received (const Glib::ustring& data);
+    void on_paste ();
 
 /* Not to be implemented */
 private:

@@ -20,6 +20,8 @@ protected:
     static Handle<Value> Paste (const Arguments& args);
 
 private:
+    static Persistent<FunctionTemplate> constructor_template;
+
     ev_async clip_changed_;
     std::unique_ptr<Impl> impl_;
     static void on_clip_changed (EV_P_ ev_async *w, int revents);

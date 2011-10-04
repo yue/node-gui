@@ -1,45 +1,60 @@
 #include "impl_linux.h"
+#include <stdio.h>
 
-Impl::Impl (ev_async *ev):
-    lock_ (PTHREAD_MUTEX_INITIALIZER),
-    ev_ (ev)
+Impl::Impl (ev_async *clip_changed):
+    thread_ (&Impl::main, this),
+    clip_changed_ (clip_changed)
 {
-    pthread_create (&handle_, NULL, main, this);
 }
 
 Impl::~Impl () {
-    pthread_mutex_destroy (&lock_);
+    // TODO need to terminate the thread
+    //thread_.join ();
 }
 
 void Impl::set_data (const char *data) {
-    Gtk::Clipboard::get ()->set_text (data);
+    // Save the paste
+    paste_ = data;
+
+    // Tell the gtk thread to read the paste
+    if (signal_paste_)
+        signal_paste_->emit ();
 }
 
-void *Impl::main (void *arg) {
-    Impl *self = static_cast<Impl*> (arg);
-
+void Impl::main () {
     Gtk::Main kit (NULL, NULL);
 
+    // Monitor clipboard
     Glib::RefPtr<Gtk::Clipboard> refClipboard = Gtk::Clipboard::get();
     refClipboard->signal_owner_change ().connect (
-            sigc::bind (sigc::ptr_fun (on_changed), self));
+            sigc::mem_fun (*this, &Impl::on_changed));
+
+    // An inter-thread signal
+    signal_paste_.reset (new Glib::Dispatcher ());
+    signal_paste_->connect (sigc::mem_fun (*this, &Impl::on_paste));
 
     Gtk::Main::run ();
-
-    return NULL;
 }
 
-void Impl::on_changed (GdkEventOwnerChange*, Impl *self) {
+void Impl::on_changed (GdkEventOwnerChange*) {
     Gtk::Clipboard::get()->request_text (
-            sigc::bind (sigc::ptr_fun (on_received), self));
+            sigc::mem_fun (*this, &Impl::on_received));
 }
 
-void Impl::on_received (const Glib::ustring& data, Impl *self) {
-    self->lock ();
-    self->buffer_ = data;
-    self->unlock ();
+void Impl::on_received (const Glib::ustring& data) {
+    buffer_ = data;
 
     // Notice libev
-    ev_async_send (EV_DEFAULT_UC_ self->ev_);
+    ev_async_send (EV_DEFAULT_UC_ clip_changed_);
 }
 
+void Impl::on_paste () {
+    // Peek new paste to clipboard
+    if (!paste_.empty ()) {
+        Gtk::Clipboard::get ()->set_text (paste_);
+
+        // Clear it
+        std::lock_guard<std::mutex> lock (locker ());
+        paste_.clear ();
+    }
+}
