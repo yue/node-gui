@@ -5,6 +5,9 @@ function Session (message, db) {
     this.user = db.user;
     this.token = String (db._id);
 
+    // Login time
+    this.time = new Date ();
+
     pool[this.id] = this;
 }
 

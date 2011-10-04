@@ -52,7 +52,6 @@ server.on ('client', function (session) {
         return;
 
     db.users.lastClip (session.token, function (clip) {
-        console.log ('ssssssssssssssssssss', clip);
         server.paste (session.token, clip);
     });
 });
