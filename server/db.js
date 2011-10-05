@@ -1,6 +1,9 @@
 var config = require ('./options.js').config;
 var mongo = require ('mongoskin');
 
+// TODO
+// check database error and report and recover
+
 function Database () {
     this.db = mongo.db (config.database);
 
@@ -76,6 +79,7 @@ Collection.prototype.auth = function (data, callback) {
 // Return item by id
 Collection.prototype.token = function (message, callback) {
     this.con.findById (message.token, function (err, doc) {
+        console.log (err, doc);
         if (err == null && doc != null) {
             callback (undefined, doc);
         } else {

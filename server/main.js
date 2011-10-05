@@ -19,9 +19,14 @@ server.on ('auth', function (message) {
 
 server.on ('session', function (message) {
     db.users.token (message.ext, function (error, doc) {
-        // Generate a session object
-        var session = Session.generate (message, doc);
-        server.session (session, error);
+        if (error) {
+            // TODO
+            // tell user of invalid token
+        } else {
+            // Generate a session object
+            var session = Session.generate (message, doc);
+            server.session (session, error);
+        }
     });
 });
 

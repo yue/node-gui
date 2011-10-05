@@ -43,8 +43,9 @@ process.on ('SIGINT', exit);
 
 // Hook to clean everything when exiting
 function exit () {
+    // Send logout infomation
     agent.destroy ();
 
-    // Delay exiting to send logout infomation
-    setTimeout (function () { process.exit (0); }, 1000);
+    process.exit (0);
+//    setTimeout (function () { process.exit (0); }, 1000);
 }

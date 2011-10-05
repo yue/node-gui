@@ -1,4 +1,4 @@
-#include "impl_linux.h"
+#include "impl_gtk.h"
 #include <stdio.h>
 
 Impl::Impl (ev_async *clip_changed):

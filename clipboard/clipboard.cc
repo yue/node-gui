@@ -1,8 +1,5 @@
 #include "clipboard.h"
-#ifdef WIN32
-#else
-    #include "impl_linux.h"
-#endif
+#include "impl_gtk.h"
 
 Persistent<FunctionTemplate> Clipboard::constructor_template;
 
@@ -71,3 +68,6 @@ void Clipboard::on_clip_changed (EV_P_ ev_async *w, int revents) {
     emit->Call(self->handle_, 2, argv);
 }
 
+#ifdef WIN32
+NODE_MODULE(clipboard, Clipboard::Init);
+#endif
