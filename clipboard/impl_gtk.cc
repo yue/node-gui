@@ -1,7 +1,7 @@
 #include "impl_gtk.h"
 #include <stdio.h>
 
-Impl::Impl (ev_async *clip_changed):
+Impl::Impl (uv_async_t *clip_changed):
     thread_ (&Impl::main, this),
     i_changed_board_ (false),
     clip_changed_ (clip_changed)
@@ -58,7 +58,7 @@ void Impl::on_received (const Glib::ustring& data) {
     buffer_ = data;
 
     // Notice libev
-    ev_async_send (EV_DEFAULT_UC_ clip_changed_);
+    uv_async_send (clip_changed_);
 }
 
 void Impl::on_paste () {

@@ -22,9 +22,9 @@ protected:
 private:
     static Persistent<FunctionTemplate> constructor_template;
 
-    ev_async clip_changed_;
+    uv_async_t clip_changed_;
     std::unique_ptr<Impl> impl_;
-    static void on_clip_changed (EV_P_ ev_async *w, int revents);
+    static void on_clip_changed (uv_async_t *handle, int status);
 
 /* Not to be implemented */
 private:

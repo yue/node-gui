@@ -9,7 +9,6 @@ Clipboard::Clipboard () :
 }
 
 Clipboard::~Clipboard () {
-    ev_async_stop (EV_DEFAULT_UC_ &clip_changed_);
 }
 
 void Clipboard::Init (Handle<Object> target) {
@@ -30,9 +29,10 @@ Handle<Value> Clipboard::New (const Arguments& args) {
     Clipboard *clip = new Clipboard ();
     clip->clip_changed_.data = clip;
 
-    // Init libev stuff
-    ev_async_init (&clip->clip_changed_, on_clip_changed);
-    ev_async_start (EV_DEFAULT_UC_ &clip->clip_changed_);
+    // Init libuv stuff
+    uv_async_init (uv_default_loop (),
+            &clip->clip_changed_, on_clip_changed);
+    uv_unref (uv_default_loop ());
 
     clip->Wrap (args.This ());
     clip->Ref (); // Clipboard should never be garbage collected
@@ -51,8 +51,8 @@ Handle<Value> Clipboard::Paste (const Arguments& args) {
     return v8::Undefined ();
 }
 
-void Clipboard::on_clip_changed (EV_P_ ev_async *w, int revents) {
-    Clipboard *self = static_cast<Clipboard*> (w->data);
+void Clipboard::on_clip_changed (uv_async_t *handle, int status) {
+    Clipboard *self = static_cast<Clipboard*> (handle->data);
 
     HandleScope scope;
 

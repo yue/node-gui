@@ -10,7 +10,7 @@
 
 class Impl {
 public:
-    Impl (ev_async *clip_changed);
+    Impl (uv_async_t *clip_changed);
     virtual ~Impl ();
 
     // Set clipboard's data
@@ -31,7 +31,7 @@ private:
     std::unique_ptr<Glib::Dispatcher> signal_paste_;
     std::unique_ptr<Glib::Dispatcher> signal_quit_;
 
-    ev_async *clip_changed_;
+    uv_async_t *clip_changed_;
 
     void main ();
     void on_changed (GdkEventOwnerChange*);
