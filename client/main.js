@@ -1,5 +1,5 @@
 var ClipAgent = require ('./agent.js').ClipAgent;
-var Clipboard = require ('clipboard').Clipboard;
+var Clipboard = require ('gui').Clipboard;
 var options = require ('./options.js');
 var config = options.config;
 
@@ -40,7 +40,7 @@ agent.on ('error', function (message) {
     process.exit (0);
 });
 
-process.on ('SIGINT', exit);
+//process.on ('SIGINT', exit);
 
 // Hook to clean everything when exiting
 function exit () {

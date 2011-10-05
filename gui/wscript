@@ -13,7 +13,7 @@ def configure(conf):
 def build(bld):
   obj = bld.new_task_gen('cxx', 'shlib', 'node_addon')
   obj.cxxflags = ['-g', '-Wall', '-std=c++0x']
-  obj.target = 'clipboard'
+  obj.target = 'gui'
   obj.source = ['main.cc', 'clipboard.cc']
   obj.source += ['impl_gtk.cc']
   obj.uselib = 'GTKMM'

@@ -72,5 +72,5 @@ void Clipboard::on_clip_changed (uv_async_t *handle, int status) {
 
 // Under Windows, this module will be compiled into node
 #ifdef WIN32
-NODE_MODULE(clipboard, clip::Clipboard::Init);
+NODE_MODULE(node_gui, clip::Clipboard::Init);
 #endif
