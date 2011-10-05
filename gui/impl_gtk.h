@@ -9,7 +9,12 @@
 #include <gtkmm/clipboard.h>
 #include <glibmm/dispatcher.h>
 
+#ifdef WIN32
+#include "clipboard_win.h"
+#endif
+
 namespace clip {
+
 class Impl {
 public:
     Impl (uv_async_t *clip_changed);
@@ -24,6 +29,11 @@ public:
     }
 
 private:
+
+#ifdef WIN32
+    std::unique_ptr<WinClipboardMonitor> monitor_;
+#endif
+
     std::string buffer_;
     std::string paste_;
 
@@ -35,7 +45,7 @@ private:
     uv_async_t *clip_changed_;
 
     void main ();
-    void on_changed (GdkEventOwnerChange*);
+    void on_changed ();
     void on_received (const Glib::ustring& data);
     void on_paste ();
 

@@ -1,4 +1,5 @@
 #include "impl_gtk.h"
+
 #include <stdio.h>
 #include <glibmm/thread.h>
 
@@ -30,11 +31,18 @@ void Impl::set_data (const char *data) {
 void Impl::main () {
     Gtk::Main kit (NULL, NULL);
 
+#ifdef WIN32
+    // Monitor clipboard in Windows
+    monitor_.reset (new WinClipboardMonitor
+        (sigc::mem_fun (*this, &Impl::on_changed)));
+#else
     // Monitor clipboard
     Glib::RefPtr<Gtk::Clipboard> refClipboard = Gtk::Clipboard::get();
     refClipboard->signal_owner_change ().connect (
-            sigc::mem_fun (*this, &Impl::on_changed));
+            sigc::hide (sigc::mem_fun (*this, &Impl::on_changed)));
 
+#endif
+    
     // Imediatly read paste 
     on_paste ();
 
@@ -49,7 +57,7 @@ void Impl::main () {
     Gtk::Main::run ();
 }
 
-void Impl::on_changed (GdkEventOwnerChange*) {
+void Impl::on_changed () {
     // Guard from own changes
     if (i_changed_board_) {
         i_changed_board_ = false;
