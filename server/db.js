@@ -43,7 +43,7 @@ Collection.prototype.register = function (data, callback) {
             // Preserve fixed array of clips
             data.clips = [];
             for (var i = 0; i < 10; i++) {
-                data.clips.push (i);
+                data.clips.push (null);
             }
 
             // encrypt

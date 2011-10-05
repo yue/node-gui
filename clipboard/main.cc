@@ -5,5 +5,5 @@ init (Handle<Object> target)
 {
     HandleScope scope;
 
-    Clipboard::Init (target);
+    clip::Clipboard::Init (target);
 }

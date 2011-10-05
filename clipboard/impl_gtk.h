@@ -1,13 +1,15 @@
-#ifndef IMPL_LINUX_H
-#define IMPL_LINUX_H
+#ifndef IMPL_GTK_H
+#define IMPL_GTK_H
 
 #include <node.h>
 #include <thread>
+#include <string>
 #include <memory>
 #include <gtkmm/main.h>
 #include <gtkmm/clipboard.h>
 #include <glibmm/dispatcher.h>
 
+namespace clip {
 class Impl {
 public:
     Impl (uv_async_t *clip_changed);
@@ -40,9 +42,10 @@ private:
 
 /* Not to be implemented */
 private:
-    Impl (const Impl&) = delete;
-    Impl& operator= (const Impl&) = delete;
+    Impl (const Impl&);
+    Impl& operator= (const Impl&);
 
 };
+}
 
 #endif /* end of IMPL_LINUX_H */

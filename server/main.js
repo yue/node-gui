@@ -50,6 +50,7 @@ server.on ('copy', function (message) {
     server.paste (message.session.token, message.clip);
 });
 
+// TODO broken now
 // Send last clip to newly client
 server.on ('client', function (session) {
     var session = Session.get (session);

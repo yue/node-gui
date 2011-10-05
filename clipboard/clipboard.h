@@ -6,6 +6,7 @@
 using namespace node;
 using namespace v8;
 
+namespace clip {
 class Impl;
 
 class Clipboard: ObjectWrap {
@@ -28,9 +29,10 @@ private:
 
 /* Not to be implemented */
 private:
-    Clipboard (const Clipboard&) = delete;
-    Clipboard& operator= (const Clipboard&) = delete;
+    Clipboard (const Clipboard&);
+    Clipboard& operator= (const Clipboard&);
 
 };
+}
 
 #endif /* end of CLIPBOARD_H */

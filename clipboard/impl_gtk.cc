@@ -1,11 +1,14 @@
 #include "impl_gtk.h"
 #include <stdio.h>
+#include <glibmm/thread.h>
 
+namespace clip {
 Impl::Impl (uv_async_t *clip_changed):
     thread_ (&Impl::main, this),
     i_changed_board_ (false),
     clip_changed_ (clip_changed)
 {
+    Glib::thread_init ();
 }
 
 Impl::~Impl () {
@@ -64,4 +67,5 @@ void Impl::on_received (const Glib::ustring& data) {
 void Impl::on_paste () {
     // Peek new paste to clipboard
     Gtk::Clipboard::get ()->set_text (paste_);
+}
 }

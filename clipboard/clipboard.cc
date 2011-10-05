@@ -1,6 +1,7 @@
 #include "clipboard.h"
 #include "impl_gtk.h"
 
+namespace clip {
 Persistent<FunctionTemplate> Clipboard::constructor_template;
 
 Clipboard::Clipboard () :
@@ -67,7 +68,9 @@ void Clipboard::on_clip_changed (uv_async_t *handle, int status) {
 
     emit->Call(self->handle_, 2, argv);
 }
+}
 
+// Under Windows, this module will be compiled into node
 #ifdef WIN32
-NODE_MODULE(clipboard, Clipboard::Init);
+NODE_MODULE(clipboard, clip::Clipboard::Init);
 #endif
