@@ -31,11 +31,11 @@ agent.on ('login', function () {
 });
 
 agent.on ('paste', function (clip) {
+    console.log ('paste' ,clip);
     clipboard.paste (clip.data);
 });
 
 agent.on ('error', function (message) {
-    console.log (message);
     process.exit (0);
 });
 

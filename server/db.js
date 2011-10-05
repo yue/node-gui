@@ -1,5 +1,6 @@
-var config = require ('./options.js').config;
+var _ = require ('underscore');
 var mongo = require ('mongoskin');
+var config = require ('./options.js').config;
 
 // TODO
 // check database error and report and recover
@@ -43,7 +44,7 @@ Collection.prototype.register = function (data, callback) {
             // Preserve fixed array of clips
             data.clips = [];
             for (var i = 0; i < 10; i++) {
-                data.clips.push (null);
+                data.clips.push (i);
             }
 
             // encrypt
@@ -79,7 +80,6 @@ Collection.prototype.auth = function (data, callback) {
 // Return item by id
 Collection.prototype.token = function (message, callback) {
     this.con.findById (message.token, function (err, doc) {
-        console.log (err, doc);
         if (err == null && doc != null) {
             callback (undefined, doc);
         } else {
@@ -110,11 +110,13 @@ Collection.prototype.copy = function (message, callback) {
 }
 
 Collection.prototype.lastClip = function (token, callback) {
-    this.con.findById (token, {
-        'clips': { '$slice': -1 }
-    }, function (err, doc) {
-        if (!err && doc.clips[0] != null)
-            callback (doc.clips[0]);
+    this.con.findById (token, function (err, doc) {
+        if (!err && doc) { // Check error
+            var last = _.last (doc.clips);
+            if (last) { // Check empty deck
+                callback (last);
+            }
+        }
     });
 }
 
