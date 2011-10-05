@@ -1,10 +1,10 @@
 #ifndef IMPL_GTK_H
 #define IMPL_GTK_H
 
-#include <node.h>
-#include <thread>
 #include <string>
 #include <memory>
+
+#include <node.h>
 #include <gtkmm/main.h>
 #include <gtkmm/clipboard.h>
 #include <glibmm/dispatcher.h>
@@ -24,7 +24,6 @@ public:
     }
 
 private:
-    std::thread thread_;
     std::string buffer_;
     std::string paste_;
 

@@ -31,7 +31,6 @@ agent.on ('login', function () {
 });
 
 agent.on ('paste', function (clip) {
-    console.log ('paste' ,clip);
     clipboard.paste (clip.data);
 });
 

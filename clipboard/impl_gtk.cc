@@ -4,16 +4,16 @@
 
 namespace clip {
 Impl::Impl (uv_async_t *clip_changed):
-    thread_ (&Impl::main, this),
     i_changed_board_ (false),
     clip_changed_ (clip_changed)
 {
     Glib::thread_init ();
+    Glib::Thread::create (
+            sigc::mem_fun (*this, &Impl::main), false);
 }
 
 Impl::~Impl () {
     signal_quit_->emit ();
-    thread_.join ();
 }
 
 void Impl::set_data (const char *data) {
