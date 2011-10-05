@@ -31,10 +31,12 @@ agent.on ('login', function () {
 });
 
 agent.on ('paste', function (clip) {
+    console.log ('[New Clip]', clip);
     clipboard.paste (clip.data);
 });
 
 agent.on ('error', function (message) {
+    console.error (message);
     process.exit (0);
 });
 

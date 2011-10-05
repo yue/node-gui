@@ -1,9 +1,10 @@
-var Protocol     = require ('./protocol.js').Protocol;
-var ClientExt    = require ('./ext.js').ClientExt;
+var config    = require ('./options.js').config;
+var Protocol  = require ('./protocol.js').Protocol;
+var ClientExt = require ('./ext.js').ClientExt;
 
 function Client () {
     // Bayeux protocol implementation
-    this.protocol = new Protocol ('http://localhost:8000/faye');
+    this.protocol = new Protocol (config.server);
 
     // Add extension
     this.ext = new ClientExt ();

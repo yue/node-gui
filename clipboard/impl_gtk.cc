@@ -19,10 +19,10 @@ Impl::~Impl () {
 void Impl::set_data (const char *data) {
     // Save the paste
     paste_ = data;
+    i_changed_board_ = true;
 
     // Tell the gtk thread to read the paste
     if (signal_paste_) {
-        i_changed_board_ = true;
         signal_paste_->emit ();
     }
 }
@@ -34,6 +34,9 @@ void Impl::main () {
     Glib::RefPtr<Gtk::Clipboard> refClipboard = Gtk::Clipboard::get();
     refClipboard->signal_owner_change ().connect (
             sigc::mem_fun (*this, &Impl::on_changed));
+
+    // Imediatly read paste 
+    on_paste ();
 
     // An inter-thread signal for quit main thread
     signal_quit_.reset (new Glib::Dispatcher ());
