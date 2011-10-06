@@ -1,4 +1,4 @@
-#include "node_clipboard.h"
+#include "node_gui_clipboard.h"
 #include "impl_clipboard_gtk.h"
 
 namespace clip {
@@ -11,7 +11,7 @@ Clipboard::Clipboard () :
 {
 }
 
-void Clipboard::Init (Handle<Object> target) {
+void Clipboard::Init (Handle<v8::Object> target) {
     HandleScope scope;
 
     Local<FunctionTemplate> t = FunctionTemplate::New (New);

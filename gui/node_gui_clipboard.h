@@ -14,7 +14,7 @@ class Clipboard: ObjectWrap {
 public:
     Clipboard ();
 
-    static void Init (Handle<Object> target);
+    static void Init (Handle<v8::Object> target);
 
 protected:
     static Handle<Value> New (const Arguments& args);
