@@ -2,6 +2,7 @@
 #define CLIPBOARD_H
 
 #include <memory>
+#include <string>
 #include <node.h>
 using namespace node;
 using namespace v8;
@@ -12,7 +13,6 @@ class ClipboardImpl;
 class Clipboard: ObjectWrap {
 public:
     Clipboard ();
-    virtual ~Clipboard ();
 
     static void Init (Handle<Object> target);
 

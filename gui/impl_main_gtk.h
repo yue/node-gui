@@ -19,6 +19,18 @@ namespace clip {
                         Glib::Mutex::Lock> MyChannel;
         std::unique_ptr<MyChannel> channel;
 
+        // Helper for Channel::push_job
+        static void push_job_gui (MyChannel::Task&& t) {
+            get ()->channel->push_job<MyChannel::GUI> (
+                    std::forward<MyChannel::Task> (t));
+            get ()->channel->emit_gui ();
+        }
+        static void push_job_node (MyChannel::Task&& t) {
+            get ()->channel->push_job<MyChannel::NODE> (
+                    std::forward<MyChannel::Task> (t));
+            get ()->channel->emit_node ();
+        }
+
     private:
         static MainLoop* self;
 

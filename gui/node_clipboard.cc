@@ -11,9 +11,6 @@ Clipboard::Clipboard () :
 {
 }
 
-Clipboard::~Clipboard () {
-}
-
 void Clipboard::Init (Handle<Object> target) {
     HandleScope scope;
 
@@ -32,7 +29,7 @@ Handle<Value> Clipboard::New (const Arguments& args) {
     Clipboard *clip = new Clipboard ();
 
     clip->Wrap (args.This ());
-    clip->Ref (); // Clipboard should never be garbage collected
+    clip->Ref ();
     return args.This ();
 }
 
@@ -61,6 +58,5 @@ void Clipboard::on_paste (std::string str) {
     Local<Function> emit = Local<Function>::Cast(emit_v);
 
     emit->Call (handle_, 2, argv);
-
 }
 }

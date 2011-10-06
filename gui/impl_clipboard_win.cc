@@ -1,9 +1,10 @@
-#include "clipboard_win.h"
+#include "impl_clipboard_win.h"
 #include <stdio.h>
 
 namespace clip {
 
 static ClipboardImplW32 *self = NULL;
+LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
     
 ClipboardImplW32::ClipboardImplW32(slot_t slot) :
     slot_(slot)
@@ -43,7 +44,7 @@ ClipboardImplW32::~ClipboardImplW32(void)
     DestroyWindow(handle_);
 }
 
-LRESULT CALLBACK ClipboardImplW32::MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     static HWND hwndNextViewer; 
     
     switch (uMsg) {

@@ -1,9 +1,7 @@
-#include "node_clipboard.h"
+#include "node_gui.h"
 
 extern "C" void
-init (Handle<Object> target)
+init (v8::Handle<v8::Object> target)
 {
-    HandleScope scope;
-
-    clip::Clipboard::Init (target);
+    clip::Init (target);
 }

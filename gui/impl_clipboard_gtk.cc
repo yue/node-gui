@@ -9,9 +9,8 @@ ClipboardImpl::ClipboardImpl (std::function<void (std::string)> paste) :
     paste_ (std::move (paste)),
     i_changed_board_ (false)
 {
-    MainLoop::get ()->channel->push_job<MainLoop::MyChannel::GUI> (
+    MainLoop::push_job_gui (
             std::bind (&ClipboardImpl::create_clipboard, this));
-    MainLoop::get ()->channel->emit_gui ();
 }
 
 void ClipboardImpl::set_data (std::string data) {
@@ -19,9 +18,7 @@ void ClipboardImpl::set_data (std::string data) {
     i_changed_board_ = true;
 
     // Tell the GUI thread to read the paste
-    MainLoop::get ()->channel->push_job<MainLoop::MyChannel::GUI> (
-            std::bind (&ClipboardImpl::paste, this, data));
-    MainLoop::get ()->channel->emit_gui ();
+    MainLoop::push_job_gui (std::bind (&ClipboardImpl::paste, this, data));
 }
 
 void ClipboardImpl::create_clipboard () {
@@ -48,9 +45,7 @@ void ClipboardImpl::on_changed () {
 
 void ClipboardImpl::on_received (const Glib::ustring& data) {
     // Notice node
-    MainLoop::get ()->channel->push_job<MainLoop::MyChannel::NODE> (
-            std::bind (paste_, data));
-    MainLoop::get ()->channel->emit_node ();
+    MainLoop::push_job_node (std::bind (paste_, data));
 }
 
 void ClipboardImpl::paste (std::string data) {

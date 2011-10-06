@@ -15,7 +15,9 @@ def build(bld):
   obj.cxxflags = ['-g', '-Wall', '-std=c++0x']
   obj.target = 'gui'
   obj.source = ['main.cc',
+                'node_gui.cc',
                 'node_clipboard.cc',
+                'node_gui_object.cc',
                 'impl_clipboard_gtk.cc',
                 'impl_async_wrap.cc',
                 'impl_main_gtk.cc']
