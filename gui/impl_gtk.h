@@ -10,7 +10,7 @@
 #include <glibmm/dispatcher.h>
 
 #ifdef WIN32
-#include "clipboard_win.h"
+#include "impl_clipboard_win.h"
 #endif
 
 namespace clip {

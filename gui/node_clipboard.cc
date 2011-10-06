@@ -1,4 +1,4 @@
-#include "clipboard.h"
+#include "node_clipboard.h"
 #include "impl_gtk.h"
 
 namespace clip {
@@ -69,8 +69,3 @@ void Clipboard::on_clip_changed (uv_async_t *handle, int status) {
     emit->Call(self->handle_, 2, argv);
 }
 }
-
-// Under Windows, this module will be compiled into node
-#ifdef WIN32
-NODE_MODULE(node_gui, clip::Clipboard::Init);
-#endif

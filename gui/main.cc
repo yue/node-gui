@@ -1,4 +1,4 @@
-#include "clipboard.h"
+#include "node_clipboard.h"
 
 extern "C" void
 init (Handle<Object> target)

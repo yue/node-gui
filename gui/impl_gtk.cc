@@ -9,8 +9,7 @@ Impl::Impl (uv_async_t *clip_changed):
     clip_changed_ (clip_changed)
 {
     Glib::thread_init ();
-    Glib::Thread::create (
-            sigc::mem_fun (*this, &Impl::main), false);
+    Glib::Thread::create (sigc::mem_fun (*this, &Impl::main), false);
 }
 
 Impl::~Impl () {
