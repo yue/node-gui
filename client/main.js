@@ -23,6 +23,7 @@ agent.on ('login', function () {
 
     // Begin monitoring clipboard after login
     clipboard.on ('copy', function (data) {
+        console.log ('[New Copy]', data);
         agent.copy ({
             'type': 'text',
             'data': data

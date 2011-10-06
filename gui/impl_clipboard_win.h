@@ -2,24 +2,25 @@
 #define CLIPBOARD_WIN
 
 #include <Windows.h>
-#include <sigc++\sigc++.h>
+#include <functional>
 
 namespace clip {
-class WinClipboardMonitor
+class ClipboardImplW32
 {
 public:
-    WinClipboardMonitor(sigc::slot<void> slot);
-    ~WinClipboardMonitor(void);
+    typedef function<void ()> slot_t;
+    ClipboardImplW32(slot_t slot);
+    ~ClipboardImplW32(void);
 
 private:
     HWND handle_;
-    sigc::slot<void> slot_;
+    slot_t slot_
     static LRESULT CALLBACK MainWndProc(HWND, UINT, WPARAM, LPARAM); 
 
 /* Not to be implemented */
 private:
-    WinClipboardMonitor (const WinClipboardMonitor&);
-    WinClipboardMonitor& operator= (const WinClipboardMonitor&);
+    ClipboardImplW32 (const ClipboardImplW32&);
+    ClipboardImplW32& operator= (const ClipboardImplW32&);
 };
 }
 

@@ -7,7 +7,7 @@ using namespace node;
 using namespace v8;
 
 namespace clip {
-class Impl;
+class ClipboardImpl;
 
 class Clipboard: ObjectWrap {
 public:
@@ -23,9 +23,8 @@ protected:
 private:
     static Persistent<FunctionTemplate> constructor_template;
 
-    uv_async_t clip_changed_;
-    std::unique_ptr<Impl> impl_;
-    static void on_clip_changed (uv_async_t *handle, int status);
+    std::unique_ptr<ClipboardImpl> impl_;
+    void on_paste (std::string data);
 
 /* Not to be implemented */
 private:

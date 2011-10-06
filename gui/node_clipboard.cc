@@ -1,11 +1,13 @@
 #include "node_clipboard.h"
-#include "impl_gtk.h"
+#include "impl_clipboard_gtk.h"
 
 namespace clip {
 Persistent<FunctionTemplate> Clipboard::constructor_template;
 
 Clipboard::Clipboard () :
-    impl_ (new Impl (&clip_changed_))
+    impl_ (new ClipboardImpl (std::bind (&Clipboard::on_paste,
+                                         this,
+                                         std::placeholders::_1)))
 {
 }
 
@@ -28,12 +30,6 @@ Handle<Value> Clipboard::New (const Arguments& args) {
     HandleScope scope;
 
     Clipboard *clip = new Clipboard ();
-    clip->clip_changed_.data = clip;
-
-    // Init libuv stuff
-    uv_async_init (uv_default_loop (),
-            &clip->clip_changed_, on_clip_changed);
-    uv_unref (uv_default_loop ());
 
     clip->Wrap (args.This ());
     clip->Ref (); // Clipboard should never be garbage collected
@@ -52,20 +48,19 @@ Handle<Value> Clipboard::Paste (const Arguments& args) {
     return v8::Undefined ();
 }
 
-void Clipboard::on_clip_changed (uv_async_t *handle, int status) {
-    Clipboard *self = static_cast<Clipboard*> (handle->data);
-
+void Clipboard::on_paste (std::string str) {
     HandleScope scope;
 
     // Read data from clipboard
-    Local<String> data = String::New (self->impl_->get_data ());
+    Local<String> data = String::New (str.c_str ());
 
     // Then send it
     Local<Value> argv[] = { String::New ("copy"), data };
 
-    Local<Value> emit_v = self->handle_->Get (String::New ("emit"));
+    Local<Value> emit_v = handle_->Get (String::New ("emit"));
     Local<Function> emit = Local<Function>::Cast(emit_v);
 
-    emit->Call(self->handle_, 2, argv);
+    emit->Call (handle_, 2, argv);
+
 }
 }

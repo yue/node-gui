@@ -3,9 +3,9 @@
 
 namespace clip {
 
-static WinClipboardMonitor *self = NULL;
+static ClipboardImplW32 *self = NULL;
     
-WinClipboardMonitor::WinClipboardMonitor(sigc::slot<void> slot) :
+ClipboardImplW32::ClipboardImplW32(slot_t slot) :
     slot_(slot)
 {
     self = this;
@@ -14,14 +14,14 @@ WinClipboardMonitor::WinClipboardMonitor(sigc::slot<void> slot) :
     WNDCLASS wcx = { 0 }; 
 
     wcx.lpfnWndProc = MainWndProc;     // points to window procedure
-    wcx.lpszClassName = "WinClipboardMonitor";  // name of window class 
+    wcx.lpszClassName = "ClipboardImplW32";  // name of window class 
    
     // Register the window class. 
     RegisterClass(&wcx);
 
     handle_ = CreateWindow( 
-        "WinClipboardMonitor", // name of window class 
-        "WinClipboardMonitor", // title-bar string 
+        "ClipboardImplW32", // name of window class 
+        "ClipboardImplW32", // title-bar string 
         WS_OVERLAPPEDWINDOW, // top-level window 
         CW_USEDEFAULT,       // default horizontal position 
         CW_USEDEFAULT,       // default vertical position 
@@ -38,12 +38,12 @@ WinClipboardMonitor::WinClipboardMonitor(sigc::slot<void> slot) :
 }
 
 
-WinClipboardMonitor::~WinClipboardMonitor(void)
+ClipboardImplW32::~ClipboardImplW32(void)
 {
     DestroyWindow(handle_);
 }
 
-LRESULT CALLBACK WinClipboardMonitor::MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK ClipboardImplW32::MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     static HWND hwndNextViewer; 
     
     switch (uMsg) {
