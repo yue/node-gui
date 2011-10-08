@@ -8,6 +8,8 @@ namespace clip {
 void Init (Handle<v8::Object> target) {
     HandleScope scope;
 
+    uv_ref (uv_default_loop ());
+
     clip::Clipboard::Init (target);
     clip::Object::Init (target);
     clip::Widget::Init (target);

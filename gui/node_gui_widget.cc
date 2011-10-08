@@ -22,7 +22,8 @@ void Widget::Init (Handle<v8::Object> target) {
 Handle<Value> Widget::New (const Arguments& args) {
     HandleScope scope;
 
-    return ThrowException(Exception::TypeError(String::New(
-                    "Widget is not allow to be manually created")));
+    return args.This ();
+//    return ThrowException(Exception::TypeError(String::New(
+//                    "Widget is not allow to be manually created")));
 }
 } /* clip */

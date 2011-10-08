@@ -18,8 +18,8 @@ def build(bld):
                 'node_gui.cc',
                 'node_gui_clipboard.cc',
                 'node_gui_object.cc',
-                'node_gui_widget.cc',
                 'node_gui_builder.cc',
+                'node_gui_widget.cc',
                 'impl_clipboard_gtk.cc',
                 'impl_async_wrap.cc',
                 'impl_main_gtk.cc']

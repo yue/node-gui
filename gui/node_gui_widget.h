@@ -1,7 +1,11 @@
 #ifndef NODE_GUI_WIDGET_H
 #define NODE_GUI_WIDGET_H
 
+#include <node.h>
+
 namespace clip {
+using namespace v8;
+
 class Widget {
 public:
     Widget ();

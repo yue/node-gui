@@ -1,4 +1,5 @@
 #include "impl_main_gtk.h"
+#include "impl_builder_gtk.hpp"
 #include "node_gui_builder.h"
 #include "node_gui_widget.h"
 
@@ -8,11 +9,12 @@
 namespace clip {
 Persistent<FunctionTemplate> Builder::constructor_template;
 
-Builder::Builder (std::string filename) {
-    MainLoop::push_job_gui (std::bind (&Builder::create, this, filename));
+Builder::Builder () :
+    impl_ (new BuilderImpl ())
+{
 }
 
-void Builder::Init (Handle<Object> target) {
+void Builder::Init (Handle<v8::Object> target) {
     HandleScope scope;
 
     Local<FunctionTemplate> t = FunctionTemplate::New (New);
@@ -28,15 +30,52 @@ void Builder::Init (Handle<Object> target) {
 Handle<Value> Builder::New (const Arguments& args) {
     HandleScope scope;
 
-    // var builder = new Builder ('path/to/glade/file');
-    if (args.Length () != 1 || !args[0]->IsString ()) {
-        return THROW_BAD_ARGS;
+    Builder *self;
+
+    if (args.Length () == 1 && args[0]->IsFunction ()) {
+        // var builder = new Builder (callback);
+        self = new Builder ();
+
+        self->callback_ = Persistent<Function>::New (
+                Local<Function>::Cast (args[0]));
+
+        // In GTK
+        MainLoop::push_job_gui ([=] {
+            self->impl_->create ();
+
+            // Notify the creation
+            MainLoop::push_job_node (
+                std::bind (&Builder::after_create, self));
+        });
+
+        goto good;
+    } else if (args.Length () == 2 && args[0]->IsString ()
+                                   && args[1]->IsFunction ())
+    {
+        // var builder = new Builder ('/path', callback);
+        self = new Builder ();
+
+        std::string filename = *String::Utf8Value (args[0]);
+        self->callback_ = Persistent<Function>::New (
+                Local<Function>::Cast (args[1]));
+
+        // In GTK
+        MainLoop::push_job_gui ([=] {
+            self->impl_->create (filename);
+
+            // Notify the creation
+            MainLoop::push_job_node (
+                std::bind (&Builder::after_create, self));
+        });
+
+        goto good;
     }
 
-    Builder *builder = new Builder (*String::Utf8Value (args[0]));
+    return THROW_BAD_ARGS;
 
-    builder->Wrap (args.This ());
-    builder->Ref ();
+good:
+    self->Wrap (args.This ());
+    self->Ref ();
     return args.This ();
 }
 
@@ -44,7 +83,9 @@ Handle<Value> Builder::Destroy (const Arguments& args) {
     HandleScope scope;
 
     Builder *self = ObjectWrap::Unwrap<Builder> (args.This());
-    self->builder_.reset ();
+    MainLoop::push_job_gui ([&] {
+        self->impl_->destroy ();
+    });
 
     return Undefined ();
 }
@@ -53,24 +94,24 @@ Handle<Value> Builder::Get (const Arguments& args) {
     HandleScope scope;
 
     // var widget = builder.get ('window_name');
-    if (args.Length () != 1 || !args[0]->IsString ()) {
+    if (args.Length () != 1 || !args[0]->IsString ())
+    {
         return THROW_BAD_ARGS;
     }
 
-    // Gtk::Builder::get_widget
     Builder *self = ObjectWrap::Unwrap<Builder> (args.This());
-    Gtk::Widget *widget;
-    self->builder_->get_widget (*String::Utf8Value (args[0]), widget);
 
-    // var widget = new Widget ();
-    Local<v8::Object> b = 
-        Widget::constructor_template->GetFunction ()->NewInstance ();
-    b->SetPointerInInternalField (0, widget);
+    // Gtk::Builder::get_widget, do it syncly
+    Local<v8::Object> widget = 
+    self->impl_->get_widget (*String::Utf8Value (args[0]));
 
-    return scope.Close (b);
+    return scope.Close (widget);
 }
 
-void Builder::create (std::string filename) {
-    builder_ = Gtk::Builder::create_from_file (filename);
+void Builder::after_create () {
+    HandleScope scope;
+
+    Handle<Value> args[] = { handle_ };
+    callback_->Call (handle_, 1, args);
 }
 } /* clip */

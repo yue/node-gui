@@ -1,18 +1,17 @@
 #ifndef NODE_GUI_BUILDER_H
 #define NODE_GUI_BUILDER_H
 
-#include <string>
+#include <memory>
 #include <node.h>
 using namespace node;
 using namespace v8;
 
-#include <gtkmm/builder.h>
-#include <glibmm/refptr.h>
-
 namespace clip {
+class BuilderImpl;
+
 class Builder: ObjectWrap {
 public:
-    Builder (std::string filename);
+    Builder ();
     static void Init (Handle<v8::Object> target);
 
 protected:
@@ -21,10 +20,12 @@ protected:
     static Handle<Value> Get (const Arguments& args);
 
 private:
-    static Persistent<FunctionTemplate> constructor_template;
-    Glib::RefPtr<Gtk::Builder> builder_;
+    void after_create ();
 
-    void create (std::string filename);
+    std::unique_ptr<BuilderImpl> impl_;
+    Persistent<Function> callback_;
+
+    static Persistent<FunctionTemplate> constructor_template;
 
 /* Not to be implemented */
 private:
