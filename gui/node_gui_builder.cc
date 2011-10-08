@@ -1,4 +1,4 @@
-#include "impl_main_gtk.h"
+#include "impl_mainloop_gtk.h"
 #include "impl_builder_gtk.hpp"
 #include "node_gui_builder.h"
 #include "node_gui_widget.h"
@@ -47,8 +47,6 @@ Handle<Value> Builder::New (const Arguments& args) {
             MainLoop::push_job_node (
                 std::bind (&Builder::after_create, self));
         });
-
-        goto good;
     } else if (args.Length () == 2 && args[0]->IsString ()
                                    && args[1]->IsFunction ())
     {
@@ -67,13 +65,10 @@ Handle<Value> Builder::New (const Arguments& args) {
             MainLoop::push_job_node (
                 std::bind (&Builder::after_create, self));
         });
-
-        goto good;
+    } else {
+        return THROW_BAD_ARGS;
     }
 
-    return THROW_BAD_ARGS;
-
-good:
     self->Wrap (args.This ());
     self->Ref ();
     return args.This ();

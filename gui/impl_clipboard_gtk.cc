@@ -1,5 +1,5 @@
 #include "impl_clipboard_gtk.h"
-#include "impl_main_gtk.h"
+#include "impl_mainloop_gtk.h"
 
 #include <stdio.h>
 #include <glibmm/thread.h>
