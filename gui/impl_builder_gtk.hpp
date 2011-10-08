@@ -46,9 +46,10 @@ public:
     v8::Local<Object> get_widget (const std::string& name) {
         HandleScope scope;
 
-        Local<Object>
-        obj = Widget::constructor_template->GetFunction ()->NewInstance ();
-        obj->SetPointerInInternalField (0, get (name));
+        Local<Value> args[] = { External::New (get (name)) };
+
+        Local<Object> obj = Widget::constructor_template->
+            GetFunction ()->NewInstance (1, args);
 
         return scope.Close (obj);
     }

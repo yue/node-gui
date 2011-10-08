@@ -77,6 +77,7 @@ Handle<Value> Builder::New (const Arguments& args) {
 Handle<Value> Builder::Destroy (const Arguments& args) {
     HandleScope scope;
 
+    // destroy gtk::builder
     Builder *self = ObjectWrap::Unwrap<Builder> (args.This());
     MainLoop::push_job_gui ([&] {
         self->impl_->destroy ();
@@ -106,6 +107,10 @@ Handle<Value> Builder::Get (const Arguments& args) {
 void Builder::after_create () {
     HandleScope scope;
 
+    // new Builder (function (builder) {
+    //     builder.get ()
+    //     ...
+    // })
     Handle<Value> args[] = { handle_ };
     callback_->Call (handle_, 1, args);
 }
