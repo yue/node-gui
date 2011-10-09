@@ -1,4 +1,5 @@
 #include <gtk/gtk.h>
+#include <stdio.h>
 
 #include "node_gui_object.h"
 #include "node_gui_widget.h"

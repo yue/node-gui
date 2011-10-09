@@ -3,25 +3,22 @@
 
 #include <node.h>
 #include <functional>
+#include "impl_signal_wrap.h"
+
+// Wrap uv_async_t as a signal-style class
 
 namespace clip {
-// Wrap uv_async_t as a signal-style class
-class AsyncDispatcher {
+class AsyncDispatcher: public SignalBase {
 public:
     typedef std::function<void ()> Callback;
 
     AsyncDispatcher (Callback callback);
-    void emit ();
+    virtual void emit ();
 
 private:
     uv_async_t handle_;
     Callback callback_;
     static void on_async (uv_async_t *handle, int status);
-
-/* Not to be implemented */
-private:
-    AsyncDispatcher (const AsyncDispatcher&);
-    AsyncDispatcher& operator= (const AsyncDispatcher&);
 };
 } /* clip */
 

@@ -1,3 +1,4 @@
+#include <string>
 #include <glib-object.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
@@ -64,8 +65,15 @@ Handle<Value> Builder::New (const Arguments& args) {
     MainLoop::push_job_gui ([=] {
         GtkBuilder *obj = gtk_builder_new ();
 
-        if (preload)
-            gtk_builder_add_from_file (obj, filename.c_str (), NULL);
+        if (preload) {
+            // TODO report error to JavaScript
+            GError *error = NULL;
+            int ret =
+            gtk_builder_add_from_file (obj, filename.c_str (), &error);
+            if (!ret) {
+                fprintf (stderr, "Cannot build from file: %s\n", error->message);
+            }
+        }
 
         self->obj_ = obj;
         self->host_ = true;
@@ -73,7 +81,6 @@ Handle<Value> Builder::New (const Arguments& args) {
         // Notify the creation
         MainLoop::push_job_node (std::bind (&Builder::after_create, self));
     });
-
 
     self->Wrap (args.This ());
     return args.This ();
@@ -97,6 +104,11 @@ Handle<Value> Builder::Get (const Arguments& args) {
                                               *String::Utf8Value (args[0]));
     gdk_threads_leave();
 
+    if (widget == NULL) {
+        return ThrowException(Exception::Error(
+                    String::New("Widget does not exsit")));
+    }
+
     Local<Value> external = External::New (widget);
 
     return scope.Close (Widget::constructor_template->
@@ -106,10 +118,6 @@ Handle<Value> Builder::Get (const Arguments& args) {
 void Builder::after_create () {
     HandleScope scope;
 
-    // new Builder (function (builder) {
-    //     builder.get ()
-    //     ...
-    // })
     Handle<Value> args[] = { handle_ };
     callback_->Call (handle_, 1, args);
 }

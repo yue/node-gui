@@ -1,6 +1,8 @@
+#include <gtk/gtk.h>
+#include "impl_init_types.hpp"
+#include "impl_async_wrap.h"
 #include "impl_mainloop_gtk.h"
-#include <gtkmm/main.h>
-#include <stdio.h>
+#include "impl_dispatcher_gtk.hpp"
 
 namespace clip {
 MainLoop* MainLoop::self = NULL;
@@ -14,29 +16,33 @@ MainLoop* MainLoop::get () {
 
 MainLoop::MainLoop ()
 {
-    Glib::thread_init ();
+    g_thread_init (NULL);
+    gdk_threads_init ();
 
     // Init channel after thread_init
     channel.reset (new MyChannel ());
 
     // Init signal in node thread
-    channel->init (new AsyncDispatcher (
+    channel->init<MyChannel::NODE> (new AsyncDispatcher (
                 std::bind (&MainLoop::do_jobs<MyChannel::NODE>, this)));
 
-    Glib::Thread::create (sigc::mem_fun (*this, &MainLoop::main), false);
+    g_thread_create (main, this, false, NULL);
 }
 
-void MainLoop::main () {
+void* MainLoop::main (void *data) {
     // Enter GTK main loop in new thread
-    Gtk::Main kit (NULL, NULL);
+    gtk_init (NULL, NULL);
+
+    force_init_types ();
 
     // Init signal in gui thread
-    Glib::Dispatcher *sig = new Glib::Dispatcher ();
-    sig->connect (sigc::mem_fun (
-                *this, &MainLoop::do_jobs<MyChannel::GUI>));
-    channel->init (sig);
+    Dispatcher *sig = new Dispatcher (
+                std::bind (&MainLoop::do_jobs<MyChannel::GUI>, self));
+    self->channel->init<MyChannel::GUI> (sig);
 
-    Gtk::Main::run ();
+    gtk_main ();
+
+    return NULL;
 }
 
 template<MainLoop::MyChannel::JOB_TYPE type>

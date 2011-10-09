@@ -1,10 +1,8 @@
 #ifndef IMPL_MAIN_GTK_H
 #define IMPL_MAIN_GTK_H
 
+#include "impl_mutex.hpp"
 #include "impl_channel_gtk.hpp"
-#include "impl_async_wrap.h"
-#include <glibmm/thread.h>
-#include <glibmm/dispatcher.h>
 
 namespace clip {
     class MainLoop {
@@ -13,29 +11,26 @@ namespace clip {
         static MainLoop *get ();
 
         // Used by node and gui thread to transfer jobs
-        typedef Channel<AsyncDispatcher,
-                        Glib::Dispatcher,
-                        Glib::Mutex,
-                        Glib::Mutex::Lock> MyChannel;
+        typedef Channel<Mutex, Mutex::Lock> MyChannel;
         std::unique_ptr<MyChannel> channel;
 
         // Helper for Channel::push_job
         static void push_job_gui (MyChannel::Task&& t) {
             get ()->channel->push_job<MyChannel::GUI> (
                     std::forward<MyChannel::Task> (t));
-            get ()->channel->emit_gui ();
+            get ()->channel->emit<MyChannel::GUI> ();
         }
         static void push_job_node (MyChannel::Task&& t) {
             get ()->channel->push_job<MyChannel::NODE> (
                     std::forward<MyChannel::Task> (t));
-            get ()->channel->emit_node ();
+            get ()->channel->emit<MyChannel::NODE> ();
         }
 
     private:
-        static MainLoop* self;
-
         MainLoop ();
-        void main ();
+
+        static MainLoop* self;
+        static void* main (void *data);
 
         template<MyChannel::JOB_TYPE>
         void do_jobs ();

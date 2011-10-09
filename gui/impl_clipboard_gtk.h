@@ -30,9 +30,8 @@ private:
     bool i_changed_board_;
 
     void create_clipboard ();
-    void on_changed ();
-    void on_received (const Glib::ustring& data);
-    void paste (std::string data);
+    static void on_changed (GtkClipboard*, GdkEvent*, gpointer);
+    static void on_received (GtkClipboard*, const gchar*, gpointer);
 
 /* Not to be implemented */
 private:
