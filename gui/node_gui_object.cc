@@ -1,36 +1,33 @@
+#include <string>
+
+#include <glib-object.h>
+#include <gdk/gdk.h>
+
 #include "node_gui_object.h"
-#include <gtkmm/object.h>
+#include "impl_value_gtk.hpp"
+#include "impl_mainloop_gtk.h"
 
 #define THROW_BAD_ARGS \
     ThrowException(Exception::TypeError(String::New("Bad argument")))
-#define GET_OBJECT(x) \
-    static_cast< x *>(args.This()->GetPointerFromInternalField(0))
-
-inline static Glib::ValueBase toGValue (Handle<Value> value) {
-    if (value->IsString ()) {
-        Glib::Value<std::string> r;
-        r.set (*String::Utf8Value (value));
-        return r;
-    } else if (value->IsInt32 ()) {
-        Glib::Value<int> r;
-        r.set (value->Int32Value ());
-        return r;
-    } else if (value->IsBoolean ()) {
-        Glib::Value<bool> r;
-        r.set (value->BooleanValue ());
-        return r;
-    } else {
-        Glib::Value<double> r;
-        r.set (value->NumberValue ());
-        return r;
-    }
-}
 
 namespace clip {
 Persistent<FunctionTemplate> Object::constructor_template;
 
-Object::Object ()
+// Stub for future setting
+Object::Object () :
+    obj_ (nullptr),
+    host_ (false)
 {
+}
+
+// Init from existing object
+Object::Object (void *external) :
+    obj_ (external),
+    host_ (false)
+{
+}
+
+Object::~Object () {
 }
 
 void Object::Init (Handle<v8::Object> target) {
@@ -52,6 +49,7 @@ void Object::Init (Handle<v8::Object> target) {
 Handle<Value> Object::New (const Arguments& args) {
     HandleScope scope;
 
+    // Should never mannualy create a object
     return ThrowException(Exception::TypeError(String::New(
                     "Object is not allow to be manually created")));
 }
@@ -59,33 +57,48 @@ Handle<Value> Object::New (const Arguments& args) {
 Handle<Value> Object::SetProperty (const Arguments& args) {
     HandleScope scope;
 
-    if (!args.Length () == 2 ||
-        !args[0]->IsString ())
+    if (args.Length () == 2 && args[0]->IsString ())
     {
-        return THROW_BAD_ARGS;
+        Object *self = ObjectWrap::Unwrap<Object> (args.This());
+        GObject *obj = static_cast<GObject*> (self->obj_);
+
+        std::string key = *String::Utf8Value (args[0]);
+        std::string value = *String::Utf8Value (args[1]);
+        MainLoop::push_job_gui ([=] {
+            GValue a = value_init (value);
+            g_object_set_property (obj, key.c_str (), &a);
+        });
+
+        return Undefined ();
     }
 
-    Gtk::Object *obj = GET_OBJECT (Gtk::Object);
-    obj->set_property_value (*String::Utf8Value (args[0]),
-                             toGValue (args[1]));
-
-    return Undefined ();
+    return THROW_BAD_ARGS;
 }
 
 Handle<Value> Object::GetProperty (const Arguments& args) {
     HandleScope scope;
 
-    if (!args.Length () == 2 ||
-        !args[0]->IsString ())
+    if (args.Length () == 1 && args[0]->IsString ())
     {
-        return THROW_BAD_ARGS;
+        Object *self = ObjectWrap::Unwrap<Object> (args.This());
+        GObject *obj = static_cast<GObject*> (self->obj_);
+
+        std::string key = *String::Utf8Value (args[0]);
+        Local<String> value = String::New ("");
+
+        gdk_threads_enter();
+        GValue a = value_init<std::string> ();
+        g_object_get_property (obj, key.c_str (), &a);
+        const char * str = g_value_get_string (&a);
+        if (str)
+            value = String::New (str);
+        g_value_unset (&a);
+        gdk_threads_leave();
+
+        return scope.Close (value);
     }
 
-    Gtk::Object *obj = GET_OBJECT (Gtk::Object);
-    Glib::Value<std::string> r;
-    obj->get_property_value (*String::Utf8Value (args[0]), r);
-
-    return scope.Close (String::New (r.get().c_str ()));
+    return THROW_BAD_ARGS;
 }
 
 Handle<Value> Object::On (const Arguments& args) {

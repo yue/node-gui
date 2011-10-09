@@ -6,9 +6,12 @@ using namespace node;
 using namespace v8;
 
 namespace clip {
-class Object {
+class Object: public ObjectWrap {
 public:
     Object ();
+    Object (void *external);
+    virtual ~Object ();
+
     static void Init (Handle<v8::Object> target);
 
 protected:
@@ -16,6 +19,10 @@ protected:
     static Handle<Value> SetProperty (const Arguments& args);
     static Handle<Value> GetProperty (const Arguments& args);
     static Handle<Value> On (const Arguments& args);
+
+protected:
+    void *obj_; // Raw GTK+ object pointer
+    bool host_; // Whether we should manage its life
 
 public:
     static Persistent<FunctionTemplate> constructor_template;

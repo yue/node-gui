@@ -1,18 +1,16 @@
 #ifndef NODE_GUI_WIDGET_H
 #define NODE_GUI_WIDGET_H
 
-#include <memory>
 #include <node.h>
+#include "node_gui_object.h"
 
 namespace clip {
-class WidgetImpl;
-
 using namespace v8;
 using namespace node;
 
-class Widget: ObjectWrap {
+class Widget: public Object {
 public:
-    Widget ();
+    Widget (void *external) : Object (external) { }
     static void Init (Handle<v8::Object> target);
 
 protected:
@@ -21,7 +19,6 @@ protected:
     static Handle<Value> Destroy (const Arguments& args);
 
 public:
-    std::unique_ptr<WidgetImpl> impl_;
     static Persistent<FunctionTemplate> constructor_template;
 
 /* Not to be implemented */

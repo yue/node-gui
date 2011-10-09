@@ -1,13 +1,11 @@
+#include <gtk/gtk.h>
+
 #include "node_gui_object.h"
 #include "node_gui_widget.h"
-#include "impl_widget_gtk.hpp"
 #include "impl_mainloop_gtk.h"
 
 namespace clip {
 Persistent<FunctionTemplate> Widget::constructor_template;
-    
-Widget::Widget () {
-}
 
 void Widget::Init (Handle<v8::Object> target) {
     HandleScope scope;
@@ -28,12 +26,10 @@ Handle<Value> Widget::New (const Arguments& args) {
 
     // Init from exsiting gtk::widget
     if (args.Length () == 1 && args[0]->IsExternal ()) {
-        // Mannualy set WidgetImpl, we will not manage memory for gtk widget
-        Widget *self = new Widget ();
-        self->impl_.reset (new WidgetImpl (args[0]));
+        void *obj = External::Unwrap (args[0]);
+        Widget *self = new Widget (obj);
 
         self->Wrap (args.This ());
-        self->Ref ();
         return args.This ();
     }
 
@@ -45,8 +41,10 @@ Handle<Value> Widget::Show (const Arguments& args) {
     HandleScope scope;
 
     Widget *self = ObjectWrap::Unwrap<Widget> (args.This());
+    GtkWidget *obj = static_cast<GtkWidget*> (self->obj_);
+
     MainLoop::push_job_gui ([=] {
-        self->impl_->show ();
+        gtk_widget_show_all (obj);
     });
 
     return Undefined ();
@@ -55,10 +53,11 @@ Handle<Value> Widget::Show (const Arguments& args) {
 Handle<Value> Widget::Destroy (const Arguments& args) {
     HandleScope scope;
 
-    // Destroy gtk::widget
     Widget *self = ObjectWrap::Unwrap<Widget> (args.This());
+    GtkWidget *obj = static_cast<GtkWidget*> (self->obj_);
+
     MainLoop::push_job_gui ([=] {
-        self->impl_->destroy ();
+        gtk_widget_destroy (obj);
     });
 
     return Undefined ();
