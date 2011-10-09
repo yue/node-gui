@@ -6,7 +6,7 @@
 #include <functional>
 
 #include <node.h>
-#include <gtkmm/clipboard.h>
+#include <gtk/gtk.h>
 
 #ifdef WIN32
 #include "impl_clipboard_win.h"

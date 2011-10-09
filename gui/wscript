@@ -7,8 +7,8 @@ def configure(conf):
   conf.check_tool('compiler_cxx')
   conf.check_tool('node_addon')
   conf.check_cfg(atleast_pkgconfig_version = '0.0.0')
-  conf.check_cfg(package='gtkmm-2.4', args='--cflags --libs',
-    uselib_store='GTKMM') 
+  conf.check_cfg(package='gtk+-2.0', args='--cflags --libs',
+    uselib_store='GTK') 
 
 def build(bld):
   obj = bld.new_task_gen('cxx', 'shlib', 'node_addon')
@@ -23,4 +23,4 @@ def build(bld):
                 'impl_clipboard_gtk.cc',
                 'impl_async_wrap.cc',
                 'impl_mainloop_gtk.cc']
-  obj.uselib = 'GTKMM'
+  obj.uselib = 'GTK'

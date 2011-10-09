@@ -1,9 +1,6 @@
 #include "impl_clipboard_gtk.h"
 #include "impl_mainloop_gtk.h"
 
-#include <stdio.h>
-#include <glibmm/thread.h>
-
 namespace clip {
 ClipboardImpl::ClipboardImpl (std::function<void (std::string)> paste) :
     paste_ (std::move (paste)),
