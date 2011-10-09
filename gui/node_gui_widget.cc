@@ -1,5 +1,4 @@
 #include <gtk/gtk.h>
-#include <stdio.h>
 
 #include "node_gui_object.h"
 #include "node_gui_widget.h"
@@ -19,6 +18,8 @@ void Widget::Init (Handle<v8::Object> target) {
 
     NODE_SET_PROTOTYPE_METHOD (constructor_template, "show", Show);
     NODE_SET_PROTOTYPE_METHOD (constructor_template, "destroy", Destroy);
+    NODE_SET_PROTOTYPE_METHOD (constructor_template, "hide", Hide);
+    NODE_SET_PROTOTYPE_METHOD (constructor_template, "grabFocus", GrabFocus);
     target->Set (String::NewSymbol ("Widget"), t->GetFunction ());
 }
 
@@ -38,29 +39,8 @@ Handle<Value> Widget::New (const Arguments& args) {
                     "Widget is not allow to be manually created")));
 }
 
-Handle<Value> Widget::Show (const Arguments& args) {
-    HandleScope scope;
-
-    Widget *self = ObjectWrap::Unwrap<Widget> (args.This());
-    GtkWidget *obj = static_cast<GtkWidget*> (self->obj_);
-
-    MainLoop::push_job_gui ([=] {
-        gtk_widget_show_all (obj);
-    });
-
-    return Undefined ();
-}
-
-Handle<Value> Widget::Destroy (const Arguments& args) {
-    HandleScope scope;
-
-    Widget *self = ObjectWrap::Unwrap<Widget> (args.This());
-    GtkWidget *obj = static_cast<GtkWidget*> (self->obj_);
-
-    MainLoop::push_job_gui ([=] {
-        gtk_widget_destroy (obj);
-    });
-
-    return Undefined ();
-}
+SIMPLE_METHOD (Widget, Show, gtk_widget_show_all);
+SIMPLE_METHOD (Widget, Destroy, gtk_widget_destroy);
+SIMPLE_METHOD (Widget, Hide, gtk_widget_hide);
+SIMPLE_METHOD (Widget, GrabFocus, gtk_widget_grab_focus);
 } /* clip */

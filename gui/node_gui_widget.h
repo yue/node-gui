@@ -2,6 +2,7 @@
 #define NODE_GUI_WIDGET_H
 
 #include <node.h>
+#include "node_gui.h"
 #include "node_gui_object.h"
 
 namespace clip {
@@ -15,8 +16,10 @@ public:
 
 protected:
     static Handle<Value> New (const Arguments& args);
-    static Handle<Value> Show (const Arguments& args);
-    static Handle<Value> Destroy (const Arguments& args);
+    DEFINE_SIMPLE_METHOD (Show);
+    DEFINE_SIMPLE_METHOD (Destroy);
+    DEFINE_SIMPLE_METHOD (Hide);
+    DEFINE_SIMPLE_METHOD (GrabFocus);
 
 public:
     static Persistent<FunctionTemplate> constructor_template;
