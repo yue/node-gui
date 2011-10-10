@@ -13,6 +13,7 @@ public:
     virtual ~Object ();
 
     static void Init (Handle<v8::Object> target);
+    static Handle<Value> NewInstance (void *);
 
 protected:
     static Handle<Value> New (const Arguments& args);

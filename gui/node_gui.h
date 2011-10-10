@@ -3,6 +3,9 @@
 
 #include <node.h>
 
+#define THROW_BAD_ARGS \
+    ThrowException(Exception::TypeError(String::New("Bad argument")))
+
 #define DEFINE_SIMPLE_METHOD(Method) \
     static Handle<Value> Method (const Arguments& args)
 
