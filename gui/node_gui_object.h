@@ -1,7 +1,11 @@
 #ifndef NODE_GUI_OBJECT_H
 #define NODE_GUI_OBJECT_H
 
+#include <list>
+
 #include <node.h>
+#include <glib-object.h>
+
 #include "node_gui.h"
 
 namespace clip {
@@ -26,6 +30,14 @@ protected:
 protected:
     void *obj_; // Raw GTK+ object pointer
     bool host_; // Whether we should manage its life
+
+    static void signal_marshal (GClosure *closure,
+                                GValue *return_value,
+                                guint n_param_values,
+                                const GValue *param_values,
+                                gpointer invocation_hint,
+                                gpointer marshal_data);
+    static void closure_invalidate (gpointer data, GClosure *closure);
 
 public:
     static Persistent<FunctionTemplate> constructor_template;
