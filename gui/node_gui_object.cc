@@ -32,16 +32,12 @@ Object::~Object () {
 void Object::Init (Handle<v8::Object> target) {
     HandleScope scope;
 
-    Local<FunctionTemplate> t = FunctionTemplate::New (New);
-    constructor_template = Persistent<FunctionTemplate>::New(t);
-    constructor_template->InstanceTemplate()->SetInternalFieldCount(1);
-    constructor_template->SetClassName(String::NewSymbol("Object"));
+    CREATE_NODE_CONSTRUCTOR ("Object");
 
-    NODE_SET_PROTOTYPE_METHOD (constructor_template, "setProperty",
-                               SetProperty);
-    NODE_SET_PROTOTYPE_METHOD (constructor_template, "getProperty",
-                               GetProperty);
-    NODE_SET_PROTOTYPE_METHOD (constructor_template, "on", On);
+    DEFINE_NODE_METHOD ("setProperty" , SetProperty);
+    DEFINE_NODE_METHOD ("getProperty" , GetProperty);
+    DEFINE_NODE_METHOD ("on"          , On);
+
     target->Set (String::NewSymbol ("Object"), t->GetFunction ());
 }
 

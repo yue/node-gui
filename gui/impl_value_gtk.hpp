@@ -9,6 +9,10 @@
 #include "node_gui_object.h"
 
 namespace clip {
+// Note, I don't provide destructor and copy constructor for MovedGValue,
+// so when MovedGValue is copied, we can get the same effect of 'move'.
+// My main purpose is to move GValue between threads, which is not
+// provided by lambda functions.
 class MovedGValue {
 public:
     MovedGValue (v8::Handle<Value> value)
@@ -42,11 +46,6 @@ public:
             g_value_init (&handle_, G_TYPE_INVALID);
         }
     }
-
-    // Note, I don't provide destructor and copy constructor here,
-    // so when MovedGValue is copied, we can get the same effect of 'move'.
-    // My main purpose is to move GValue between threads, which is not
-    // provided by lambda functions.
 
     operator GValue* () {
         return &handle_;

@@ -2,10 +2,12 @@
 #define NODE_GUI_OBJECT_H
 
 #include <node.h>
+#include "node_gui.h"
+
+namespace clip {
 using namespace node;
 using namespace v8;
 
-namespace clip {
 class Object: public ObjectWrap {
 public:
     Object ();
@@ -16,10 +18,10 @@ public:
     static Handle<Value> NewInstance (void *);
 
 protected:
-    static Handle<Value> New (const Arguments& args);
-    static Handle<Value> SetProperty (const Arguments& args);
-    static Handle<Value> GetProperty (const Arguments& args);
-    static Handle<Value> On (const Arguments& args);
+    DEFINE_CPP_METHOD (New);
+    DEFINE_CPP_METHOD (GetProperty);
+    DEFINE_CPP_METHOD (SetProperty);
+    DEFINE_CPP_METHOD (On);
 
 protected:
     void *obj_; // Raw GTK+ object pointer

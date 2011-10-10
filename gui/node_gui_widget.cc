@@ -10,16 +10,13 @@ Persistent<FunctionTemplate> Widget::constructor_template;
 void Widget::Init (Handle<v8::Object> target) {
     HandleScope scope;
 
-    Local<FunctionTemplate> t = FunctionTemplate::New (New);
-    constructor_template = Persistent<FunctionTemplate>::New(t);
-    constructor_template->InstanceTemplate()->SetInternalFieldCount(1);
-    constructor_template->SetClassName(String::NewSymbol("Widget"));
-    constructor_template->Inherit (Object::constructor_template);
+    CREATE_NODE_CONSTRUCTOR_INHERIT ("Widget", Object);
 
-    NODE_SET_PROTOTYPE_METHOD (constructor_template, "show", Show);
-    NODE_SET_PROTOTYPE_METHOD (constructor_template, "destroy", Destroy);
-    NODE_SET_PROTOTYPE_METHOD (constructor_template, "hide", Hide);
-    NODE_SET_PROTOTYPE_METHOD (constructor_template, "grabFocus", GrabFocus);
+    DEFINE_NODE_METHOD ("show"      , Show);
+    DEFINE_NODE_METHOD ("destroy"   , Destroy);
+    DEFINE_NODE_METHOD ("hide"      , Hide);
+    DEFINE_NODE_METHOD ("grabFocus" , GrabFocus);
+
     target->Set (String::NewSymbol ("Widget"), t->GetFunction ());
 }
 

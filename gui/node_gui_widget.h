@@ -15,11 +15,11 @@ public:
     static void Init (Handle<v8::Object> target);
 
 protected:
-    static Handle<Value> New (const Arguments& args);
-    DEFINE_SIMPLE_METHOD (Show);
-    DEFINE_SIMPLE_METHOD (Destroy);
-    DEFINE_SIMPLE_METHOD (Hide);
-    DEFINE_SIMPLE_METHOD (GrabFocus);
+    DEFINE_CPP_METHOD (New);
+    DEFINE_CPP_METHOD (Show);
+    DEFINE_CPP_METHOD (Destroy);
+    DEFINE_CPP_METHOD (Hide);
+    DEFINE_CPP_METHOD (GrabFocus);
 
 public:
     static Persistent<FunctionTemplate> constructor_template;
