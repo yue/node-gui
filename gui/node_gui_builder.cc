@@ -28,50 +28,25 @@ void Builder::Init (Handle<v8::Object> target) {
     target->Set (String::NewSymbol ("Builder"), t->GetFunction ());
 }
 
+// var builder = new Builder ('/path', callback);
 Handle<Value> Builder::New (const Arguments& args) {
     HandleScope scope;
 
     // Check parameters
-    bool preload = false;
-    if (args.Length () == 1 && args[0]->IsFunction ()) {
-        // var builder = new Builder (callback);
-    } else if (args.Length () == 2 && args[0]->IsString ()
-                                   && args[1]->IsFunction ())
-    {
-        // var builder = new Builder ('/path', callback);
-        preload = true;
-    } else {
+    if (!(args.Length () == 2 && args[0]->IsString () && args[1]->IsFunction ())) {
         return THROW_BAD_ARGS;
     }
 
     Builder *self = new Builder ();
 
-    std::string filename;
-
-    if (preload) {
-        // var builder = new Builder ('/path', callback);
-        filename = *String::Utf8Value (args[0]);
-        self->callback_ = Persistent<Function>::New (
-                Local<Function>::Cast (args[1]));
-    } else {
-        // var builder = new Builder (callback);
-        self->callback_ = Persistent<Function>::New (
-                Local<Function>::Cast (args[0]));
-    }
+    std::string filename = *String::Utf8Value (args[0]);
+    self->callback_ = Persistent<Function>::New (Local<Function>::Cast (args[1]));
 
     // In GTK
     MainLoop::push_job_gui ([=] {
         GtkBuilder *obj = gtk_builder_new ();
 
-        if (preload) {
-            // TODO report error to JavaScript
-            GError *error = NULL;
-            int ret =
-            gtk_builder_add_from_file (obj, filename.c_str (), &error);
-            if (!ret) {
-                fprintf (stderr, "Cannot build from file: %s\n", error->message);
-            }
-        }
+        gtk_builder_add_from_file (obj, filename.c_str (), NULL);
 
         self->obj_ = obj;
         self->host_ = true;

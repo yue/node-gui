@@ -33,9 +33,7 @@ void Object::Init (Handle<v8::Object> target) {
 
     CREATE_NODE_CONSTRUCTOR ("Object");
 
-    DEFINE_NODE_METHOD ("setProperty" , SetProperty);
-    DEFINE_NODE_METHOD ("getProperty" , GetProperty);
-    DEFINE_NODE_METHOD ("on"          , On);
+    DEFINE_NODE_METHOD ("on", On);
 
     target->Set (String::NewSymbol ("Object"), t->GetFunction ());
 }
@@ -56,58 +54,51 @@ Handle<Value> Object::New (const Arguments& args) {
                     "Object is not allow to be manually created")));
 }
 
-Handle<Value> Object::SetProperty (const Arguments& args) {
-    HandleScope scope;
+Handle<Value> Object::SetProperty (Local<String> arg1,
+                                   Local<Value> arg2,
+                                   const AccessorInfo &info)
+{
+    Object *self = static_cast<Object*> (
+            info.Holder ()->GetPointerFromInternalField (0));
+    GObject *obj = static_cast<GObject*> (self->obj_);
 
-    if (args.Length () == 2)
-    {
-        Object *self = ObjectWrap::Unwrap<Object> (args.This());
-        GObject *obj = static_cast<GObject*> (self->obj_);
+    // They will be 'moved' to the lambda below
+    GValue key   = glue (arg1);
+    GValue value = glue (arg2);
 
-        // They will be 'moved' to the lambda below
-        GValue key   = glue (args[0]);
-        GValue value = glue (args[1]);
-
-        MainLoop::push_job_gui ([=] () mutable {
-            g_object_set_property (obj, g_value_get_string (&key), &value);
-            g_value_unset (&key);
-            g_value_unset (&value);
-        });
-
-        return Undefined ();
-    }
-
-    return THROW_BAD_ARGS;
-}
-
-Handle<Value> Object::GetProperty (const Arguments& args) {
-    HandleScope scope;
-
-    if (args.Length () == 1 && args[0]->IsString ())
-    {
-        Object *self = ObjectWrap::Unwrap<Object> (args.This());
-        GObject *obj = static_cast<GObject*> (self->obj_);
-
-        GValue key = glue (args[0]);
-
-        // Work out property's type
-        GValue value = { 0 };
-        GParamSpec *spec = g_object_class_find_property (
-                G_OBJECT_GET_CLASS (obj), g_value_get_string (&key));
-        g_value_init (&value, G_PARAM_SPEC_VALUE_TYPE (spec));
-
-        // Get it
-        g_object_get_property (obj, g_value_get_string (&key), &value);
-        Handle<Value> result = glue (&value);
-
-        // And remember to release it
+    MainLoop::push_job_gui ([=] () mutable {
+        g_object_set_property (obj, g_value_get_string (&key), &value);
         g_value_unset (&key);
         g_value_unset (&value);
+    });
 
-        return scope.Close (result);
-    }
+    return Undefined ();
+}
 
-    return THROW_BAD_ARGS;
+Handle<Value> Object::GetProperty (Local<String> property,
+                                   const AccessorInfo &info)
+{
+    Object *self = static_cast<Object*> (
+            info.Holder ()->GetPointerFromInternalField (0));
+    GObject *obj = static_cast<GObject*> (self->obj_);
+
+    GValue key = glue (property);
+
+    // Work out property's type
+    GValue value = { 0 };
+    GParamSpec *spec = g_object_class_find_property (
+            G_OBJECT_GET_CLASS (obj), g_value_get_string (&key));
+    g_value_init (&value, G_PARAM_SPEC_VALUE_TYPE (spec));
+
+    // Get it
+    g_object_get_property (obj, g_value_get_string (&key), &value);
+    Handle<Value> result = glue (&value);
+
+    // And remember to release it
+    g_value_unset (&key);
+    g_value_unset (&value);
+
+    return result;
 }
 
 Handle<Value> Object::On (const Arguments& args) {
