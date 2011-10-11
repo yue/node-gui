@@ -22,7 +22,11 @@ Builder::~Builder () {
 void Builder::Init (Handle<v8::Object> target) {
     HandleScope scope;
 
-    CREATE_NODE_CONSTRUCTOR_INHERIT ("Builder", Object);
+    Local<FunctionTemplate> t = FunctionTemplate::New (New);\
+    constructor_template = Persistent<FunctionTemplate>::New(t);\
+    constructor_template->InstanceTemplate()->SetInternalFieldCount(1);\
+    constructor_template->SetClassName(String::NewSymbol("Builder"));\
+    constructor_template->Inherit (Object::constructor_template);
 
     DEFINE_NODE_METHOD ("get", Get);
 
@@ -69,8 +73,10 @@ Handle<Value> Builder::New (const Arguments& args) {
 Handle<Value> Builder::Get (const Arguments& args) {
     HandleScope scope;
 
-    // var widget = builder.get ('window_name');
-    if (args.Length () != 1 || !args[0]->IsString ())
+    // var widget = builder.get ('window_name', Widget);
+    if (!(args.Length () == 2 && args[0]->IsString ()
+                              && args[1]->IsFunction ()) &&
+        !(args.Length () == 1 && args[0]->IsString ()))
     {
         return THROW_BAD_ARGS;
     }
@@ -78,20 +84,29 @@ Handle<Value> Builder::Get (const Arguments& args) {
     Builder *self = ObjectWrap::Unwrap<Builder> (args.This());
     GtkBuilder *obj = static_cast<GtkBuilder*> (self->obj_);
 
-    // Gtk::Builder::get_widget, do it syncly
+    // Gtk::Builder::get_widget, do it synchorously
     gdk_threads_enter();
-    GObject *widget = gtk_builder_get_object (obj,
-                                              *String::Utf8Value (args[0]));
+    GObject *widget = 
+        gtk_builder_get_object (obj, *String::Utf8Value (args[0]));
     gdk_threads_leave();
 
+    // Check whether widget exists
     if (widget == NULL) {
         return ThrowException(Exception::Error(
                     String::New("Widget does not exsit")));
     }
 
+    // Stroe pointer for object constructor
     Local<Value> external = External::New (widget);
 
-    return scope.Close (Widget::constructor_template->
-        GetFunction ()->NewInstance (1, &external));
+    if (args.Length () == 1) {
+        // Create GtkObject by default
+        return scope.Close (Object::constructor_template->GetFunction ()->
+                NewInstance (1, &external));
+    } else {
+        // Create instance by argument's constructor
+        return scope.Close (Local<Function>::Cast (args[1])->
+                NewInstance (1, &external));
+    }
 }
 } /* clip */

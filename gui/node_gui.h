@@ -3,6 +3,9 @@
 
 #include <node.h>
 
+#define NODE_ERROR(str) \
+    ThrowException(Exception::Error(String::New(str)))
+
 #define THROW_BAD_ARGS \
     ThrowException(Exception::TypeError(String::New("Bad argument")))
 
@@ -12,14 +15,14 @@
 #define DEFINE_NODE_METHOD(Name, Method) \
     NODE_SET_PROTOTYPE_METHOD (constructor_template, Name, Method)
 
-#define CREATE_NODE_CONSTRUCTOR(Class) \
-    Local<FunctionTemplate> t = FunctionTemplate::New (New);\
+#define CREATE_NODE_CONSTRUCTOR(Class, Type) \
+    Local<FunctionTemplate> t = FunctionTemplate::New (Object::New<Type>);\
     constructor_template = Persistent<FunctionTemplate>::New(t);\
     constructor_template->InstanceTemplate()->SetInternalFieldCount(1);\
     constructor_template->SetClassName(String::NewSymbol(Class));
 
-#define CREATE_NODE_CONSTRUCTOR_INHERIT(Class, Super) \
-    Local<FunctionTemplate> t = FunctionTemplate::New (New);\
+#define CREATE_NODE_CONSTRUCTOR_INHERIT(Class, Type, Super) \
+    Local<FunctionTemplate> t = FunctionTemplate::New (Object::New<Type>);\
     constructor_template = Persistent<FunctionTemplate>::New(t);\
     constructor_template->InstanceTemplate()->SetInternalFieldCount(1);\
     constructor_template->SetClassName(String::NewSymbol(Class));\

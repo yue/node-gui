@@ -15,7 +15,6 @@ public:
     static void Init (Handle<v8::Object> target);
 
 protected:
-    DEFINE_CPP_METHOD (New);
     DEFINE_CPP_METHOD (Show);
     DEFINE_CPP_METHOD (Destroy);
     DEFINE_CPP_METHOD (Hide);

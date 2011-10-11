@@ -31,29 +31,13 @@ Object::~Object () {
 void Object::Init (Handle<v8::Object> target) {
     HandleScope scope;
 
-    CREATE_NODE_CONSTRUCTOR ("Object");
+    CREATE_NODE_CONSTRUCTOR ("Object", Object);
 
     DEFINE_NODE_METHOD ("on", On);
     DEFINE_NODE_METHOD ("getProperty", GetProperty);
     DEFINE_NODE_METHOD ("setProperty", SetProperty);
 
     target->Set (String::NewSymbol ("Object"), t->GetFunction ());
-}
-
-Handle<Value> Object::NewInstance (void *obj) {
-    HandleScope scope;
-
-    Handle<Value> arg = External::New (obj);
-    return scope.Close (
-            constructor_template->GetFunction ()->NewInstance (1, &arg));
-}
-
-Handle<Value> Object::New (const Arguments& args) {
-    HandleScope scope;
-
-    // Should never mannualy create a object
-    return ThrowException(Exception::TypeError(String::New(
-                    "Object is not allow to be manually created")));
 }
 
 Handle<Value> Object::SetProperty (const Arguments& args) {
@@ -93,6 +77,14 @@ Handle<Value> Object::GetProperty (const Arguments& args) {
     GValue value = { 0 };
     GParamSpec *spec = g_object_class_find_property (
             G_OBJECT_GET_CLASS (obj), g_value_get_string (&key));
+
+    // Guard against invalid property
+    if (spec == NULL) {
+        g_value_unset (&key);
+        return NODE_ERROR ("Invalid property name"); 
+    }
+
+    // Init type from property's type
     g_value_init (&value, G_PARAM_SPEC_VALUE_TYPE (spec));
 
     // Get it

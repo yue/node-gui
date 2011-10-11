@@ -20,7 +20,25 @@ public:
     static Handle<Value> NewInstance (void *);
 
 protected:
-    DEFINE_CPP_METHOD (New);
+    template<class T = Object>
+    static Handle<Value> New (const Arguments& args) {
+        HandleScope scope;
+
+        // Init from exsiting gtk::object
+        if (args.Length () == 1 && args[0]->IsExternal ()) {
+            void *obj = External::Unwrap (args[0]);
+            T *self = new T (obj);
+
+            self->Wrap (args.This ());
+            return args.This ();
+        } else if (args.This ()->InternalFieldCount () == 1) {
+            return args.This ();
+        }
+
+        return ThrowException(Exception::TypeError(String::New(
+                        "Object is not allow to be manually created")));
+    }
+
     DEFINE_CPP_METHOD (On);
     DEFINE_CPP_METHOD (GetProperty);
     DEFINE_CPP_METHOD (SetProperty);
