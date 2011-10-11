@@ -19,9 +19,6 @@ protected:
     DEFINE_CPP_METHOD (Get);
 
 private:
-    void after_create ();
-    Persistent<Function> callback_;
-
     static Persistent<FunctionTemplate> constructor_template;
 
 /* Not to be implemented */

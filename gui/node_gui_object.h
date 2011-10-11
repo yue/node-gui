@@ -23,11 +23,11 @@ protected:
     DEFINE_CPP_METHOD (New);
     DEFINE_CPP_METHOD (On);
 
-    Handle<Value> GetProperty (Local<String> property,
-                               const AccessorInfo &info);
-    Handle<Value> SetProperty (Local<String> property,
-                               Local<Value> value,
-                               const AccessorInfo &info);
+    static Handle<Value> GetProperty (Local<String> property,
+                                      const AccessorInfo &info);
+    static Handle<Value> SetProperty (Local<String> property,
+                                      Local<Value> value,
+                                      const AccessorInfo &info);
 
 protected:
     void *obj_; // Raw GTK+ object pointer

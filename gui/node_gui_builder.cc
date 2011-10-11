@@ -3,9 +3,10 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
-#include "impl_mainloop_gtk.h"
 #include "node_gui_builder.h"
 #include "node_gui_widget.h"
+#include "impl_mainloop_gtk.h"
+#include "impl_closure_gtk.hpp"
 
 #define THROW_BAD_ARGS \
     ThrowException(Exception::TypeError(String::New("Bad argument")))
@@ -40,10 +41,11 @@ Handle<Value> Builder::New (const Arguments& args) {
     Builder *self = new Builder ();
 
     std::string filename = *String::Utf8Value (args[0]);
-    self->callback_ = Persistent<Function>::New (Local<Function>::Cast (args[1]));
+    Persistent<Function> callback = Persistent<Function>::New (
+            Local<Function>::Cast (args[1]));
 
     // In GTK
-    MainLoop::push_job_gui ([=] {
+    MainLoop::push_job_gui ([=] () mutable {
         GtkBuilder *obj = gtk_builder_new ();
 
         gtk_builder_add_from_file (obj, filename.c_str (), NULL);
@@ -52,7 +54,12 @@ Handle<Value> Builder::New (const Arguments& args) {
         self->host_ = true;
 
         // Notify the creation
-        MainLoop::push_job_node (std::bind (&Builder::after_create, self));
+        MainLoop::push_job_node ([=] () mutable {
+            Handle<Value> args[] = { self->handle_ };
+
+            callback->Call (self->handle_, 1, args);
+            callback.Dispose ();
+        });
     });
 
     self->Wrap (args.This ());
@@ -86,12 +93,5 @@ Handle<Value> Builder::Get (const Arguments& args) {
 
     return scope.Close (Widget::constructor_template->
         GetFunction ()->NewInstance (1, &external));
-}
-
-void Builder::after_create () {
-    HandleScope scope;
-
-    Handle<Value> args[] = { handle_ };
-    callback_->Call (handle_, 1, args);
 }
 } /* clip */
