@@ -22,12 +22,8 @@ public:
 protected:
     DEFINE_CPP_METHOD (New);
     DEFINE_CPP_METHOD (On);
-
-    static Handle<Value> GetProperty (Local<String> property,
-                                      const AccessorInfo &info);
-    static Handle<Value> SetProperty (Local<String> property,
-                                      Local<Value> value,
-                                      const AccessorInfo &info);
+    DEFINE_CPP_METHOD (GetProperty);
+    DEFINE_CPP_METHOD (SetProperty);
 
 protected:
     void *obj_; // Raw GTK+ object pointer

@@ -34,6 +34,8 @@ void Object::Init (Handle<v8::Object> target) {
     CREATE_NODE_CONSTRUCTOR ("Object");
 
     DEFINE_NODE_METHOD ("on", On);
+    DEFINE_NODE_METHOD ("getProperty", GetProperty);
+    DEFINE_NODE_METHOD ("setProperty", SetProperty);
 
     target->Set (String::NewSymbol ("Object"), t->GetFunction ());
 }
@@ -54,17 +56,18 @@ Handle<Value> Object::New (const Arguments& args) {
                     "Object is not allow to be manually created")));
 }
 
-Handle<Value> Object::SetProperty (Local<String> arg1,
-                                   Local<Value> arg2,
-                                   const AccessorInfo &info)
-{
-    Object *self = static_cast<Object*> (
-            info.Holder ()->GetPointerFromInternalField (0));
+Handle<Value> Object::SetProperty (const Arguments& args) {
+    HandleScope scope;
+
+    if (args.Length () != 2)
+        return THROW_BAD_ARGS;
+
+    Object *self = ObjectWrap::Unwrap<Object> (args.This());
     GObject *obj = static_cast<GObject*> (self->obj_);
 
     // They will be 'moved' to the lambda below
-    GValue key   = glue (arg1);
-    GValue value = glue (arg2);
+    GValue key   = glue (args[0]);
+    GValue value = glue (args[1]);
 
     MainLoop::push_job_gui ([=] () mutable {
         g_object_set_property (obj, g_value_get_string (&key), &value);
@@ -75,14 +78,16 @@ Handle<Value> Object::SetProperty (Local<String> arg1,
     return Undefined ();
 }
 
-Handle<Value> Object::GetProperty (Local<String> property,
-                                   const AccessorInfo &info)
-{
-    Object *self = static_cast<Object*> (
-            info.Holder ()->GetPointerFromInternalField (0));
+Handle<Value> Object::GetProperty (const Arguments& args) {
+    HandleScope scope;
+
+    if (args.Length () != 1)
+        return THROW_BAD_ARGS;
+
+    Object *self = ObjectWrap::Unwrap<Object> (args.This());
     GObject *obj = static_cast<GObject*> (self->obj_);
 
-    GValue key = glue (property);
+    GValue key = glue (args[0]);
 
     // Work out property's type
     GValue value = { 0 };
