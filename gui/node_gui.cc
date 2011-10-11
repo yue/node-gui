@@ -3,6 +3,7 @@
 #include "node_gui_object.h"
 #include "node_gui_widget.h"
 #include "node_gui_builder.h"
+#include "node_gui_status_icon.h"
 
 namespace clip {
 void Init (Handle<v8::Object> target) {
@@ -14,6 +15,7 @@ void Init (Handle<v8::Object> target) {
     clip::Object::Init (target);
     clip::Widget::Init (target);
     clip::Builder::Init (target);
+    clip::StatusIcon::Init (target);
 }
 } /* clip */
 
