@@ -2,9 +2,7 @@
 
 #include <gdk/gdk.h>
 
-#include "node_gui.h"
 #include "node_gui_object.h"
-#include "impl_value_gtk.hpp"
 #include "impl_mainloop_gtk.h"
 #include "impl_closure_gtk.hpp"
 

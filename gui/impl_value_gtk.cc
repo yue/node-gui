@@ -1,16 +1,8 @@
-#ifndef IMPL_VALUE_GTK_H
-#define IMPL_VALUE_GTK_H
-
-#include <iosfwd>
-
-#include <glib-object.h>
-#include <node.h>
-
 #include "node_gui_object.h"
+#include "impl_value_gtk.h"
 
 namespace clip {
-// Generic v8::Value to GValue
-GValue&& glue (v8::Handle<Value> value) {
+GValue&& glue (v8::Handle<v8::Value> value) {
     GValue a = { 0 };
 
     if (value->IsUndefined ()) {
@@ -43,7 +35,6 @@ GValue&& glue (v8::Handle<Value> value) {
     return std::move (a);
 }
 
-// Generic GValue to v8::Value
 v8::Handle<Value> glue (const GValue* value) {
     if (value == NULL)
         return Undefined ();
@@ -86,5 +77,3 @@ v8::Handle<Value> glue (const GValue* value) {
     }
 }
 } /* clip */
-
-#endif /* end of IMPL_VALUE_GTK_H */

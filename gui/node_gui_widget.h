@@ -9,12 +9,6 @@ DECLARE_NODE_OBJECT (Widget);
 
 public:
     EXTERNAL_CONSTRUCTOR (Widget);
-
-protected:
-    DEFINE_CPP_METHOD (Show);
-    DEFINE_CPP_METHOD (Destroy);
-    DEFINE_CPP_METHOD (Hide);
-    DEFINE_CPP_METHOD (GrabFocus);
 };
 } /* clip */
 

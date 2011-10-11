@@ -23,5 +23,6 @@ def build(bld):
                 'node_gui_status_icon.cc',
                 'impl_clipboard_gtk.cc',
                 'impl_async_wrap.cc',
+                'impl_value_gtk.cc',
                 'impl_mainloop_gtk.cc']
   obj.uselib = 'GTK'

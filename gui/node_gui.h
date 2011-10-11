@@ -27,6 +27,14 @@
 #define DEFINE_NODE_METHOD(Name, Method) \
     NODE_SET_PROTOTYPE_METHOD (constructor_template, Name, Method)
 
+#define SIMPLE_METHOD(Class, Name, Method) \
+    NODE_SET_PROTOTYPE_METHOD (constructor_template, Name, \
+            (SimpleMethod<Class, Gtk##Class, Method>));
+
+#define SETTER_METHOD(Class, Type, Name, Method) \
+    NODE_SET_PROTOTYPE_METHOD (constructor_template, Name, \
+            (SetterMethod<Type, Class, Gtk##Class, Method>));
+
 #define DECLARE_NODE_OBJECT(Class) \
     public:\
         static void Init (Handle<v8::Object> target);\
@@ -61,20 +69,6 @@
 
 #define END_CONSTRUCTOR() \
     target->Set (symbol, t->GetFunction ())
-
-#define SIMPLE_METHOD(Class, Method, real) \
-    Handle<Value> Class::Method (const Arguments& args) {\
-        HandleScope scope;\
-\
-        Class *self = ObjectWrap::Unwrap<Class> (args.This());\
-        Gtk##Class *obj = static_cast<Gtk##Class*> (self->obj_);\
-\
-        MainLoop::push_job_gui ([=] {\
-            real (obj);\
-        });\
-\
-        return Undefined ();\
-    }
 
 namespace clip {
 void Init (v8::Handle<v8::Object> target);
