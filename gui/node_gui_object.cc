@@ -1,5 +1,4 @@
 #include <string>
-#include <vector>
 
 #include <gdk/gdk.h>
 
@@ -7,14 +6,10 @@
 #include "node_gui_object.h"
 #include "impl_value_gtk.hpp"
 #include "impl_mainloop_gtk.h"
+#include "impl_closure_gtk.hpp"
 
 namespace clip {
 Persistent<FunctionTemplate> Object::constructor_template;
-
-struct NodeClosure {
-    GClosure closure;
-    Persistent<Function> callback;
-};
 
 // Stub for future setting
 Object::Object () :
@@ -131,14 +126,11 @@ Handle<Value> Object::On (const Arguments& args) {
     // Signal name
     GValue signal = glue (args[0]);
 
-    // Save callback
-    GClosure *closure = g_closure_new_simple (sizeof (NodeClosure), self);
-    ((NodeClosure*) closure)->callback = 
-            Persistent<Function>::New (Local<Function>::Cast (args[1]));
+    // Create closure
+    GClosure *closure = NodeClosure::create (args[1]);
 
     MainLoop::push_job_gui ([=] {
         // Connect
-        g_closure_add_invalidate_notifier (closure, NULL, closure_invalidate);
         g_closure_set_marshal (closure, signal_marshal);
         g_signal_connect_closure (obj, g_value_get_string (&signal),
                                   closure, true);
@@ -164,15 +156,8 @@ void Object::signal_marshal (GClosure *closure,
 
     // Call it
     MainLoop::push_job_node ([=] () mutable {
-        HandleScope scope;
-
         ((NodeClosure*) closure)->callback->Call (
             Context::GetCurrent ()->Global (), args.size (), args.data ());
     });
-}
-
-void Object::closure_invalidate (gpointer data, GClosure *closure) {
-    v8::Locker locker;
-    ((NodeClosure*) closure)->callback.Dispose ();
 }
 } /* clip */

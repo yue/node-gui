@@ -15,8 +15,8 @@ public:
     static void Init (Handle<v8::Object> target);
 
 protected:
-    static Handle<Value> New (const Arguments& args);
-    static Handle<Value> Get (const Arguments& args);
+    DEFINE_CPP_METHOD (New);
+    DEFINE_CPP_METHOD (Get);
 
 private:
     void after_create ();

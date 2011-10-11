@@ -1,8 +1,6 @@
 #ifndef NODE_GUI_OBJECT_H
 #define NODE_GUI_OBJECT_H
 
-#include <list>
-
 #include <node.h>
 #include <glib-object.h>
 
@@ -37,7 +35,6 @@ protected:
                                 const GValue *param_values,
                                 gpointer invocation_hint,
                                 gpointer marshal_data);
-    static void closure_invalidate (gpointer data, GClosure *closure);
 
 public:
     static Persistent<FunctionTemplate> constructor_template;
