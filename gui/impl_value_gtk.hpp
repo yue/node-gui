@@ -80,9 +80,6 @@ v8::Handle<Value> glue (const GValue* value) {
         case G_TYPE_STRING:
             return String::New (g_value_get_string (value));
 
-        case G_TYPE_OBJECT:
-            return Object::NewInstance (g_value_get_object (value));
-
         default:
             return ThrowException(Exception::TypeError(
                         String::New("Cannot find equivanent type")));

@@ -29,15 +29,22 @@ Object::~Object () {
 }
 
 void Object::Init (Handle<v8::Object> target) {
-    HandleScope scope;
-
     CREATE_NODE_CONSTRUCTOR ("Object", Object);
 
     DEFINE_NODE_METHOD ("on", On);
     DEFINE_NODE_METHOD ("getProperty", GetProperty);
     DEFINE_NODE_METHOD ("setProperty", SetProperty);
 
-    target->Set (String::NewSymbol ("Object"), t->GetFunction ());
+    END_CONSTRUCTOR ();
+}
+
+Handle<Value> Object::New (const Arguments& args) {
+    HandleScope scope;
+
+    WRAP_EXSISTING_OBJECT (Object);
+
+    return ThrowException(Exception::TypeError(String::New(
+                    "Object is not allow to be manually created")));
 }
 
 Handle<Value> Object::SetProperty (const Arguments& args) {

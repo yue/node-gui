@@ -4,12 +4,8 @@
 #include <gtk/gtk.h>
 
 #include "node_gui_builder.h"
-#include "node_gui_widget.h"
 #include "impl_mainloop_gtk.h"
 #include "impl_closure_gtk.hpp"
-
-#define THROW_BAD_ARGS \
-    ThrowException(Exception::TypeError(String::New("Bad argument")))
 
 namespace clip {
 Persistent<FunctionTemplate> Builder::constructor_template;
@@ -20,17 +16,11 @@ Builder::~Builder () {
 }
 
 void Builder::Init (Handle<v8::Object> target) {
-    HandleScope scope;
-
-    Local<FunctionTemplate> t = FunctionTemplate::New (New);\
-    constructor_template = Persistent<FunctionTemplate>::New(t);\
-    constructor_template->InstanceTemplate()->SetInternalFieldCount(1);\
-    constructor_template->SetClassName(String::NewSymbol("Builder"));\
-    constructor_template->Inherit (Object::constructor_template);
+    CREATE_NODE_CONSTRUCTOR_INHERIT ("Builder", Builder, Object);
 
     DEFINE_NODE_METHOD ("get", Get);
 
-    target->Set (String::NewSymbol ("Builder"), t->GetFunction ());
+    END_CONSTRUCTOR ();
 }
 
 // var builder = new Builder ('/path', callback);

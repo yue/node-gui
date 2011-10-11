@@ -7,8 +7,6 @@ namespace clip {
 Persistent<FunctionTemplate> Widget::constructor_template;
 
 void Widget::Init (Handle<v8::Object> target) {
-    HandleScope scope;
-
     CREATE_NODE_CONSTRUCTOR_INHERIT ("Widget", Widget, Object);
 
     DEFINE_NODE_METHOD ("show"      , Show);
@@ -16,7 +14,7 @@ void Widget::Init (Handle<v8::Object> target) {
     DEFINE_NODE_METHOD ("hide"      , Hide);
     DEFINE_NODE_METHOD ("grabFocus" , GrabFocus);
 
-    target->Set (String::NewSymbol ("Widget"), t->GetFunction ());
+    END_CONSTRUCTOR ();
 }
 
 SIMPLE_METHOD (Widget, Show, gtk_widget_show_all);
