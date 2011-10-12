@@ -22,12 +22,12 @@ inline const gchar *raw (const GValue* value) {
 
 template<>
 inline int raw (const GValue* value) {
-	return g_value_get_int (value);
-}
-
-template<>
-inline bool raw (const GValue* value) {
-	return g_value_get_boolean (value);
+    // We cannot distinguish between gboolean and int,
+    // so we have to determin at runtime
+    if (G_TYPE_FUNDAMENTAL(G_VALUE_TYPE(value)) == G_TYPE_INT)
+        return g_value_get_int (value);
+    else
+        return g_value_get_boolean (value);
 }
 } /* clip */
 

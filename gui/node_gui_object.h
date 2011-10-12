@@ -43,6 +43,7 @@ protected:
 
     // Define setter methods
     // Convert from 'gtk_status_icon_set_name (name)' to 'set_name (name)'
+    // FIXME gboolean is same with int, find a way to fix it.
     template<class T,
              class Type,
              class GtkType,
