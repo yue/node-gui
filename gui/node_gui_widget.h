@@ -8,7 +8,9 @@ class Widget: public Object {
 DECLARE_NODE_OBJECT (Widget);
 
 public:
-    EXTERNAL_CONSTRUCTOR (Widget);
+    DEFAULT_CONSTRUCTOR (Widget, Object);
+    EXTERNAL_CONSTRUCTOR (Widget, Object);
+    virtual ~Widget ();
 };
 } /* clip */
 

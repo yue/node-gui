@@ -6,6 +6,11 @@
 namespace clip {
 Persistent<FunctionTemplate> Widget::constructor_template;
 
+Widget::~Widget () {
+    if (host_)
+        gtk_widget_destroy (static_cast<GtkWidget*> (obj_));
+}
+
 void Widget::Init (Handle<v8::Object> target) {
     CREATE_NODE_CONSTRUCTOR_INHERIT ("Widget", Widget, Object);
 

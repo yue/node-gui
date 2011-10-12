@@ -48,27 +48,31 @@
         Class (const Class&);\
         Class& operator= (const Class&)
 
-#define DEFAULT_CONSTRUCTOR(Class) \
-    Class () : Object () { }
+#define DEFAULT_CONSTRUCTOR(Class, Super) \
+    Class () : Super () { }
 
-#define EXTERNAL_CONSTRUCTOR(Class) \
-    Class (void *external) : Object (external) { }
+#define EXTERNAL_CONSTRUCTOR(Class, Super) \
+    Class (void *external) : Super (external) { }
 
-#define CREATE_NODE_CONSTRUCTOR(Class, Type) \
+#define CREATE_NODE_CONSTRUCTOR(Name, Type) \
     HandleScope scope;\
-    Local<String> symbol = String::NewSymbol(Class);\
+    Local<String> symbol = String::NewSymbol(Name);\
     Local<FunctionTemplate> t = FunctionTemplate::New (New);\
     constructor_template = Persistent<FunctionTemplate>::New(t);\
     constructor_template->InstanceTemplate()->SetInternalFieldCount(1);\
-    constructor_template->SetClassName(String::NewSymbol(Class))
+    constructor_template->SetClassName(symbol)
 
-#define CREATE_NODE_CONSTRUCTOR_INHERIT(Class, Type, Super) \
+#define CREATE_NODE_CONSTRUCTOR_INHERIT(Name, Type, Super) \
+    CREATE_NODE_CONSTRUCTOR(Name, Type);\
+    constructor_template->Inherit (Super::constructor_template)
+
+#define CREATE_CUSTOM_NODE_CONSTRUCTOR(Name, Type, Super, Method) \
     HandleScope scope;\
-    Local<String> symbol = String::NewSymbol(Class);\
-    Local<FunctionTemplate> t = FunctionTemplate::New (New);\
+    Local<String> symbol = String::NewSymbol(Name);\
+    Local<FunctionTemplate> t = FunctionTemplate::New (Object::NewMethod<Type, gtk_##Method##_get_type>);\
     constructor_template = Persistent<FunctionTemplate>::New(t);\
     constructor_template->InstanceTemplate()->SetInternalFieldCount(1);\
-    constructor_template->SetClassName(String::NewSymbol(Class));\
+    constructor_template->SetClassName(symbol);\
     constructor_template->Inherit (Super::constructor_template)
 
 #define END_CONSTRUCTOR() \

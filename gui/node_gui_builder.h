@@ -8,7 +8,7 @@ class Builder: public Object {
 DECLARE_NODE_OBJECT (Builder);
 
 public:
-    DEFAULT_CONSTRUCTOR (Builder);
+    DEFAULT_CONSTRUCTOR (Builder, Object);
     virtual ~Builder ();
 
 protected:
