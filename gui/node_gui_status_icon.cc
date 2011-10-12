@@ -7,27 +7,27 @@ Persistent<FunctionTemplate> StatusIcon::constructor_template;
 void StatusIcon::Init (Handle<v8::Object> target) {
     CREATE_CUSTOM_NODE_CONSTRUCTOR ("StatusIcon", StatusIcon, Widget, status_icon);
 
-	SETTER_METHOD (StatusIcon , "set_from_file"      , gtk_status_icon_set_from_file      , const gchar*) ;
-	SETTER_METHOD (StatusIcon , "set_from_icon_name" , gtk_status_icon_set_from_icon_name , const gchar*) ;
-	SETTER_METHOD (StatusIcon , "set_from_stock"     , gtk_status_icon_set_from_stock     , const gchar*) ;
-	GETTER_METHOD (StatusIcon , "get_stock"          , gtk_status_icon_get_stock          , const gchar*) ;
-	GETTER_METHOD (StatusIcon , "get_icon_name"      , gtk_status_icon_get_icon_name      , const gchar*) ;
-	GETTER_METHOD (StatusIcon , "get_size"           , gtk_status_icon_get_size           , int         ) ;
-	SETTER_METHOD (StatusIcon , "set_tooltip"        , gtk_status_icon_set_tooltip        , const gchar*) ;
-	SETTER_METHOD (StatusIcon , "set_tooltip_text"   , gtk_status_icon_set_tooltip_text   , const gchar*) ;
-	GETTER_METHOD (StatusIcon , "get_tooltip_text"   , gtk_status_icon_get_tooltip_text   , gchar*      ) ;
-	SETTER_METHOD (StatusIcon , "set_tooltip_markup" , gtk_status_icon_set_tooltip_markup , const gchar*) ;
-	GETTER_METHOD (StatusIcon , "get_tooltip_markup" , gtk_status_icon_get_tooltip_markup , gchar*      ) ;
-	SETTER_METHOD (StatusIcon , "set_has_tooltip"    , gtk_status_icon_set_has_tooltip    , gboolean    ) ;
-	GETTER_METHOD (StatusIcon , "get_has_tooltip"    , gtk_status_icon_get_has_tooltip    , int         ) ;
-	SETTER_METHOD (StatusIcon , "set_title"          , gtk_status_icon_set_title          , const gchar*) ;
-	GETTER_METHOD (StatusIcon , "get_title"          , gtk_status_icon_get_title          , const gchar*) ;
-	SETTER_METHOD (StatusIcon , "set_name"           , gtk_status_icon_set_name           , const gchar*) ;
-	SETTER_METHOD (StatusIcon , "set_visible"        , gtk_status_icon_set_visible        , gboolean    ) ;
-	GETTER_METHOD (StatusIcon , "get_visible"        , gtk_status_icon_get_visible        , gboolean    ) ;
-	SETTER_METHOD (StatusIcon , "set_blinking"       , gtk_status_icon_set_blinking       , gboolean    ) ;
-	GETTER_METHOD (StatusIcon , "get_blinking"       , gtk_status_icon_get_blinking       , gboolean    ) ;
-	GETTER_METHOD (StatusIcon , "is_embedded"        , gtk_status_icon_is_embedded        , gboolean    ) ;
+	SETTER_METHOD (StatusIcon , "setFromFile"      , gtk_status_icon_set_from_file      , const gchar*) ;
+	SETTER_METHOD (StatusIcon , "setFromIconName" , gtk_status_icon_set_from_icon_name , const gchar*) ;
+	SETTER_METHOD (StatusIcon , "setFromStock"     , gtk_status_icon_set_from_stock     , const gchar*) ;
+	GETTER_METHOD (StatusIcon , "getStock"          , gtk_status_icon_get_stock          , const gchar*) ;
+	GETTER_METHOD (StatusIcon , "getIconName"      , gtk_status_icon_get_icon_name      , const gchar*) ;
+	GETTER_METHOD (StatusIcon , "getSize"           , gtk_status_icon_get_size           , int         ) ;
+	SETTER_METHOD (StatusIcon , "setTooltip"        , gtk_status_icon_set_tooltip        , const gchar*) ;
+	SETTER_METHOD (StatusIcon , "setTooltipText"   , gtk_status_icon_set_tooltip_text   , const gchar*) ;
+	GETTER_METHOD (StatusIcon , "getTooltipText"   , gtk_status_icon_get_tooltip_text   , gchar*      ) ;
+	SETTER_METHOD (StatusIcon , "setTooltipMarkup" , gtk_status_icon_set_tooltip_markup , const gchar*) ;
+	GETTER_METHOD (StatusIcon , "getTooltipMarkup" , gtk_status_icon_get_tooltip_markup , gchar*      ) ;
+	SETTER_METHOD (StatusIcon , "setHasTooltip"    , gtk_status_icon_set_has_tooltip    , gboolean    ) ;
+	GETTER_METHOD (StatusIcon , "getHasTooltip"    , gtk_status_icon_get_has_tooltip    , int         ) ;
+	SETTER_METHOD (StatusIcon , "setTitle"          , gtk_status_icon_set_title          , const gchar*) ;
+	GETTER_METHOD (StatusIcon , "getTitle"          , gtk_status_icon_get_title          , const gchar*) ;
+	SETTER_METHOD (StatusIcon , "setName"           , gtk_status_icon_set_name           , const gchar*) ;
+	SETTER_METHOD (StatusIcon , "setVisible"        , gtk_status_icon_set_visible        , gboolean    ) ;
+	GETTER_METHOD (StatusIcon , "getVisible"        , gtk_status_icon_get_visible        , gboolean    ) ;
+	SETTER_METHOD (StatusIcon , "setBlinking"       , gtk_status_icon_set_blinking       , gboolean    ) ;
+	GETTER_METHOD (StatusIcon , "getBlinking"       , gtk_status_icon_get_blinking       , gboolean    ) ;
+	GETTER_METHOD (StatusIcon , "isEmbedded"        , gtk_status_icon_is_embedded        , gboolean    ) ;
 
     END_CONSTRUCTOR ();
 }

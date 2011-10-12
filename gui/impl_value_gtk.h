@@ -43,6 +43,11 @@ inline const gchar *raw (const GValue* value) {
 }
 
 template<>
+inline double raw (const GValue* value) {
+	return g_value_get_double (value);
+}
+
+template<>
 inline int raw (const GValue* value) {
     // We cannot distinguish between gboolean and int,
     // so we have to determin at runtime
