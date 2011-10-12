@@ -22,7 +22,7 @@
 
 // Easy for daily node things
 #define DEFINE_CPP_METHOD(Method) \
-    static Handle<Value> Method (const Arguments& args)
+    static v8::Handle<v8::Value> Method (const v8::Arguments& args)
 
 #define DEFINE_NODE_METHOD(Name, Method) \
     NODE_SET_PROTOTYPE_METHOD (constructor_template, Name, Method)

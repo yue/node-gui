@@ -16,6 +16,7 @@ def build(bld):
   obj.target = 'gui'
   obj.source = ['main.cc',
                 'node_gui.cc',
+                'node_gui_global.cc',
                 'node_gui_type.cc',
                 'node_gui_clipboard.cc',
                 'node_gui_object.cc',
