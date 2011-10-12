@@ -43,7 +43,6 @@ protected:
 
     // Define setter methods
     // Convert from 'gtk_status_icon_set_name (name)' to 'set_name (name)'
-    // FIXME gboolean is same with int, find a way to fix it.
     template<class T,
              class Type,
              class GtkType,
@@ -65,6 +64,26 @@ protected:
         });
 
         return Undefined ();
+    }
+
+    // Define getter methods
+    // Convert from 'gtk_status_icon_get_stock ()' to 'get_name ()'
+    template<class ReturnType,
+             class Type,
+             class GtkType,
+             ReturnType function (GtkType*)>
+    static Handle<Value> GetterMethod (const Arguments& args) {
+        HandleScope scope;
+
+        if (args.Length () != 1)
+            return THROW_BAD_ARGS;
+
+        Type *self = ObjectWrap::Unwrap<Type> (args.This());
+        GtkType *obj = static_cast<GtkType*> (self->obj_);
+
+        ReturnType result = function (obj);
+
+        return scope.Close (glue (result));
     }
 
 protected:

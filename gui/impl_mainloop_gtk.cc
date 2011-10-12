@@ -1,5 +1,4 @@
 #include <gtk/gtk.h>
-#include "impl_init_types.hpp"
 #include "impl_async_wrap.h"
 #include "impl_mainloop_gtk.h"
 #include "impl_dispatcher_gtk.hpp"
@@ -32,8 +31,6 @@ MainLoop::MainLoop ()
 void* MainLoop::main (void *data) {
     // Enter GTK main loop in new thread
     gtk_init (NULL, NULL);
-
-    force_init_types ();
 
     // Init signal in gui thread
     Dispatcher *sig = new Dispatcher (

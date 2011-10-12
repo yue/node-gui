@@ -11,6 +11,28 @@ GValue&& glue (v8::Handle<v8::Value> value);
 // Generic GValue to v8::Value
 v8::Handle<v8::Value> glue (const GValue* value);
 
+// From c type to v8::Value
+inline v8::Handle<v8::Value> glue (int i) {
+    return v8::Integer::New (i);
+}
+
+inline v8::Handle<v8::Value> glue (char *i) {
+    g_free (i);
+    return v8::String::New (i);
+}
+
+inline v8::Handle<v8::Value> glue (const char *i) {
+    return v8::String::New (i);
+}
+
+inline v8::Handle<v8::Value> glue (bool i) {
+    return v8::Boolean::New (i);
+}
+
+inline v8::Handle<v8::Value> glue (double i) {
+    return v8::Number::New (i);
+}
+
 // Convert GValue to its raw state
 template<class T>
 T raw (const GValue* value);

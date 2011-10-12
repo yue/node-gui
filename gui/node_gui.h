@@ -31,9 +31,13 @@
     NODE_SET_PROTOTYPE_METHOD (constructor_template, Name, \
             (SimpleMethod<Class, Gtk##Class, Method>));
 
-#define SETTER_METHOD(Class, Type, Name, Method) \
+#define SETTER_METHOD(Class, Name, Method, Type) \
     NODE_SET_PROTOTYPE_METHOD (constructor_template, Name, \
             (SetterMethod<Type, Class, Gtk##Class, Method>));
+
+#define GETTER_METHOD(Class, Name, Method, Type) \
+    NODE_SET_PROTOTYPE_METHOD (constructor_template, Name, \
+            (GetterMethod<Type, Class, Gtk##Class, Method>));
 
 #define DECLARE_NODE_OBJECT(Class) \
     public:\

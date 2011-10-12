@@ -1,4 +1,5 @@
 #include "node_gui.h"
+#include "node_gui_type.h"
 #include "node_gui_clipboard.h"
 #include "node_gui_object.h"
 #include "node_gui_widget.h"
@@ -11,6 +12,7 @@ void Init (Handle<v8::Object> target) {
 
     uv_ref (uv_default_loop ());
 
+    clip::Type::Init (target);
     clip::Clipboard::Init (target);
     clip::Object::Init (target);
     clip::Widget::Init (target);
