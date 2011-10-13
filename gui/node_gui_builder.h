@@ -15,6 +15,8 @@ protected:
     DEFINE_CPP_METHOD (New);
     DEFINE_CPP_METHOD (Get);
 };
+
+DECLARE_GLUE (Builder);
 } /* clip */
 
 #endif /* end of NODE_GUI_BUILDER_H */

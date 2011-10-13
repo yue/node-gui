@@ -76,4 +76,13 @@ v8::Handle<Value> glue (const GValue* value) {
                         String::New("Cannot find equivanent type")));
     }
 }
+
+template <class T>
+v8::Handle<v8::Value> glue (T *widget) {
+    HandleScope scope;
+
+    Local<Value> external = External::New (widget);
+    return scope.Close (Object::constructor_template->GetFunction ()->
+            NewInstance (1, &external));
+}
 } /* clip */

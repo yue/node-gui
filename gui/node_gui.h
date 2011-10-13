@@ -20,7 +20,15 @@
         return args.This ();\
     }
 
-// Easy for daily node things
+// Delcare GTK to ObjectWrap glue function
+#define DECLARE_GLUE(Class) \
+    inline v8::Handle<v8::Value> glue (Gtk##Class *widget) {\
+        Local<Value> external = External::New (widget);\
+        return Class::constructor_template->GetFunction ()->\
+                NewInstance (1, &external);\
+    }
+
+// Easy for define methods
 #define DEFINE_CPP_METHOD(Method) \
     static v8::Handle<v8::Value> Method (const v8::Arguments& args)
 
@@ -39,6 +47,7 @@
     NODE_SET_PROTOTYPE_METHOD (constructor_template, Name, \
             (GetterMethod<Type, Class, Gtk##Class, Method>));
 
+// Must have fields for object wrapper
 #define DECLARE_NODE_OBJECT(Class) \
     public:\
         static void Init (Handle<v8::Object> target);\
@@ -48,12 +57,14 @@
         Class (const Class&);\
         Class& operator= (const Class&)
 
+// Just use parent's constructor
 #define DEFAULT_CONSTRUCTOR(Class, Super) \
     Class () : Super () { }
 
 #define EXTERNAL_CONSTRUCTOR(Class, Super) \
     Class (void *external) : Super (external) { }
 
+// Ease the 'Init' implementation
 #define CREATE_NODE_CONSTRUCTOR(Name, Type) \
     HandleScope scope;\
     Local<String> symbol = String::NewSymbol(Name);\

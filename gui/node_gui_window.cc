@@ -33,6 +33,10 @@ void Window::Init (Handle<v8::Object> target) {
     GETTER_METHOD (Window , "getResizable"         , gtk_window_get_resizable           , gboolean) ;
     GETTER_METHOD (Window , "isActive"             , gtk_window_is_active               , gboolean) ;
     GETTER_METHOD (Window , "hasToplevelFocus"     , gtk_window_has_toplevel_focus      , gboolean) ;
+    SETTER_METHOD (Window , "setDecorated"         , gtk_window_set_decorated           , gboolean) ;
+    GETTER_METHOD (Window , "getDecorated"         , gtk_window_get_decorated           , gboolean) ;
+    SETTER_METHOD (Window , "setDeletable"         , gtk_window_set_deletable                       , gboolean) ;
+    GETTER_METHOD (Window , "getDeletable"         , gtk_window_get_deletable           , gboolean) ;
 
     END_CONSTRUCTOR ();
 }

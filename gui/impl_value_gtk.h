@@ -33,6 +33,10 @@ inline v8::Handle<v8::Value> glue (double i) {
     return v8::Number::New (i);
 }
 
+// Wrap around generic Gtk object
+template <class T>
+v8::Handle<v8::Value> glue (T *widget);
+
 // Convert GValue to its raw state
 template<class T>
 T raw (const GValue* value);

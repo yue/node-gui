@@ -155,6 +155,8 @@ protected:
                                 gpointer invocation_hint,
                                 gpointer marshal_data);
 };
+
+DECLARE_GLUE (Object);
 } /* clip */
 
 #endif /* end of NODE_GUI_OBJECT_H */

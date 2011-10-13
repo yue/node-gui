@@ -10,8 +10,9 @@ DECLARE_NODE_OBJECT (Widget);
 public:
     DEFAULT_CONSTRUCTOR (Widget, Object);
     EXTERNAL_CONSTRUCTOR (Widget, Object);
-    virtual ~Widget ();
 };
+
+DECLARE_GLUE (Widget);
 } /* clip */
 
 #endif /* end of NODE_GUI_WIDGET_H */
