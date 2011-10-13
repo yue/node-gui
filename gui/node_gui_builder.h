@@ -9,7 +9,6 @@ DECLARE_NODE_OBJECT (Builder);
 
 public:
     DEFAULT_CONSTRUCTOR (Builder, Object);
-    virtual ~Builder ();
 
 protected:
     DEFINE_CPP_METHOD (New);

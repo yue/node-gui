@@ -10,11 +10,6 @@
 namespace clip {
 Persistent<FunctionTemplate> Builder::constructor_template;
 
-Builder::~Builder () {
-    if (host_ && obj_)
-        g_object_unref (obj_);
-}
-
 void Builder::Init (Handle<v8::Object> target) {
     CREATE_NODE_CONSTRUCTOR_INHERIT ("Builder", Builder, Object);
 

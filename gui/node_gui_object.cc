@@ -23,9 +23,6 @@ Object::Object (void *external) :
 {
 }
 
-Object::~Object () {
-}
-
 void Object::Init (Handle<v8::Object> target) {
     CREATE_NODE_CONSTRUCTOR ("Object", Object);
 

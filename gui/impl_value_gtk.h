@@ -47,6 +47,11 @@ inline T* raw (const GValue* value) {
 }
 
 template<>
+inline gpointer raw (const GValue* value) {
+	return g_value_get_pointer (value);
+}
+
+template<>
 inline const gchar *raw (const GValue* value) {
 	return g_value_get_string (value);
 }
@@ -60,10 +65,10 @@ template<>
 inline int raw (const GValue* value) {
     // We cannot distinguish between gboolean and int,
     // so we have to determin at runtime
-    if (G_TYPE_FUNDAMENTAL(G_VALUE_TYPE(value)) == G_TYPE_INT)
-        return g_value_get_int (value);
-    else
+    if (G_TYPE_FUNDAMENTAL(G_VALUE_TYPE(value)) == G_TYPE_BOOLEAN)
         return g_value_get_boolean (value);
+    else
+        return g_value_get_int (value);
 }
 
 // Copy GValue

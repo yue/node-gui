@@ -21,7 +21,6 @@ DECLARE_NODE_OBJECT (Object);
 public:
     Object ();
     Object (void *external);
-    virtual ~Object ();
 
 protected:
     DEFINE_CPP_METHOD (New);
@@ -79,7 +78,6 @@ protected:
         self->host_ = true;
 
         self->Wrap (args.This ());
-        self->Ref ();
         return args.This ();
     }
 
@@ -139,6 +137,11 @@ protected:
 
         return scope.Close (glue (result));
     }
+
+public:
+	void *ptr () const {
+		return obj_;
+	}
 
 protected:
     void *obj_; // Raw GTK+ object pointer

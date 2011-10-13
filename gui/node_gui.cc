@@ -5,6 +5,7 @@
 #include "node_gui_object.h"
 #include "node_gui_widget.h"
 #include "node_gui_window.h"
+#include "node_gui_menu.h"
 #include "node_gui_builder.h"
 #include "node_gui_status_icon.h"
 
@@ -20,6 +21,7 @@ void Init (Handle<v8::Object> target) {
     clip::Object::Init (target);
     clip::Widget::Init (target);
     clip::Window::Init (target);
+    clip::Menu::Init (target);
     clip::Builder::Init (target);
     clip::StatusIcon::Init (target);
 }

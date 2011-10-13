@@ -6,29 +6,44 @@ namespace clip {
 GValue&& glue (v8::Handle<v8::Value> value) {
     GValue a = { 0 };
 
-    if (value->IsUndefined ()) {
-        g_value_init (&a, G_TYPE_NONE);
-    } else if (value->IsNull ()) {
-        g_value_init (&a, G_TYPE_NONE);
+    if (value->IsUndefined () || value->IsNull ()) {
+        g_value_init (&a, G_TYPE_POINTER);
+        g_value_set_pointer (&a, NULL);
     } else if (value->IsString ()) {
         g_value_init (&a, G_TYPE_STRING);
         g_value_set_string (&a, *String::Utf8Value (value));
-    } else if (value->IsBoolean ()) {
-        g_value_init (&a, G_TYPE_BOOLEAN);
-        g_value_set_boolean (&a, value->BooleanValue ());
-    } else if (value->IsNumber ()) {
-        g_value_init (&a, G_TYPE_DOUBLE);
-        g_value_set_boolean (&a, value->NumberValue ());
     } else if (value->IsExternal ()) {
-        // External holds glib object
-        g_value_init (&a, G_TYPE_OBJECT);
-        g_value_set_object (&a, v8::External::Unwrap (value));
+        g_value_init (&a, G_TYPE_POINTER);
+        g_value_set_pointer (&a, v8::External::Unwrap (value));
     } else if (value->IsInt32 ()) {
         g_value_init (&a, G_TYPE_INT);
         g_value_set_int (&a, value->Int32Value ());
     } else if (value->IsUint32 ()) {
         g_value_init (&a, G_TYPE_UINT);
         g_value_set_uint (&a, value->Uint32Value ());
+    } else if (value->IsBoolean ()) {
+        g_value_init (&a, G_TYPE_BOOLEAN);
+        g_value_set_boolean (&a, value->BooleanValue ());
+    } else if (value->IsNumber ()) {
+        g_value_init (&a, G_TYPE_DOUBLE);
+        g_value_set_double (&a, value->NumberValue ());
+    } else if (value->IsObject ()) {
+        // Have passed a ObjectWrap'ed GtkObject
+        Handle<v8::Object> tmp = Handle<v8::Object>::Cast (value); 
+
+        // It's a javascript object
+        if (tmp->InternalFieldCount () != 1) {
+            g_value_init (&a, G_TYPE_INVALID);
+            return std::move (a);
+        }
+
+        // Dig out the GtkObject's instance
+        Object *self = ObjectWrap::Unwrap<Object> (tmp);
+        GObject *obj = static_cast<GObject*> (self->ptr ());
+
+        // Pass it
+        g_value_init (&a, G_TYPE_POINTER);
+        g_value_set_pointer (&a, obj);
     } else {
         g_value_init (&a, G_TYPE_INVALID);
     }
