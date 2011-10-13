@@ -10,22 +10,17 @@
 #define THROW_BAD_ARGS \
     ThrowException(Exception::TypeError(String::New("Bad argument")))
 
+// Check is internal object
+#define IS_INTERNAL(obj) \
+    (obj->IsObject () && (v8::Handle<v8::Object>::Cast (obj)->InternalFieldCount () == 1))
+
 // Wrap around existing object, don't manage its life
 #define WRAP_EXSISTING_OBJECT(T) \
     if (args.Length () == 1 && args[0]->IsExternal ()) {\
-        void *obj = External::Unwrap (args[0]);\
-        T *self = new T (obj);\
+        void *widget = External::Unwrap (args[0]);\
+        args.This ()->SetPointerInInternalField (0, widget);\
 \
-        self->Wrap (args.This ());\
         return args.This ();\
-    }
-
-// Delcare GTK to ObjectWrap glue function
-#define DECLARE_GLUE(Class) \
-    inline v8::Handle<v8::Value> glue (Gtk##Class *widget) {\
-        Local<Value> external = External::New (widget);\
-        return Class::constructor_template->GetFunction ()->\
-                NewInstance (1, &external);\
     }
 
 // Easy for define methods
@@ -56,13 +51,6 @@
     private:\
         Class (const Class&);\
         Class& operator= (const Class&)
-
-// Just use parent's constructor
-#define DEFAULT_CONSTRUCTOR(Class, Super) \
-    Class () : Super () { }
-
-#define EXTERNAL_CONSTRUCTOR(Class, Super) \
-    Class (void *external) : Super (external) { }
 
 // Ease the 'Init' implementation
 #define CREATE_NODE_CONSTRUCTOR(Name, Type) \

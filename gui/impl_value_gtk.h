@@ -11,6 +11,23 @@ GValue&& glue (v8::Handle<v8::Value> value);
 // Generic GValue to v8::Value
 v8::Handle<v8::Value> glue (const GValue* value);
 
+// Get GTK+ object from javascript object
+template<class T>
+inline T* glue (v8::Handle<v8::Value> obj) {
+    return static_cast<T*> (v8::Handle<v8::Object>::Cast (obj)->GetPointerFromInternalField (0));
+}
+
+// Convert GTK+ object to javascript object 
+template<class T>
+inline v8::Handle<v8::Object> glue (void *widget) {
+    v8::HandleScope scope;
+
+    v8::Local<v8::Value> external = v8::External::New (widget);
+    v8::Handle<v8::Object> obj = T::constructor_template->GetFunction ()->NewInstance (1, &external);
+
+    return scope.Close (obj);
+}
+
 // From c type to v8::Value
 inline v8::Handle<v8::Value> glue (int i) {
     return v8::Integer::New (i);

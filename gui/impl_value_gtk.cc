@@ -27,19 +27,9 @@ GValue&& glue (v8::Handle<v8::Value> value) {
     } else if (value->IsNumber ()) {
         g_value_init (&a, G_TYPE_DOUBLE);
         g_value_set_double (&a, value->NumberValue ());
-    } else if (value->IsObject ()) {
+    } else if (IS_INTERNAL (value)) {
         // Have passed a ObjectWrap'ed GtkObject
-        Handle<v8::Object> tmp = Handle<v8::Object>::Cast (value); 
-
-        // It's a javascript object
-        if (tmp->InternalFieldCount () != 1) {
-            g_value_init (&a, G_TYPE_INVALID);
-            return std::move (a);
-        }
-
-        // Dig out the GtkObject's instance
-        Object *self = ObjectWrap::Unwrap<Object> (tmp);
-        GObject *obj = static_cast<GObject*> (self->ptr ());
+        GObject *obj = glue<GObject> (value);
 
         // Pass it
         g_value_init (&a, G_TYPE_POINTER);
@@ -90,21 +80,12 @@ v8::Handle<Value> glue (const GValue* value) {
             return scope.Close (String::New (g_value_get_string (value)));
 
 		case G_TYPE_POINTER:
-			return scope.Close (External::New (g_value_get_pointer (value)));
+			return scope.Close (glue<Object> (g_value_get_pointer (value)));
 
         default:
             fprintf (stderr, "%s\n", "Cannot find equivanent type");
             return ThrowException(Exception::TypeError(
                         String::New("Cannot find equivanent type")));
     }
-}
-
-template <class T>
-v8::Handle<v8::Value> glue (T *widget) {
-    HandleScope scope;
-
-    Local<Value> external = External::New (widget);
-    return scope.Close (Object::constructor_template->GetFunction ()->
-            NewInstance (1, &external));
 }
 } /* clip */

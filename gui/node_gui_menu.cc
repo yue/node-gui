@@ -28,8 +28,7 @@ Handle<Value> Menu::Popup (const Arguments& args) {
     if (args.Length () != 2 && args.Length () !=3)
         return THROW_BAD_ARGS;
 
-    Menu *self = ObjectWrap::Unwrap<Menu> (args.This());
-    GtkMenu *obj = static_cast<GtkMenu*> (self->obj_);
+    GtkMenu *obj = glue<GtkMenu> (args.This ());
 
     if (args.Length () == 2) {
         // popup (button, activate_time)

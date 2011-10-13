@@ -6,13 +6,7 @@
 namespace clip {
 class Widget: public Object {
 DECLARE_NODE_OBJECT (Widget);
-
-public:
-    DEFAULT_CONSTRUCTOR (Widget, Object);
-    EXTERNAL_CONSTRUCTOR (Widget, Object);
 };
-
-DECLARE_GLUE (Widget);
 } /* clip */
 
 #endif /* end of NODE_GUI_WIDGET_H */

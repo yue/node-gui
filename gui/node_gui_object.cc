@@ -9,20 +9,6 @@
 namespace clip {
 Persistent<FunctionTemplate> Object::constructor_template;
 
-// Stub for future setting
-Object::Object () :
-    obj_ (nullptr),
-    host_ (false)
-{
-}
-
-// Init from existing object
-Object::Object (void *external) :
-    obj_ (external),
-    host_ (false)
-{
-}
-
 void Object::Init (Handle<v8::Object> target) {
     CREATE_NODE_CONSTRUCTOR ("Object", Object);
 
@@ -48,8 +34,7 @@ Handle<Value> Object::SetProperty (const Arguments& args) {
     if (args.Length () != 2)
         return THROW_BAD_ARGS;
 
-    Object *self = ObjectWrap::Unwrap<Object> (args.This());
-    GObject *obj = static_cast<GObject*> (self->obj_);
+    GObject *obj = glue<GObject> (args.This ());
 
     // They will be 'moved' to the lambda below
     GValue key   = glue (args[0]);
@@ -70,8 +55,7 @@ Handle<Value> Object::GetProperty (const Arguments& args) {
     if (args.Length () != 1)
         return THROW_BAD_ARGS;
 
-    Object *self = ObjectWrap::Unwrap<Object> (args.This());
-    GObject *obj = static_cast<GObject*> (self->obj_);
+    GObject *obj = glue<GObject> (args.This ());
 
     GValue key = glue (args[0]);
 
@@ -110,8 +94,7 @@ Handle<Value> Object::On (const Arguments& args) {
         return THROW_BAD_ARGS;
     }
 
-    Object *self = ObjectWrap::Unwrap<Object> (args.This());
-    GObject *obj = static_cast<GObject*> (self->obj_);
+    GObject *obj = glue<GObject> (args.This ());
 
     // Signal name
     GValue signal = glue (args[0]);

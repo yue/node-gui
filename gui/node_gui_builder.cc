@@ -27,11 +27,9 @@ Handle<Value> Builder::New (const Arguments& args) {
         return THROW_BAD_ARGS;
     }
 
-    Builder *self = new Builder ();
-
     std::string filename = *String::Utf8Value (args[0]);
-    Persistent<Function> callback = Persistent<Function>::New (
-            Local<Function>::Cast (args[1]));
+    auto callback = Persistent<Function>::New (Local<Function>::Cast (args[1]));
+    auto self = Persistent<v8::Object>::New (args.This ());
 
     // In GTK
     MainLoop::push_job_gui ([=] () mutable {
@@ -39,19 +37,22 @@ Handle<Value> Builder::New (const Arguments& args) {
 
         gtk_builder_add_from_file (obj, filename.c_str (), NULL);
 
-        self->obj_ = obj;
-        self->host_ = true;
-
         // Notify the creation
         MainLoop::push_job_node ([=] () mutable {
-            Handle<Value> args[] = { self->handle_ };
+            // Store the builder
+            self->SetPointerInInternalField (0, obj);
 
-            callback->Call (self->handle_, 1, args);
+            // Callback
+            Handle<Value> args[] = { self };
+            callback->Call (self, 1, args);
+
+            // Free them
             callback.Dispose ();
+            self.Dispose ();
         });
     });
 
-    self->Wrap (args.This ());
+    args.This ()->SetPointerInInternalField (0, nullptr);
     return args.This ();
 }
 
@@ -66,8 +67,7 @@ Handle<Value> Builder::Get (const Arguments& args) {
         return THROW_BAD_ARGS;
     }
 
-    Builder *self = ObjectWrap::Unwrap<Builder> (args.This());
-    GtkBuilder *obj = static_cast<GtkBuilder*> (self->obj_);
+    GtkBuilder *obj = glue<GtkBuilder> (args.This ());
 
     // Gtk::Builder::get_widget, do it synchorously
     gdk_threads_enter();
@@ -81,14 +81,12 @@ Handle<Value> Builder::Get (const Arguments& args) {
                     String::New("Widget does not exsit")));
     }
 
-    // Stroe pointer for object constructor
-    Local<Value> external = External::New (widget);
-
     if (args.Length () == 1) {
-        // Create GtkObject by default
-        return scope.Close (Object::constructor_template->GetFunction ()->
-                NewInstance (1, &external));
+        // Create GObject by default
+        return scope.Close (glue<Object> (widget));
     } else {
+        v8::Local<v8::Value> external = v8::External::New (widget);
+
         // Create instance by argument's constructor
         return scope.Close (Local<Function>::Cast (args[1])->
                 NewInstance (1, &external));

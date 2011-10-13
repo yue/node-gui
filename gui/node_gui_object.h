@@ -18,10 +18,6 @@ using namespace v8;
 class Object: public ObjectWrap {
 DECLARE_NODE_OBJECT (Object);
 
-public:
-    Object ();
-    Object (void *external);
-
 protected:
     DEFINE_CPP_METHOD (New);
     DEFINE_CPP_METHOD (On);
@@ -73,11 +69,8 @@ protected:
             return NODE_ERROR ("Cannot create object");
 
         // Wrap it
-        Type *self = new Type ();
-        self->obj_  = widget;
-        self->host_ = true;
+        args.This ()->SetPointerInInternalField (0, widget);
 
-        self->Wrap (args.This ());
         return args.This ();
     }
 
@@ -87,8 +80,7 @@ protected:
     static Handle<Value> SetterMethod (const Arguments& args) {
         HandleScope scope;
 
-        Type *self = ObjectWrap::Unwrap<Type> (args.This());
-        GtkType *obj = static_cast<GtkType*> (self->obj_);
+        GtkType *obj = glue<GtkType> (args.This ());
 
         MainLoop::push_job_gui ([=] {
             function (obj);
@@ -107,8 +99,7 @@ protected:
         if (args.Length () != 1)
             return THROW_BAD_ARGS;
 
-        Type *self = ObjectWrap::Unwrap<Type> (args.This());
-        GtkType *obj = static_cast<GtkType*> (self->obj_);
+        GtkType *obj = glue<GtkType> (args.This ());
 
         GValue value = glue (args[0]);
 
@@ -130,23 +121,14 @@ protected:
         if (args.Length () != 1)
             return THROW_BAD_ARGS;
 
-        Type *self = ObjectWrap::Unwrap<Type> (args.This());
-        GtkType *obj = static_cast<GtkType*> (self->obj_);
+        GtkType *obj = glue<GtkType> (args.This ());
 
         ReturnType result = function (obj);
 
         return scope.Close (glue (result));
     }
 
-public:
-	void *ptr () const {
-		return obj_;
-	}
-
 protected:
-    void *obj_; // Raw GTK+ object pointer
-    bool host_; // Whether we should manage its life
-
     static void signal_marshal (GClosure *closure,
                                 GValue *return_value,
                                 guint n_param_values,
@@ -154,8 +136,6 @@ protected:
                                 gpointer invocation_hint,
                                 gpointer marshal_data);
 };
-
-DECLARE_GLUE (Object);
 } /* clip */
 
 #endif /* end of NODE_GUI_OBJECT_H */
