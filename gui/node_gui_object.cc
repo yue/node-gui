@@ -139,18 +139,31 @@ void Object::signal_marshal (GClosure *closure,
                              gpointer invocation_hint,
                              gpointer marshal_data)
 {
-    std::vector < Handle<Value> > args;
-    args.reserve (n_param_values - 1);
-
-    // Convert arguments
-    for (int i = 0; i < (int) n_param_values - 1 - 1; i++) {
-        args.push_back (glue (param_values + i));
+    // Copy params
+    std::vector<GValue> params;
+    for (size_t i = 1; i < n_param_values; i++) {
+        GValue a = copy (param_values + i);
+        params.push_back (a);
     }
 
     // Call it
     MainLoop::push_job_node ([=] () mutable {
+        HandleScope scope;
+
+        std::vector < Handle<Value> > args;
+
+        // Convert arguments
+        for (size_t i = 0; i < params.size (); i++) {
+            args.push_back (glue (&params[i]));
+        }
+
         ((NodeClosure*) closure)->callback->Call (
             Context::GetCurrent ()->Global (), args.size (), args.data ());
+
+        // Free params
+        for (size_t i = 0; i < params.size (); i++) {
+            g_value_unset (&params[i]);
+        }
     });
 }
 } /* clip */

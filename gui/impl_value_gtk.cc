@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "node_gui_object.h"
 #include "impl_value_gtk.h"
 
@@ -36,6 +37,8 @@ GValue&& glue (v8::Handle<v8::Value> value) {
 }
 
 v8::Handle<Value> glue (const GValue* value) {
+    HandleScope scope;
+
     if (value == NULL)
         return Undefined ();
 
@@ -45,33 +48,37 @@ v8::Handle<Value> glue (const GValue* value) {
             return Undefined ();
 
         case G_TYPE_BOOLEAN:
-            return Boolean::New (g_value_get_boolean (value));
+            return scope.Close (Boolean::New (g_value_get_boolean (value)));
 
         case G_TYPE_INT:
-            return Integer::New (g_value_get_int (value));
+            return scope.Close (Integer::New (g_value_get_int (value)));
 
         case G_TYPE_LONG:
-            return Number::New (g_value_get_long (value));
+            return scope.Close (Number::New (g_value_get_long (value)));
 
         case G_TYPE_UINT:
-            return Integer::NewFromUnsigned (g_value_get_uint (value));
+            return scope.Close (Integer::NewFromUnsigned (g_value_get_uint (value)));
 
         case G_TYPE_ULONG:
-            return Integer::NewFromUnsigned (g_value_get_ulong (value));
+            return scope.Close (Integer::NewFromUnsigned (g_value_get_ulong (value)));
 
         case G_TYPE_FLOAT:
-            return Number::New (g_value_get_float (value));
+            return scope.Close (Number::New (g_value_get_float (value)));
 
         case G_TYPE_ENUM:
-            return Integer::New (g_value_get_enum (value));
+            return scope.Close (Integer::New (g_value_get_enum (value)));
 
         case G_TYPE_FLAGS:
-            return Integer::New (g_value_get_flags (value));
+            return scope.Close (Integer::New (g_value_get_flags (value)));
 
         case G_TYPE_STRING:
-            return String::New (g_value_get_string (value));
+            return scope.Close (String::New (g_value_get_string (value)));
+
+		case G_TYPE_POINTER:
+			return scope.Close (External::New (g_value_get_pointer (value)));
 
         default:
+            fprintf (stderr, "%s\n", "Cannot find equivanent type");
             return ThrowException(Exception::TypeError(
                         String::New("Cannot find equivanent type")));
     }

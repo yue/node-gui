@@ -34,12 +34,17 @@ inline v8::Handle<v8::Value> glue (double i) {
 }
 
 // Wrap around generic Gtk object
-template <class T>
-v8::Handle<v8::Value> glue (T *widget);
+//template <class T>
+//v8::Handle<v8::Value> glue (T *widget);
 
 // Convert GValue to its raw state
 template<class T>
 T raw (const GValue* value);
+
+template<class T*>
+inline T* raw (const GValue* value) {
+	return static_cast<T*> (g_value_get_pointer (value));
+}
 
 template<>
 inline const gchar *raw (const GValue* value) {
@@ -59,6 +64,15 @@ inline int raw (const GValue* value) {
         return g_value_get_int (value);
     else
         return g_value_get_boolean (value);
+}
+
+// Copy GValue
+inline GValue&& copy (const GValue* value) {
+    GValue a = { 0 };
+    g_value_init (&a, G_VALUE_TYPE (value));
+    g_value_copy (value, &a);
+
+    return std::move (a); 
 }
 } /* clip */
 
