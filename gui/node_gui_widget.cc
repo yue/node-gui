@@ -1,7 +1,4 @@
-#include <gtk/gtk.h>
-
 #include "node_gui_widget.h"
-#include "impl_mainloop_gtk.h"
 
 namespace clip {
 Persistent<FunctionTemplate> Widget::constructor_template;
