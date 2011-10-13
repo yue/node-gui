@@ -16,6 +16,8 @@ void Object::Init (Handle<v8::Object> target) {
     DEFINE_NODE_METHOD ("getProperty", GetProperty);
     DEFINE_NODE_METHOD ("setProperty", SetProperty);
 
+    NODE_SET_PROTOTYPE_METHOD (constructor_template, "unref", (SetterMethod<Object, void, g_object_unref>));
+
     END_CONSTRUCTOR ();
 }
 
