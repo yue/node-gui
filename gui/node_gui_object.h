@@ -86,7 +86,7 @@ protected:
     // Define methods without any arguments.
     // Example: from 'gtk_widget_show_all' to 'show'
     template<class Type, class GtkType, void function (GtkType*)>
-    static Handle<Value> SimpleMethod (const Arguments& args) {
+    static Handle<Value> SetterMethod (const Arguments& args) {
         HandleScope scope;
 
         Type *self = ObjectWrap::Unwrap<Type> (args.This());
@@ -101,10 +101,8 @@ protected:
 
     // Define setter methods
     // Convert from 'gtk_status_icon_set_name (name)' to 'set_name (name)'
-    template<class T,
-             class Type,
-             class GtkType,
-             void function (GtkType*, T)>
+    template<class ARG0,
+             class Type, class GtkType, void function (GtkType*, ARG0)>
     static Handle<Value> SetterMethod (const Arguments& args) {
         HandleScope scope;
 
@@ -117,7 +115,7 @@ protected:
         GValue value = glue (args[0]);
 
         MainLoop::push_job_gui ([=] () mutable {
-            function (obj, raw<T> (&value));
+            function (obj, raw<ARG0> (&value));
             g_value_unset (&value);
         });
 
@@ -127,9 +125,7 @@ protected:
     // Define getter methods
     // Convert from 'gtk_status_icon_get_stock ()' to 'get_name ()'
     template<class ReturnType,
-             class Type,
-             class GtkType,
-             ReturnType function (GtkType*)>
+             class Type, class GtkType, ReturnType function (GtkType*)>
     static Handle<Value> GetterMethod (const Arguments& args) {
         HandleScope scope;
 

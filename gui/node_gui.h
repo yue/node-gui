@@ -37,7 +37,7 @@
 
 #define SIMPLE_METHOD(Class, Name, Method) \
     NODE_SET_PROTOTYPE_METHOD (constructor_template, Name, \
-            (SimpleMethod<Class, Gtk##Class, Method>));
+            (SetterMethod<Class, Gtk##Class, Method>));
 
 #define SETTER_METHOD(Class, Name, Method, Type) \
     NODE_SET_PROTOTYPE_METHOD (constructor_template, Name, \
