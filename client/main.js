@@ -1,20 +1,26 @@
 var ClipAgent = require ('./agent.js').ClipAgent;
-var Clipboard = require ('gui').Clipboard;
-var options = require ('./options.js');
-var config = options.config;
+var gui       = require ('gui');
+var options   = require ('./options.js');
+var config    = options.config;
 
 var agent = new ClipAgent ();
-var clipboard = new Clipboard ();
+var clipboard = new gui.Clipboard ();
 
-if (config.token) {
-    // Auto login
-    agent.autoLogin (config.token);
-} else if (config.first_time_using) {
-    // Prompt for registing
-} else {
-    // Prompt for username and password
-    agent.login ('fool', '1234');
-}
+// Load GUI
+new gui.Builder (__dirname + '/data/clip.glade', function (builder) {
+    var window = builder.get ('window', gui.Window);
+    window.show ();
+
+    // Load configuration
+    if (config.token) {
+        // Auto login
+        agent.autoLogin (config.token);
+    } else if (config.first_time_using) {
+        // Prompt for registing
+    } else {
+        // Prompt for username and password
+    }
+});
 
 agent.on ('login', function () {
     // Remember token after login
@@ -40,14 +46,3 @@ agent.on ('error', function (message) {
     console.error (message);
     process.exit (0);
 });
-
-//process.on ('SIGINT', exit);
-
-// Hook to clean everything when exiting
-function exit () {
-    // Send logout infomation
-    agent.destroy ();
-
-    process.exit (0);
-//    setTimeout (function () { process.exit (0); }, 1000);
-}

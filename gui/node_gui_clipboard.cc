@@ -49,7 +49,7 @@ void Clipboard::on_paste (std::string str) {
     HandleScope scope;
 
     // Read data from clipboard
-    Local<String> data = String::New (str.c_str ());
+    Local<String> data = String::New (str.c_str (), str.size ());
 
     // Then send it
     Local<Value> argv[] = { String::New ("copy"), data };

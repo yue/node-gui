@@ -15,7 +15,7 @@ namespace clip {
 using namespace node;
 using namespace v8;
 
-class Object: public ObjectWrap {
+class Object {
 DECLARE_NODE_OBJECT (Object);
 
 protected:

@@ -59,6 +59,6 @@ void ClipboardImpl::on_received (GtkClipboard *clipboard,
     ClipboardImpl *self = static_cast<ClipboardImpl*> (data);
 
     // Notice node
-    MainLoop::push_job_node (std::bind (self->paste_, text));
+    MainLoop::push_job_node (std::bind (self->paste_, std::string (text)));
 }
 }
