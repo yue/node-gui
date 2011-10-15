@@ -15,6 +15,7 @@ exports.Clipboard  = Clipboard;
 exports.Builder    = gui.Builder;
 exports.Object     = gui.Object;
 exports.Widget     = gui.Widget;
+exports.Notebook   = gui.Notebook;
 exports.Window     = gui.Window;
+exports.Menu       = gui.Menu;
 exports.StatusIcon = gui.StatusIcon;
-
