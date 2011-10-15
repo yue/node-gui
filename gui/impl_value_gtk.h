@@ -33,6 +33,10 @@ inline v8::Handle<v8::Value> glue (int i) {
     return v8::Integer::New (i);
 }
 
+inline v8::Handle<v8::Value> glue (unsigned int i) {
+    return v8::Integer::NewFromUnsigned (i);
+}
+
 inline v8::Handle<v8::Value> glue (char *i) {
     g_free (i);
     return v8::String::New (i);
@@ -66,6 +70,11 @@ inline T* raw (const GValue* value) {
 template<>
 inline gpointer raw (const GValue* value) {
 	return g_value_get_pointer (value);
+}
+
+template<>
+inline unsigned raw (const GValue* value) {
+	return g_value_get_uint (value);
 }
 
 template<>

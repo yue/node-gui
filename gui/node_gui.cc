@@ -4,6 +4,7 @@
 #include "node_gui_clipboard.h"
 #include "node_gui_object.h"
 #include "node_gui_widget.h"
+#include "node_gui_notebook.h"
 #include "node_gui_window.h"
 #include "node_gui_menu.h"
 #include "node_gui_builder.h"
@@ -15,11 +16,17 @@ void Init (Handle<v8::Object> target) {
 
     uv_ref (uv_default_loop ());
 
+    // Init GTK+ in node thread
+    g_thread_init (NULL);
+    gdk_threads_init ();
+    gtk_init (NULL, NULL);
+
     clip::Global::Init (target);
     clip::Type::Init (target);
     clip::Clipboard::Init (target);
     clip::Object::Init (target);
     clip::Widget::Init (target);
+    clip::Notebook::Init (target);
     clip::Window::Init (target);
     clip::Menu::Init (target);
     clip::Builder::Init (target);

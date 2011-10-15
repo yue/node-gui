@@ -56,6 +56,9 @@ void ClipboardImpl::on_received (GtkClipboard *clipboard,
                                  const gchar *text,
                                  gpointer data)
 {
+    if (text == NULL) 
+        return;
+
     ClipboardImpl *self = static_cast<ClipboardImpl*> (data);
 
     // Notice node

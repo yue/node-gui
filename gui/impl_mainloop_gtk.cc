@@ -15,9 +15,6 @@ MainLoop* MainLoop::get () {
 
 MainLoop::MainLoop ()
 {
-    g_thread_init (NULL);
-    gdk_threads_init ();
-
     // Init channel after thread_init
     channel.reset (new MyChannel ());
 
@@ -29,15 +26,14 @@ MainLoop::MainLoop ()
 }
 
 void* MainLoop::main (void *data) {
-    // Enter GTK main loop in new thread
-    gtk_init (NULL, NULL);
-
     // Init signal in gui thread
     Dispatcher *sig = new Dispatcher (
                 std::bind (&MainLoop::do_jobs<MyChannel::GUI>, self));
     self->channel->init<MyChannel::GUI> (sig);
 
+    gdk_threads_enter ();
     gtk_main ();
+    gdk_threads_leave ();
 
 	// FIXME
 	// Should we uv_unref here ?

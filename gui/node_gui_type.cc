@@ -8,8 +8,6 @@ using namespace v8;
 void Type::Init (Handle<v8::Object> target) {
     HandleScope scope;
 
-    g_type_init ();
-
     #define SET(name, get_type) \
         gtype->Set (String::New (name), Integer::New (get_type ()))
 
