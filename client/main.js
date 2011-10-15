@@ -6,6 +6,8 @@ var config    = options.config;
 var agent = new ClipAgent ();
 var clipboard = new gui.Clipboard ();
 
+//agent.register('fool', '1234');
+
 // Load GUI
 new gui.Builder (__dirname + '/data/clip.glade', function (builder) {
     var window = builder.get ('window', gui.Window);
@@ -19,6 +21,7 @@ new gui.Builder (__dirname + '/data/clip.glade', function (builder) {
         // Prompt for registing
     } else {
         // Prompt for username and password
+        agent.login ('fool', '1234');
     }
 });
 
@@ -28,21 +31,32 @@ agent.on ('login', function () {
     options.save ();
 
     // Begin monitoring clipboard after login
+    var lastClip = null;
     clipboard.on ('copy', function (data) {
-        console.log ('[New Copy]', data);
-        agent.copy ({
-            'type': 'text',
-            'data': data
-        });
+        if (lastClip != data) { // Prevent ping-pong
+            console.log ('[New Copy]', data);
+            agent.copy ({
+                'type': 'text',
+                'data': data
+            });
+
+            lastClip = data;
+        }
     });
 });
 
 agent.on ('paste', function (clip) {
     console.log ('[New Clip]', clip);
-    clipboard.paste (clip.data);
+
+    if (clip)
+        clipboard.paste (clip.data);
 });
 
 agent.on ('error', function (message) {
     console.error (message);
     process.exit (0);
+});
+
+agent.on ('register', function (message) {
+    console.log (message);
 });

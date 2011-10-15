@@ -1,66 +1,86 @@
-var config    = require ('./options.js').config;
-var Protocol  = require ('./protocol.js').Protocol;
-var ClientExt = require ('./ext.js').ClientExt;
+var config = require ('./options.js').config,
+    dnode  = require ('dnode'),
+    _      = require ('underscore');
 
-function Client () {
-    // Bayeux protocol implementation
-    this.protocol = new Protocol (config.server);
+function Client (onPaste, onEnd) {
+    var self = this;
 
-    // Add extension
-    this.ext = new ClientExt ();
-    this.protocol.addHook (this.ext);
+    // All jobs will be pushed in before client is ready
+    this.jobs_queue = [];
+
+    this.remote = this.connection = null;
+    this.protocol = dnode ({
+        'paste': _.bind (onPaste, this)
+    });
+    this.protocol.connect (config.server, config.port, function (remote, connection) {
+        self.remote     = remote;
+        self.connection = connection
+
+        // Do and clean previous jobs
+        for (var i in self.jobs_queue) {
+            self.jobs_queue[i] ();
+        }
+        self.jobs_queue = [];
+
+        connection.on ('end', _.bind (onEnd, self, 'Server disconnected'));
+    });
 }
 
 exports.Client = Client;
 
-Client.prototype.subscribe = function (path, ext, callback) {
-    this.ext.set (path, ext);
-
-    var subscription = 
-    this.protocol.subscribe (path, function (message) {
-        callback (message.error, message);
-
-        subscription.cancel ();
-    });
-
-    subscription.errback (function (error) {
-        callback ('Connect timout');
-    });
+Client.prototype.doJob = function (job) {
+    if (this.remote)
+        job ();
+    else
+        this.jobs_queue.push (job);
 }
 
-Client.prototype.publish = function (path, data) {
-    this.protocol.publish (path, data);
-}
+Client.prototype.register = function (user, password, cb) {
+    var self = this;
 
-Client.prototype.register = function (ext, callback) {
-    var path = '/register/' + ext.user;
-    this.subscribe (path, ext, callback);
-}
-
-Client.prototype.auth = function (ext, callback) {
-    var path = '/auth/' + ext.user;
-    this.subscribe (path, ext, callback);
-}
-
-Client.prototype.session = function (ext, callback) {
-    var path = '/session/' + ext.token;
-    this.subscribe (path, ext, callback);
-}
-
-Client.prototype.onPaste = function (token, ext, callback) {
-    return this.protocol.subscribe ('/paste/' + token, function (message) {
-        callback (message.error, message);
+    this.doJob (function () {
+        self.remote.register ({
+            'user': user,
+            'password': password
+        }, cb);
     });
 }
 
-Client.prototype.copy = function (ext) {
+Client.prototype.auth = function (user, password, cb) {
+    var self = this;
+
+    this.doJob (function () {
+        self.remote.auth ({
+            'user': user,
+            'password': password
+        }, cb);
+    });
+}
+
+Client.prototype.token = function (token, cb) {
+    var self = this;
+
+    this.doJob (function () {
+        self.remote.token ({
+            'token': token
+        }, cb);
+    });
+}
+
+Client.prototype.copy = function (clip, cb) {
     // Add decorations here
-    ext.clip.time = new Date ();
+    clip.time = new Date ();
 
-    // Publish to server
-    this.publish ('/copy', ext);
+    var self = this;
+
+    this.doJob (function () {
+        // Publish to server
+        self.remote.copy ({
+            'clip': clip
+        }, cb);
+    });
 }
 
-Client.prototype.logout = function (ext) {
-    this.publish ('/logout', ext);
+Client.prototype.logout = function () {
+    this.connection.end ();
 }

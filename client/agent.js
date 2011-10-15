@@ -1,10 +1,16 @@
-var Client = require ('./client.js').Client;
-var EventEmitter = require ('events').EventEmitter;
+var Client       = require ('./client.js').Client,
+    EventEmitter = require ('events').EventEmitter,
+    _            = require ('underscore');
+
+function transfer (name) {
+    this.emit.apply (this, arguments);
+}
 
 function ClipAgent () {
     EventEmitter.call(this);
 
-    this.client  = new Client ();
+    this.client  = new Client (_.bind (transfer, this, 'paste'),
+                               _.bind (transfer, this, 'error'));
 
     this.session = null;
     this.user    = null;
@@ -18,10 +24,7 @@ exports.ClipAgent = ClipAgent;
 ClipAgent.prototype.register = function (user, password) {
     var self = this;
 
-    this.client.register ({
-        'user': user,
-        'password': password
-    }, function (err, doc) {
+    this.client.register (user, password, function (err, doc) {
         if (err) {
             self.emit ('error', err);
         } else {
@@ -36,10 +39,7 @@ ClipAgent.prototype.login = function (user, password) {
     var self = this;
 
     // First get token
-    this.client.auth ({
-        'user': user,
-        'password': password
-    }, function (err, message) {
+    this.client.auth (user, password, function (err, message) {
         if (err) {
             self.emit ('error', err);
         } else {
@@ -56,63 +56,30 @@ ClipAgent.prototype.autoLogin = function (token) {
     var self = this;
     this.token = token;
 
-    this.client.session ({
-        'token': token
-    }, function (error, message) {
-        if (error) {
-            self.emit ('error', error);
+    this.client.token (token, function (err, message) {
+        if (err) {
+            self.emit ('error', err);
         } else {
             self.user = message.user;
             self.session = message.session;
-            self._setPasteHook ();
 
             self.emit ('login');
         }
     });
 }
 
-// Subscribe to /paste channel
-ClipAgent.prototype._setPasteHook = function () {
-    var self = this;
-
-    var subscription = 
-    this.client.onPaste (self.token, {
-        'session': self.session
-    }, function (error, message) {
-        if (error) {
-            self.emit ('error', error);
-        } else {
-            // Filter out my own clip
-            if (message.clip.author == self.session)
-                return;
-
-            self.emit ('paste', message.clip);
-        }
-    });
-
-    subscription.errback (function (error) {
-        self.emit ('error', error);
-    });
-}
-
 ClipAgent.prototype.copy = function (clip) {
     var self = this;
 
-    this.client.copy ({
-        'session': self.session,
-        'clip': clip
+    this.client.copy (clip, function (err) {
+        if (err) {
+            self.emit ('error', err);
+        }
     });
 }
 
 ClipAgent.prototype.logout = function () {
     var self = this;
 
-    this.client.logout ({
-        'session': self.session
-    });
-}
-
-// Clean everything here
-ClipAgent.prototype.destroy = function () {
-    this.logout ();
+    this.client.logout ();
 }

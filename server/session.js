@@ -1,27 +1,54 @@
-var pool = { };
+var _ = require ('underscore');
 
-function Session (message, db) {
-    this.id = message.clientId;
-    this.user = db.user;
-    this.token = String (db._id);
+var pool = { }; // Store sessions
+var users = { }; // Store users (One user may have many sessions)
+
+function Session (info) {
+    this.id     = info.id;
+    this.user   = info.user;
+    this.token  = info.token;
+    this.client = info.client;
+	this.paste	= null;
 
     // Login time
     this.time = new Date ();
-
-    pool[this.id] = this;
 }
 
-exports.get = function (id) {
+// Return session object by its id
+exports.getById = function (id) {
     return pool[id];
 }
 
-exports.generate = function (message, db) {
-    var session = new Session (message, db);
+// Return all sessions under a user
+exports.getByUser = function (user) {
+	return users[user];
+}
+
+// Insert a new session
+exports.insert = function (info) {
+	// Create session object
+    var session = new Session (info);
+
+	// Store it to the pool
     pool[session.id] = session;
+
+	// Append session to corresponding user's clients
+	var user = this.getByUser (session.user);
+	if (user) {
+		user.push (session);
+	} else {
+		users[session.user] = [ session ];
+	}
 
     return session;
 }
 
-exports.erase = function (id) {
-    delete pool[id];
+// Erase one session
+exports.erase = function (session) {
+	// Erase from user's session list
+	var user = this.getByUser (session.user);
+	users[session.user] = _.without (user, session);
+
+	// Erase from pool
+    delete pool[session.id];
 }

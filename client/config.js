@@ -1,1 +1,1 @@
-{"server":"http://clip.cnodejs.net:8000/faye","first_time_using":false,"user":"","token":"4e8c37228e6c070053000001"}
+{"server":"localhost","port":8000,"first_time_using":false,"user":"","token":"4e999c0a55477ea438000001"}

@@ -1,24 +1,27 @@
+var dnode  = require ('dnode');
+var _      = require ('underscore');
 var config = require ('./options.js').config;
 
 var EventEmitter    = require ('events').EventEmitter;
-var Protocol        = require ('./protocol.js').Protocol;
 
-var ServerAuth      = require ('./auth.js').ServerAuth;
-var ServerProctect  = require ('./protect.js').ServerProctect;
-var ServerLogger    = require ('./log.js').Loggger;
-var ServerPasteHook = require ('./paste.js').ServerPasteHook;
+// Transfer client calls to events
+function transfer (name) {
+    this.emit.apply (this, arguments);
+}
 
 function Server () {
+    var self = this;
     EventEmitter.call(this);
 
-    // Bayeux protocol implementation
-    this.protocol = new Protocol ();
+    // Use dnode protocol
+    this.protocol = dnode (function (client, connection) {
+        this.register = _.bind (transfer , self , 'register' , client, connection);
+        this.auth     = _.bind (transfer , self , 'auth'     , client, connection);
+        this.token    = _.bind (transfer , self , 'token'    , client, connection);
+        this.copy     = _.bind (transfer , self , 'copy'     , client, connection);
 
-    // Add extension for auth
-    this.protocol.addHook (new ServerLogger (this));
-    this.protocol.addHook (new ServerProctect (this));
-    this.protocol.addHook (new ServerAuth (this));
-    this.protocol.addHook (new ServerPasteHook (this));
+        connection.on ('end', _.bind (transfer, self, 'logout', client, connection));
+    });
 }
 
 require ('util').inherits (Server, EventEmitter);
@@ -27,82 +30,6 @@ exports.Server = Server;
 
 // Run Server! Run!
 Server.prototype.run = function () {
-    var self = this;
-
     this.protocol.listen (config.listenPort);
-
-    // Setup /copy and /logout channel
-    this.protocol.subscribe ('/copy', function (message) {
-        self.emit ('copy', message);
-    });
-
-    this.protocol.subscribe ('/logout', function (message) {
-        self.emit ('logout', message);
-    });
-}
-
-// Server's unique id
-Server.prototype.id = function () {
-    return this.protocol.getClientId ();
-}
-
-Server.prototype.register = function (info, error) {
-    var path = '/register/' + info.user;
-    var message = {
-        'status': 'ok'
-    };
-
-    if (error)
-        message = {
-            'status': 'error',
-            'error': error
-        };
-
-    this.protocol.publish (path, message);
-}
-
-Server.prototype.auth = function (info, error, doc) {
-    if (error) {
-        var message = {
-            'status': 'error',
-            'error': error
-        };
-
-        this.protocol.publish ('/auth/' + info.user, message);
-    } else {
-        var message = {
-            'status': 'ok',
-            'token': doc._id
-        };
-
-        this.protocol.publish ('/auth/' + info.user, message);
-    }
-}
-
-Server.prototype.session = function (session, error) {
-    if (error) {
-        var message = {
-            'status': 'error',
-            'error': error
-        };
-
-        this.protocol.publish ('/session/' + session.token, message);
-    } else {
-        var message = {
-            'status': 'ok',
-            'session': session.id,
-            'user': session.user
-        };
-
-        this.protocol.publish ('/session/' + session.token, message);
-    }
-}
-
-Server.prototype.paste = function (token, clip) {
-    var message = {
-        'status': 'ok',
-        'clip': clip
-    };
-
-    this.protocol.publish ('/paste/' + token, message);
+    console.log ('Running on localhost:' + config.listenPort);
 }
