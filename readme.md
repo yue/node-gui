@@ -17,6 +17,46 @@ What have been done
  - You can manually manage GTK+ Widget's life, just like what you do in C.
  - g_object_new style constructor.
 
+Install Guide
+=============
+
+On POSIX environments
+---------------------
+
+First you need to get a modern C++ compiler (GCC 4.6 or above is preffered,
+which is shipped by most distributions), and then GTK+ development headers
+are needed.
+
+On fedora, you can do
+
+````
+yum install gcc-c++ gtk+-devel
+````
+
+On ubuntu
+
+````
+sudo apt-get install build-essential libgtk2.0-dev
+````
+
+Then you can compile the module
+
+````
+node-waf configure
+node-waf build
+````
+
+On Windows
+----------
+
+The Windows porting of node does not support C++ native module now, in
+order to use `node-gui` in Windows, you need to compile `node-gui` as
+a part of node (which is rather hard work). I have done it and the compiled
+binaries are provided [here](stub).
+
+In the meantime, you also need to ship all GTK+ runtime with your app, they
+can be downloaded [here](stub).
+
 Tutorial
 ========
 
@@ -198,7 +238,16 @@ Currently I don't have time to write all the documentation of all widgets,
 if you want to use a widget, you need to consult the GTK+ documentation and
 `node-gui`'s source code.
 
-Following widgets have been mostly supported now:
+Following widgets have been mostly supported by now:
+
+ - Clipboard
+ - Builder
+ - Object
+ - Widget
+ - Notebook
+ - Window
+ - Menu
+ - StatusIcon
 
 In order to use other widgets, you must either help finish its bindings
 (A class may take half an hour), or just use it as a normal GTK+ object, 
