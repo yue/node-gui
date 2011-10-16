@@ -1,2 +1,2 @@
-# node external files
-node_modules
+.lock-wscript
+build
