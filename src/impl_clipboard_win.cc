@@ -1,3 +1,4 @@
+#ifdef WIN32
 #include "impl_clipboard_win.h"
 #include <stdio.h>
 
@@ -72,3 +73,4 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return (LRESULT) NULL;
 }
 }
+#endif

@@ -32,15 +32,15 @@
 
 #define SIMPLE_METHOD(Class, Name, Method) \
     NODE_SET_PROTOTYPE_METHOD (constructor_template, Name, \
-            (SetterMethod<Class, Gtk##Class, Method>));
+            (SetterMethod<Gtk##Class, Method>));
 
 #define SETTER_METHOD(Class, Name, Method, Type) \
     NODE_SET_PROTOTYPE_METHOD (constructor_template, Name, \
-            (SetterMethod<Type, Class, Gtk##Class, Method>));
+            (SetterMethod<Type, Gtk##Class, Method>));
 
 #define GETTER_METHOD(Class, Name, Method, Type) \
     NODE_SET_PROTOTYPE_METHOD (constructor_template, Name, \
-            (GetterMethod<Type, Class, Gtk##Class, Method>));
+            (GetterMethod<Type, Gtk##Class, Method>));
 
 // Must have fields for object wrapper
 #define DECLARE_NODE_OBJECT(Class) \

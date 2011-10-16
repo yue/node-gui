@@ -4,9 +4,12 @@
 #include "node_gui_clipboard.h"
 #include "node_gui_object.h"
 #include "node_gui_widget.h"
+#include "node_gui_container.h"
+#include "node_gui_bin.h"
 #include "node_gui_notebook.h"
 #include "node_gui_window.h"
 #include "node_gui_menu.h"
+#include "node_gui_button.h"
 #include "node_gui_builder.h"
 #include "node_gui_status_icon.h"
 
@@ -23,12 +26,15 @@ void Init (Handle<v8::Object> target) {
 
     clip::Global::Init (target);
     clip::Type::Init (target);
-    clip::Clipboard::Init (target);
     clip::Object::Init (target);
+    clip::Clipboard::Init (target);
+    clip::Container::Init (target);
+    clip::Bin::Init (target);
     clip::Widget::Init (target);
-    clip::Notebook::Init (target);
     clip::Window::Init (target);
     clip::Menu::Init (target);
+    clip::Notebook::Init (target);
+    clip::Button::Init (target);
     clip::Builder::Init (target);
     clip::StatusIcon::Init (target);
 }

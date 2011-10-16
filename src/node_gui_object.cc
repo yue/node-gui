@@ -14,9 +14,9 @@ void Object::Init (Handle<v8::Object> target) {
 
     DEFINE_NODE_METHOD ("on", On);
     DEFINE_NODE_METHOD ("getProperty", GetProperty);
-    DEFINE_NODE_METHOD ("setProperty", SetProperty);
 
-    NODE_SET_PROTOTYPE_METHOD (constructor_template, "unref", (SetterMethod<Object, void, g_object_unref>));
+    NODE_SET_PROTOTYPE_METHOD (constructor_template, "unref", (SetterMethod<void, g_object_unref>));
+    NODE_SET_PROTOTYPE_METHOD (constructor_template, "setProperty", (SetterMethod<const gchar *, const GValue *, GObject, g_object_set_property>));
 
     END_CONSTRUCTOR ();
 }
@@ -27,27 +27,6 @@ Handle<Value> Object::New (const Arguments& args) {
     WRAP_EXSISTING_OBJECT (Type);
 
     return NODE_ERROR ("Cannot create abstract Object");
-}
-
-Handle<Value> Object::SetProperty (const Arguments& args) {
-    HandleScope scope;
-
-    if (args.Length () != 2)
-        return THROW_BAD_ARGS;
-
-    GObject *obj = glue<GObject> (args.This ());
-
-    // They will be 'moved' to the lambda below
-    GValue key   = glue (args[0]);
-    GValue value = glue (args[1]);
-
-    MainLoop::push_job_gui ([=] () mutable {
-        g_object_set_property (obj, g_value_get_string (&key), &value);
-        g_value_unset (&key);
-        g_value_unset (&value);
-    });
-
-    return Undefined ();
 }
 
 Handle<Value> Object::GetProperty (const Arguments& args) {

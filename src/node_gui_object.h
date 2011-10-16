@@ -22,7 +22,6 @@ protected:
     DEFINE_CPP_METHOD (New);
     DEFINE_CPP_METHOD (On);
     DEFINE_CPP_METHOD (GetProperty);
-    DEFINE_CPP_METHOD (SetProperty);
 
     // Define generic constructor
     template<class Type, GType get_type (void)>
@@ -76,7 +75,7 @@ protected:
 
     // Define methods without any arguments.
     // Example: from 'gtk_widget_show_all' to 'show'
-    template<class Type, class GtkType, void function (GtkType*)>
+    template<class GtkType, void function (GtkType*)>
     static Handle<Value> SetterMethod (const Arguments& args) {
         HandleScope scope;
 
@@ -92,7 +91,7 @@ protected:
     // Define setter methods
     // Convert from 'gtk_status_icon_set_name (name)' to 'set_name (name)'
     template<class ARG0,
-             class Type, class GtkType, void function (GtkType*, ARG0)>
+             class GtkType, void function (GtkType*, ARG0)>
     static Handle<Value> SetterMethod (const Arguments& args) {
         HandleScope scope;
 
@@ -111,10 +110,34 @@ protected:
         return Undefined ();
     }
 
+    // Define setter methods
+    template<class ARG0, class ARG1,
+             class GtkType, void function (GtkType*, ARG0, ARG1)>
+    static Handle<Value> SetterMethod (const Arguments& args) {
+        HandleScope scope;
+
+        if (args.Length () != 1)
+            return THROW_BAD_ARGS;
+
+        GtkType *obj = glue<GtkType> (args.This ());
+
+        GValue arg0 = glue (args[0]);
+        GValue arg1 = glue (args[1]);
+
+        MainLoop::push_job_gui ([=] () mutable {
+            function (obj, raw<ARG0> (&arg0), raw<ARG1> (&arg1));
+            g_value_unset (&arg0);
+            g_value_unset (&arg1);
+        });
+
+        return Undefined ();
+    }
+
+
     // Define getter methods
     // Convert from 'gtk_status_icon_get_stock ()' to 'get_name ()'
     template<class ReturnType,
-             class Type, class GtkType, ReturnType function (GtkType*)>
+             class GtkType, ReturnType function (GtkType*)>
     static Handle<Value> GetterMethod (const Arguments& args) {
         HandleScope scope;
 
@@ -124,6 +147,24 @@ protected:
         GtkType *obj = glue<GtkType> (args.This ());
 
         ReturnType result = function (obj);
+
+        return scope.Close (glue (result));
+    }
+
+    template<class ReturnType, class ARG0,
+             class GtkType, ReturnType function (GtkType*, ARG0)>
+    static Handle<Value> GetterMethod (const Arguments& args) {
+        HandleScope scope;
+
+        if (args.Length () != 1)
+            return THROW_BAD_ARGS;
+
+        GtkType *obj = glue<GtkType> (args.This ());
+        GValue arg0 = glue (args[0]);
+
+        ReturnType result = function (obj, raw<ARG0> (arg0));
+
+        g_value_unset (&arg0);
 
         return scope.Close (glue (result));
     }

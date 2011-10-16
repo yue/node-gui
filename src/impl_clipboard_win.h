@@ -1,3 +1,4 @@
+#ifdef WIN32
 #ifndef CLIPBOARD_WIN
 #define CLIPBOARD_WIN
 
@@ -24,4 +25,5 @@ private:
 };
 }
 
+#endif
 #endif

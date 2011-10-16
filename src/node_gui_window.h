@@ -1,9 +1,9 @@
 #ifndef NODE_GUI_WINDOW_H
 #define NODE_GUI_WINDOW_H
 
-#include "node_gui_widget.h"
+#include "node_gui_bin.h"
 namespace clip {
-class Window: public Widget {
+class Window: public Bin {
 DECLARE_NODE_OBJECT (Window);
 };
 } /* clip */

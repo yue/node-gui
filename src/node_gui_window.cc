@@ -4,7 +4,7 @@ namespace clip {
 Persistent<FunctionTemplate> Window::constructor_template;
 
 void Window::Init (Handle<v8::Object> target) {
-    CREATE_CUSTOM_NODE_CONSTRUCTOR ("Window", Window, Widget, window);
+    CREATE_CUSTOM_NODE_CONSTRUCTOR ("Window", Window, Bin, window);
 
     SETTER_METHOD (Window , "setTitle"             , gtk_window_set_title                                         , const gchar* ) ;
     GETTER_METHOD (Window , "getTitle"             , gtk_window_get_title                                         , const gchar* ) ;

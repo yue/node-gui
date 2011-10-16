@@ -1,10 +1,10 @@
 #ifndef NODE_GUI_STATUS_ICON_H
 #define NODE_GUI_STATUS_ICON_H
 
-#include "node_gui_widget.h"
+#include "node_gui_object.h"
 
 namespace clip {
-class StatusIcon: public Widget {
+class StatusIcon: public Object {
 DECLARE_NODE_OBJECT (StatusIcon);
 };
 } /* clip */

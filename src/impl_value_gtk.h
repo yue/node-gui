@@ -83,8 +83,18 @@ inline const gchar *raw (const GValue* value) {
 }
 
 template<>
+inline float raw (const GValue* value) {
+	return static_cast<float> (g_value_get_double (value));
+}
+
+template<>
 inline double raw (const GValue* value) {
 	return g_value_get_double (value);
+}
+
+template<>
+inline const GValue* raw (const GValue* value) {
+	return value;
 }
 
 template<>

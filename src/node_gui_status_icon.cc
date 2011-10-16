@@ -5,7 +5,7 @@ namespace clip {
 Persistent<FunctionTemplate> StatusIcon::constructor_template;
 
 void StatusIcon::Init (Handle<v8::Object> target) {
-    CREATE_CUSTOM_NODE_CONSTRUCTOR ("StatusIcon", StatusIcon, Widget, status_icon);
+    CREATE_CUSTOM_NODE_CONSTRUCTOR ("StatusIcon", StatusIcon, Object, status_icon);
 
 	SETTER_METHOD (StatusIcon , "setFromFile"      , gtk_status_icon_set_from_file      , const gchar*) ;
 	SETTER_METHOD (StatusIcon , "setFromIconName"  , gtk_status_icon_set_from_icon_name , const gchar*) ;
