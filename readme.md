@@ -39,11 +39,12 @@ On ubuntu
 sudo apt-get install build-essential libgtk2.0-dev
 ````
 
-Then you can compile the module
+Then you can compile and install the module
 
 ````
 node-waf configure
 node-waf build
+node-waf install
 ````
 
 On Windows
