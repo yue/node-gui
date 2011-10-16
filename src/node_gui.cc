@@ -31,9 +31,9 @@ void Init (Handle<v8::Object> target) {
     clip::Type::Init (target);
     clip::Object::Init (target);
     clip::Clipboard::Init (target);
+    clip::Widget::Init (target);
     clip::Container::Init (target);
     clip::Bin::Init (target);
-    clip::Widget::Init (target);
     clip::Window::Init (target);
     clip::Dialog::Init (target);
     clip::MessageDialog::Init (target);
