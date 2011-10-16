@@ -133,7 +133,6 @@ protected:
         return Undefined ();
     }
 
-
     // Define getter methods
     // Convert from 'gtk_status_icon_get_stock ()' to 'get_name ()'
     template<class ReturnType,
@@ -160,11 +159,33 @@ protected:
             return THROW_BAD_ARGS;
 
         GtkType *obj = glue<GtkType> (args.This ());
+
         GValue arg0 = glue (args[0]);
 
-        ReturnType result = function (obj, raw<ARG0> (arg0));
+        ReturnType result = function (obj, raw<ARG0> (&arg0));
 
         g_value_unset (&arg0);
+
+        return scope.Close (glue (result));
+    }
+
+    template<class ReturnType, class ARG0, class ARG1,
+             class GtkType, ReturnType function (GtkType*, ARG0, ARG1)>
+    static Handle<Value> GetterMethod (const Arguments& args) {
+        HandleScope scope;
+
+        if (args.Length () != 1)
+            return THROW_BAD_ARGS;
+
+        GtkType *obj = glue<GtkType> (args.This ());
+
+        GValue arg0 = glue (args[0]);
+        GValue arg1 = glue (args[1]);
+
+        ReturnType result = function (obj, raw<ARG0> (&arg0), raw<ARG1> (&arg1));
+
+        g_value_unset (&arg0);
+        g_value_unset (&arg1);
 
         return scope.Close (glue (result));
     }

@@ -8,6 +8,9 @@
 #include "node_gui_bin.h"
 #include "node_gui_notebook.h"
 #include "node_gui_window.h"
+#include "node_gui_dialog.h"
+#include "node_gui_message_dialog.h"
+#include "node_gui_about_dialog.h"
 #include "node_gui_menu.h"
 #include "node_gui_button.h"
 #include "node_gui_builder.h"
@@ -32,6 +35,9 @@ void Init (Handle<v8::Object> target) {
     clip::Bin::Init (target);
     clip::Widget::Init (target);
     clip::Window::Init (target);
+    clip::Dialog::Init (target);
+    clip::MessageDialog::Init (target);
+    clip::AboutDialog::Init (target);
     clip::Menu::Init (target);
     clip::Notebook::Init (target);
     clip::Button::Init (target);
