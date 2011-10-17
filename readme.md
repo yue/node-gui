@@ -205,7 +205,9 @@ var gui = require ('gui');
 new gui.Builder('clip.glade', function (builder) {
     var menu = builder.get ('menu', gui.Menu);
 
-    var tray = new gui.StatusIcon ('title', 'haha');
+    var tray = new gui.StatusIcon ({
+        'title': 'node-gui'
+    });
     tray.setFromFile ('clip.png');
     tray.on ('activate', function () {
         console.log ('left click');
