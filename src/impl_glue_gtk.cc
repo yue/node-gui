@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "node_gui_object.h"
-#include "impl_value_gtk.h"
+#include "impl_glue_gtk.h"
 
 namespace clip {
 GValue&& glue (v8::Handle<v8::Value> value) {
@@ -87,5 +87,12 @@ v8::Handle<Value> glue (const GValue* value) {
             return ThrowException(Exception::TypeError(
                         String::New("Cannot find equivanent type")));
     }
+}
+
+GType type (v8::Handle<v8::Value> obj) {
+    if (!obj->IsFunction ())
+        return G_TYPE_INVALID;
+
+    return G_TYPE_INT;
 }
 } /* clip */

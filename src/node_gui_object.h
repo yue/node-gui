@@ -7,7 +7,7 @@
 #include <gtk/gtk.h>
 
 #include "node_gui.h"
-#include "impl_value_gtk.h"
+#include "impl_glue_gtk.h"
 #include "impl_mainloop_gtk.h"
 
 namespace clip {

@@ -4,7 +4,7 @@ namespace clip {
 Persistent<FunctionTemplate> Notebook::constructor_template;
 
 void Notebook::Init (Handle<v8::Object> target) {
-    CREATE_CUSTOM_NODE_CONSTRUCTOR ("Notebook", Notebook, Widget, notebook);
+    CREATE_CUSTOM_NODE_CONSTRUCTOR ("Notebook", Notebook, Container, notebook);
 
     SETTER_METHOD (Notebook , "removePage"     , gtk_notebook_remove_page      , int) ;
     SIMPLE_METHOD (Notebook , "nextPage"       , gtk_notebook_next_page);

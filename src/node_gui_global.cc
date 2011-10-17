@@ -28,4 +28,5 @@ Handle<Value> Global::Ready (const Arguments& args) {
 
     return Undefined ();
 }
+
 } /* clip */

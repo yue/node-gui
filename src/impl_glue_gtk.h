@@ -115,6 +115,9 @@ inline GValue&& copy (const GValue* value) {
 
     return std::move (a); 
 }
+
+// Get GType from constructor
+GType type (v8::Handle<v8::Value> obj);
 } /* clip */
 
 #endif /* end of IMPL_VALUE_GTK_H */
