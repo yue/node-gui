@@ -35,8 +35,6 @@ void* MainLoop::main (void *data) {
     gtk_main ();
     gdk_threads_leave ();
 
-	// FIXME
-	// Should we uv_unref here ?
     uv_unref (uv_default_loop ());
 
     return NULL;

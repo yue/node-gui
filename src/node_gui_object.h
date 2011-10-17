@@ -124,7 +124,7 @@ protected:
     static Handle<Value> SetterMethod (const Arguments& args) {
         HandleScope scope;
 
-        if (args.Length () != 1)
+        if (args.Length () != 2)
             return THROW_BAD_ARGS;
 
         GtkType *obj = glue<GtkType> (args.This ());
@@ -147,9 +147,6 @@ protected:
              class GtkType, ReturnType function (GtkType*)>
     static Handle<Value> GetterMethod (const Arguments& args) {
         HandleScope scope;
-
-        if (args.Length () != 1)
-            return THROW_BAD_ARGS;
 
         GtkType *obj = glue<GtkType> (args.This ());
 
@@ -182,7 +179,7 @@ protected:
     static Handle<Value> GetterMethod (const Arguments& args) {
         HandleScope scope;
 
-        if (args.Length () != 1)
+        if (args.Length () != 2)
             return THROW_BAD_ARGS;
 
         GtkType *obj = glue<GtkType> (args.This ());

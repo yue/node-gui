@@ -6,6 +6,7 @@ Persistent<FunctionTemplate> Label::constructor_template;
 void Label::Init (Handle<v8::Object> target) {
     CREATE_CUSTOM_NODE_CONSTRUCTOR ("Label", Label, Misc, image);
 
+    GETTER_METHOD (Label , "getText"               , gtk_label_get_text                 , const gchar* ) ;
     SETTER_METHOD (Label , "setText"               , gtk_label_set_text                 , const gchar* ) ;
     SETTER_METHOD (Label , "setMarkup"             , gtk_label_set_markup               , const gchar* ) ;
     SETTER_METHOD (Label , "setMarkupWithMnemonic" , gtk_label_set_markup_with_mnemonic , const gchar* ) ;
@@ -18,13 +19,12 @@ void Label::Init (Handle<v8::Object> target) {
     GETTER_METHOD (Label , "getLineWrap"           , gtk_label_get_line_wrap            , gboolean     ) ;
     GETTER_METHOD (Label , "getMnemonicKeyval"     , gtk_label_get_mnemonic_keyval      , guint        ) ;
     GETTER_METHOD (Label , "getSelectable"         , gtk_label_get_selectable           , gboolean     ) ;
-    GETTER_METHOD (Label , "getText"               , gtk_label_get_text                 , const gchar* ) ;
     GETTER_METHOD (Label , "getMnemonicWidget"     , gtk_label_get_mnemonic_widget      , GtkWidget*   ) ;
     SETTER_METHOD (Label , "setMnemonicWidget"     , gtk_label_set_mnemonic_widget      , GtkWidget*   ) ;
     SETTER_METHOD (Label , "setSelectable"         , gtk_label_set_selectable           , gboolean     ) ;
     SETTER_METHOD (Label , "setTextWithMnemonic"   , gtk_label_set_text_with_mnemonic   , const gchar* ) ;
-    GETTER_METHOD (Label , "getLabel"              , gtk_label_get_text                 , const gchar* ) ;
-    SETTER_METHOD (Label , "setLabel"              , gtk_label_set_text                 , const gchar* ) ;
+    GETTER_METHOD (Label , "getLabel"              , gtk_label_get_label                , const gchar* ) ;
+    SETTER_METHOD (Label , "setLabel"              , gtk_label_set_label                , const gchar* ) ;
     GETTER_METHOD (Label , "getUseMarkup"          , gtk_label_get_use_markup           , gboolean     ) ;
     SETTER_METHOD (Label , "setUseMarkup"          , gtk_label_set_use_markup           , gboolean     ) ;
     GETTER_METHOD (Label , "getUseUnderline"       , gtk_label_get_use_underline        , gboolean     ) ;

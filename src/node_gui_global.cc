@@ -1,3 +1,5 @@
+#include <gtk/gtk.h>
+
 #include "node_gui.h"
 #include "node_gui_global.h"
 #include "impl_mainloop_gtk.h"
@@ -7,6 +9,7 @@ using namespace v8;
 
 void Global::Init (v8::Handle<v8::Object> target) {
     NODE_SET_METHOD (target, "ready", Ready);
+    NODE_SET_METHOD (target, "quit", Quit);
 }
 
 Handle<Value> Global::Ready (const Arguments& args) {
@@ -29,4 +32,11 @@ Handle<Value> Global::Ready (const Arguments& args) {
     return Undefined ();
 }
 
+Handle<Value> Global::Quit (const Arguments& args) {
+    gdk_threads_enter ();
+    gtk_main_quit ();
+    gdk_threads_leave ();
+
+    return Undefined ();
+}
 } /* clip */

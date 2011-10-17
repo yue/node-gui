@@ -11,6 +11,7 @@ public:
 
 protected:
     DEFINE_CPP_METHOD (Ready);
+    DEFINE_CPP_METHOD (Quit);
 
 /* Not to be implemented */
 private:

@@ -42,57 +42,62 @@ GValue&& glue (v8::Handle<v8::Value> value) {
 }
 
 v8::Handle<Value> glue (const GValue* value) {
-    HandleScope scope;
-
     if (value == NULL)
         return Undefined ();
 
-    switch (G_TYPE_FUNDAMENTAL(G_VALUE_TYPE(value))) {
+    switch (G_TYPE_FUNDAMENTAL (G_VALUE_TYPE (value))) {
         case G_TYPE_INVALID:
         case G_TYPE_NONE:
             return Undefined ();
 
         case G_TYPE_BOOLEAN:
-            return scope.Close (Boolean::New (g_value_get_boolean (value)));
+            return Boolean::New (g_value_get_boolean (value));
 
         case G_TYPE_INT:
-            return scope.Close (Integer::New (g_value_get_int (value)));
+            return Integer::New (g_value_get_int (value));
 
         case G_TYPE_LONG:
-            return scope.Close (Number::New (g_value_get_long (value)));
+            return Number::New (g_value_get_long (value));
 
         case G_TYPE_UINT:
-            return scope.Close (Integer::NewFromUnsigned (g_value_get_uint (value)));
+            return Integer::NewFromUnsigned (g_value_get_uint (value));
 
         case G_TYPE_ULONG:
-            return scope.Close (Integer::NewFromUnsigned (g_value_get_ulong (value)));
+            return Integer::NewFromUnsigned (g_value_get_ulong (value));
 
         case G_TYPE_FLOAT:
-            return scope.Close (Number::New (g_value_get_float (value)));
+            return Number::New (g_value_get_float (value));
 
         case G_TYPE_ENUM:
-            return scope.Close (Integer::New (g_value_get_enum (value)));
+            return Integer::New (g_value_get_enum (value));
 
         case G_TYPE_FLAGS:
-            return scope.Close (Integer::New (g_value_get_flags (value)));
+            return Integer::New (g_value_get_flags (value));
 
         case G_TYPE_STRING:
-            return scope.Close (String::New (g_value_get_string (value)));
+            return String::New (g_value_get_string (value));
 
-		case G_TYPE_POINTER:
-			return scope.Close (glue<Object> (g_value_get_pointer (value)));
+        case G_TYPE_POINTER:
+            return glue<Object> (g_value_get_pointer (value));
+
+        case G_TYPE_OBJECT:
+            return glue<Object> (g_value_get_object (value));
+
+        case G_TYPE_BOXED:
+            return glue<Object> (g_value_get_boxed (value));
+
+        case G_TYPE_INTERFACE:
+            return ThrowException(Exception::TypeError(
+                        String::New("Don't support interface type now")));
+
+        case G_TYPE_PARAM:
+            return ThrowException(Exception::TypeError(
+                        String::New("Don't support param type now")));
 
         default:
-            fprintf (stderr, "%s\n", "Cannot find equivanent type");
+            fprintf (stderr, "Unknow type: %s\n", G_VALUE_TYPE_NAME (value));
             return ThrowException(Exception::TypeError(
                         String::New("Cannot find equivanent type")));
     }
-}
-
-GType type (v8::Handle<v8::Value> obj) {
-    if (!obj->IsFunction ())
-        return G_TYPE_INVALID;
-
-    return G_TYPE_INT;
 }
 } /* clip */

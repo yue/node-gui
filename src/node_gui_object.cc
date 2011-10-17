@@ -117,7 +117,7 @@ void Object::signal_marshal (GClosure *closure,
             args.push_back (glue (&params[i]));
         }
 
-        ((NodeClosure*) closure)->callback->Call (
+        (*((NodeClosure*) closure)->iter)->Call (
             Context::GetCurrent ()->Global (), args.size (), args.data ());
 
         // Free params
