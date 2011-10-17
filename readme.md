@@ -17,6 +17,13 @@ What have been done
  - You can manually manage GTK+ Widget's life, just like what you do in C.
  - g_object_new style constructor.
 
+What have not been done
+-----------------------
+
+ - Methods that need to pass Enum types are not done.
+ - TreeModel and TreeView and their siblings are not done, Their C API is not
+   very friendly to language bindings.
+
 Install Guide
 =============
 
@@ -248,20 +255,37 @@ Currently I don't have time to write all the documentation of all widgets,
 if you want to use a widget, you need to consult the GTK+ documentation and
 `node-gui`'s source code.
 
-Following widgets have been mostly supported by now:
+Why GTK+ on node
+================
 
- - Clipboard
- - Builder
- - Object
- - Widget
- - Notebook
- - Window
- - Menu
- - StatusIcon
+node.js is very good at networking, though web applications are quite popular
+now, desktop applications with network ability are still necessary. Despite
+that there are many scripting languages with good GTK+ bindings, their
+network function is not as good as node.js, so I decided to write `node-gui`,
+making node.js available for desktop.
 
-In order to use other widgets, you must either help finish its bindings
-(A class may take half an hour), or just use it as a normal GTK+ object, 
-which has full support of properties and signals.
+node-gir and node-gtk
+---------------------
+
+There exists some bindings to GTK+ now, `node-gir` tries to use
+GObject-Inspection to import GTK+, but it doesn't live well with node.js,
+using `node-gir` will make node.js's excellent network functions useless.
+
+And `node-gtk` tries to integrate GTK+ main loop into node's own events
+loop and done all bindings manually. It is not portable and totally
+not usable.
+
+Under the hood
+==============
+
+`node-gui` runs GTK+ main loop in new thread, methods that don't return 
+results will all be scheduled to run in the GTK+ thread, this is because
+GTK+ calls are usually expensive. And in order to make the API easy and 
+natural, methods that return results (like Window.getTitle) will run 
+synchrously.
+
+The bindings are produced by C++ templates, which makes `node-gui` more 
+reliable.
 
 License
 =======
