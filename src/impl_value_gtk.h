@@ -64,37 +64,37 @@ T raw (const GValue* value);
 
 template<class T*>
 inline T* raw (const GValue* value) {
-	return static_cast<T*> (g_value_get_pointer (value));
+    return static_cast<T*> (g_value_get_pointer (value));
 }
 
 template<>
 inline gpointer raw (const GValue* value) {
-	return g_value_get_pointer (value);
+    return g_value_get_pointer (value);
 }
 
 template<>
 inline unsigned raw (const GValue* value) {
-	return g_value_get_uint (value);
+    return g_value_get_uint (value);
 }
 
 template<>
 inline const gchar *raw (const GValue* value) {
-	return g_value_get_string (value);
+    return g_value_get_string (value);
 }
 
 template<>
 inline float raw (const GValue* value) {
-	return static_cast<float> (g_value_get_double (value));
+    return static_cast<float> (g_value_get_double (value));
 }
 
 template<>
 inline double raw (const GValue* value) {
-	return g_value_get_double (value);
+    return g_value_get_double (value);
 }
 
 template<>
 inline const GValue* raw (const GValue* value) {
-	return value;
+    return value;
 }
 
 template<>

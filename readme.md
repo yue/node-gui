@@ -67,7 +67,11 @@ A simple example
 ````javascript
 var gui = require ('gui');
 
-var window = new gui.Window ('title', 'node-gui');
+var window = new gui.Window ({
+    'title': 'node-gui'
+    'window-position': 1,
+    'opacity': 0.5
+});
 window.show ();
 ````
 
@@ -80,12 +84,17 @@ var gui = require ('gui');
 ````
 
 Then, all GTK+ widgets can be constructed by calling
-`new Type (property_name, property, property_name, property, ...)`, following codes created
-a new Window with `title` set to `node-gui`. All possible properties can
+`new Type (parameters)`, following codes created
+a new Window with `title` set to `node-gui`, `opacity` to half-opacity,
+and `window-position` to center screen. All possible properties can
 be found at [GTK+ documentation](http://developer.gnome.org/gtk/2.24/GtkWindow.html).
 
 ````javascript
-var window = new gui.Window ('title', 'node-gui');
+var window = new gui.Window ({
+    'title': 'node-gui'
+    'window-position': 1,
+    'opacity': 0.5
+});
 ````
 
 At last, we call the `show` method of Window. The method's name follows

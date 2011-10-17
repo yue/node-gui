@@ -1,7 +1,6 @@
 #ifndef NODE_GUI_OBJECT_H
 #define NODE_GUI_OBJECT_H
 
-#include <list>
 #include <vector>
 #include <string>
 
@@ -30,27 +29,36 @@ protected:
 
         WRAP_EXSISTING_OBJECT (Type);
 
-        if (args.Length () % 2 != 0)
+        if (!((args.Length () == 0) ||
+              (args.Length () == 1 && args[0]->IsObject ())))
             return THROW_BAD_ARGS;
 
         void *widget;
 
         if (args.Length () == 0) {
+            // Just null new
             gdk_threads_enter();
             widget = g_object_new (get_type (), NULL);
             gdk_threads_leave();
         } else {
-            // Keep strings in this list, so we create parameters the
+            // Get the parameters object
+            Local<v8::Object> params = Local<v8::Object>::Cast (args[0]);
+
+            // Receive arguments from object
+            Local<Array> names = params->GetPropertyNames ();
+
+            // Keep strings in this list, so when we create parameters the
             // raw string stays valid.
-            std::list<std::string> tmp_store;
-            std::vector<GParameter> parameters (args.Length () / 2);
+            std::vector<std::string> tmp_store;
+            tmp_store.reserve (names->Length ());
+            std::vector<GParameter> parameters (names->Length ());
 
             // Push parameters
-            for (int i = 0; i < args.Length (); i += 2) {
-                tmp_store.push_back (*String::Utf8Value (args[0]));
+            for (size_t i = 0; i < names->Length (); ++i) {
+                tmp_store.push_back (*String::Utf8Value (names->Get (i)));
 
-                parameters[i/2].name = tmp_store.back ().c_str ();
-                parameters[i/2].value = glue (args[i + 1]);
+                parameters[i].name = tmp_store.back ().c_str ();
+                parameters[i].value = glue (params->Get (names->Get (i)));
             }
 
             // Create object
