@@ -28,6 +28,8 @@ inline v8::Handle<v8::Object> glue (void *widget) {
     return scope.Close (obj);
 }
 
+v8::Handle<v8::Object> glue (void *widget);
+
 // From c type to v8::Value
 inline v8::Handle<v8::Value> glue (int i) {
     return v8::Integer::New (i);

@@ -1,10 +1,10 @@
 var gui = require('gui');
 
 new gui.Builder ('./builder.glade', function (builder) {
-    var window = builder.get ('window1'   , gui.Window) ;
-    var text   = builder.get ('textview1' , gui.Widget) ;
-    var label  = builder.get ('label1'    , gui.Label ) ;
-    var button = builder.get ('button1'   , gui.Button) ;
+    var window = builder.get ('window1'   , gui.Window   ) ;
+    var text   = builder.get ('textview1' , gui.TextView ) ;
+    var label  = builder.get ('label1'    , gui.Label    ) ;
+    var button = builder.get ('button1'   , gui.Button   ) ;
 
     label.setLabel ('Please enter some text');
     window.setProperty ('window-position', 1);
@@ -25,5 +25,9 @@ new gui.Builder ('./builder.glade', function (builder) {
 
     window.on ('delete-event', function () {
         gui.quit ();
+    });
+
+    text.getBuffer ().on ('changed', function () {
+        label.setLabel ('changed');
     });
 });

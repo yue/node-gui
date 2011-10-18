@@ -100,4 +100,13 @@ v8::Handle<Value> glue (const GValue* value) {
                         String::New("Cannot find equivanent type")));
     }
 }
+
+v8::Handle<v8::Object> glue (void *widget) {
+    v8::HandleScope scope;
+
+    v8::Local<v8::Value> external = v8::External::New (widget);
+    v8::Handle<v8::Object> obj = Object::constructor_template->GetFunction ()->NewInstance (1, &external);
+
+    return scope.Close (obj);
+}
 } /* clip */
