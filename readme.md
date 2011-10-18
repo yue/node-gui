@@ -284,7 +284,7 @@ Under the hood
 results will all be scheduled to run in the GTK+ thread, this is because
 GTK+ calls are usually expensive. And in order to make the API easy and 
 natural, methods that return results (like Window.getTitle) will run 
-synchrously.
+synchronously.
 
 The bindings are produced by C++ templates, which makes `node-gui` more 
 reliable.
