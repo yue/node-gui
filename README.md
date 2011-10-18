@@ -4,8 +4,8 @@ node-gui
 node-gui binds GTK+2.0 to node.js, it aims to be perfectly integrated into
 node.
 
-What have been done
--------------------
+Features
+--------
 
  - A decent C++ framework to (manually) convert GTK+ calls to node calls.
    You can add a new Widget class in less than a dozen lines.
@@ -21,8 +21,9 @@ What have not been done
 -----------------------
 
  - Methods that need to pass Enum types are not done.
- - TreeModel and TreeView and their siblings are not done, Their C API is not
+ - TreeModel and TreeView and their siblings are not done, their C API is not
    very friendly to language bindings.
+ - Many many complex methods are not done yet, I need your help.
 
 Install Guide
 =============
@@ -34,13 +35,13 @@ First you need to get a modern C++ compiler (GCC 4.6 or above is preffered,
 which is shipped by most distributions), and then GTK+ development headers
 are needed.
 
-On fedora, you can do
+To install the dependencies, on fedora, you can do
 
 ````
 yum install gcc-c++ gtk+-devel
 ````
 
-On ubuntu
+Or on ubuntu
 
 ````
 sudo apt-get install build-essential libgtk2.0-dev
@@ -49,9 +50,7 @@ sudo apt-get install build-essential libgtk2.0-dev
 Then you can compile and install the module
 
 ````
-node-waf configure
-node-waf build
-node-waf install
+node-waf configure build install
 ````
 
 On Windows
@@ -60,10 +59,10 @@ On Windows
 The Windows porting of node does not support C++ native module now, in
 order to use `node-gui` in Windows, you need to compile `node-gui` as
 a part of node (which is rather hard work). I have done it and the compiled
-binaries are provided [here](stub).
+binaries will provided in near future.
 
 In the meantime, you also need to ship all GTK+ runtime with your app, they
-can be downloaded [here](stub).
+can be downloaded [here](http://sourceforge.net/projects/gtk-win/).
 
 Tutorial
 ========
@@ -250,6 +249,14 @@ widget.setProperty ('title', 'a long text');
 
 Each type's available properties can be found at GTK+ documentation.
 
+Widget Management
+-----------------
+
+`node-gui` doesn't manage the life of GTK+ object, because V8's GC makes 
+it hard to manage javascript objects' life. If you want to destroy an
+GObject or a GtkWidget, you need to call `unref` or `destroy` or `free`,
+according to what the GTK+ documentation says.
+
 What's more
 -----------
 
@@ -265,17 +272,6 @@ now, desktop applications with network ability are still necessary. Despite
 that there are many scripting languages with good GTK+ bindings, their
 network function is not as good as node.js, so I decided to write `node-gui`,
 making node.js available for desktop.
-
-node-gir and node-gtk
----------------------
-
-There exists some bindings to GTK+ now, `node-gir` tries to use
-GObject-Inspection to import GTK+, but it doesn't live well with node.js,
-using `node-gir` will make node.js's excellent network functions useless.
-
-And `node-gtk` tries to integrate GTK+ main loop into node's own events
-loop and done all bindings manually. It is not portable and totally
-not usable.
 
 Under the hood
 ==============
