@@ -11,7 +11,8 @@ namespace clip {
 Persistent<FunctionTemplate> Builder::constructor_template;
 
 void Builder::Init (Handle<v8::Object> target) {
-    CREATE_NODE_CONSTRUCTOR_INHERIT ("Builder", Builder, Object);
+    ATTACH_CONSTRUCTOR("Builder", Builder, New);
+    ATTACH_INHERITANCE(Object);
 
     DEFINE_NODE_METHOD ("get", Get);
 
@@ -41,6 +42,7 @@ Handle<Value> Builder::New (const Arguments& args) {
         MainLoop::push_job_node ([=] () mutable {
             // Store the builder
             self->SetPointerInInternalField (0, obj);
+            self->SetPointerInInternalField (1, nullptr);
 
             // Callback
             Handle<Value> args[] = { self };
@@ -53,6 +55,7 @@ Handle<Value> Builder::New (const Arguments& args) {
     });
 
     args.This ()->SetPointerInInternalField (0, nullptr);
+    args.This ()->SetPointerInInternalField (1, nullptr);
     return args.This ();
 }
 

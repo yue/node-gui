@@ -21,14 +21,6 @@ void Object::Init (Handle<v8::Object> target) {
     END_CONSTRUCTOR ();
 }
 
-Handle<Value> Object::New (const Arguments& args) {
-    HandleScope scope;
-
-    WRAP_EXSISTING_OBJECT (Type);
-
-    return NODE_ERROR ("Cannot create abstract Object");
-}
-
 Handle<Value> Object::GetProperty (const Arguments& args) {
     HandleScope scope;
 

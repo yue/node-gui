@@ -3,6 +3,7 @@
 #include "node_gui_type.h"
 #include "node_gui_clipboard.h"
 #include "node_gui_object.h"
+#include "node_gui_text_iter.h"
 #include "node_gui_list_store.h"
 #include "node_gui_widget.h"
 #include "node_gui_entry.h"
@@ -11,6 +12,7 @@
 #include "node_gui_label.h"
 #include "node_gui_container.h"
 #include "node_gui_tree_view.h"
+#include "node_gui_text_view.h"
 #include "node_gui_bin.h"
 #include "node_gui_notebook.h"
 #include "node_gui_list.h"
@@ -37,6 +39,7 @@ void Init (Handle<v8::Object> target) {
     clip::Global::Init (target);
     clip::Type::Init (target);
     clip::Object::Init (target);
+    clip::TextIter::Init (target);
     clip::ListStore::Init (target);
     clip::Clipboard::Init (target);
     clip::Widget::Init (target);
@@ -47,6 +50,7 @@ void Init (Handle<v8::Object> target) {
     clip::Container::Init (target);
     clip::Bin::Init (target);
     clip::TreeView::Init (target);
+    clip::TextView::Init (target);
     clip::Window::Init (target);
     clip::Dialog::Init (target);
     clip::MessageDialog::Init (target);

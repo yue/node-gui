@@ -34,6 +34,7 @@ Handle<Value> ListStore::New (const Arguments& args) {
 
     // Wrap it
     args.This ()->SetPointerInInternalField (0, store);
+    args.This ()->SetPointerInInternalField (1, nullptr);
 
     return args.This ();
 }

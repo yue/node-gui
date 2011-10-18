@@ -18,13 +18,37 @@ class Object {
 DECLARE_NODE_OBJECT (Object);
 
 protected:
-    DEFINE_CPP_METHOD (New);
     DEFINE_CPP_METHOD (On);
     DEFINE_CPP_METHOD (GetProperty);
 
+    // Create a slice of memory and attach it to the object,
+    // use by GtkTextIter and GtkTreeIter, etc.
+    template<class Type, class GtkType>
+    static Handle<Value> New (const Arguments& args) {
+        HandleScope scope;
+
+        WRAP_EXSISTING_OBJECT (Type);
+
+        // Wrap it
+        args.This ()->SetPointerInInternalField (0, g_slice_new (GtkType));
+        args.This ()->SetPointerInInternalField (1, nullptr);
+
+        return args.This ();
+    }
+
+    // Define abstract type's constructor
+    template<class Type>
+    static Handle<Value> Constructor (const Arguments& args) {
+        HandleScope scope;
+
+        WRAP_EXSISTING_OBJECT (Type);
+
+        return NODE_ERROR ("Cannot create instance of abstract type.");
+    }
+
     // Define generic constructor
     template<class Type, GType get_type (void)>
-    static Handle<Value> NewMethod (const Arguments& args) {
+    static Handle<Value> Constructor (const Arguments& args) {
         HandleScope scope;
 
         WRAP_EXSISTING_OBJECT (Type);
@@ -77,13 +101,14 @@ protected:
 
         // Wrap it
         args.This ()->SetPointerInInternalField (0, widget);
+        args.This ()->SetPointerInInternalField (1, nullptr);
 
         return args.This ();
     }
 
     // Define methods without any arguments.
     // Example: from 'gtk_widget_show_all' to 'show'
-    template<class GtkType, void function (GtkType*)>
+    template<class GtkType, class Obj, void function (Obj)>
     static Handle<Value> SetterMethod (const Arguments& args) {
         HandleScope scope;
 
@@ -96,10 +121,25 @@ protected:
         return Undefined ();
     }
 
+    // A Story: Why those fucking templates?
+    // void function (const GtkType*) is different with
+    // void function (GtkType*), if we want to use one template to fit
+    // these two types of functions, we must define two template functions.
+
+    template<class GtkType, void function (const GtkType*)>
+    static inline Handle<Value> SetterMethod (const Arguments& args) {
+        return SetterMethod<GtkType, const GtkType*, function> (args);
+    }
+
+    template<class GtkType, void function (GtkType*)>
+    static inline Handle<Value> SetterMethod (const Arguments& args) {
+        return SetterMethod<GtkType, GtkType*, function> (args);
+    }
+
     // Define setter methods
     // Convert from 'gtk_status_icon_set_name (name)' to 'set_name (name)'
     template<class ARG0,
-             class GtkType, void function (GtkType*, ARG0)>
+             class GtkType, class Obj, void function (Obj, ARG0)>
     static Handle<Value> SetterMethod (const Arguments& args) {
         HandleScope scope;
 
@@ -118,9 +158,19 @@ protected:
         return Undefined ();
     }
 
+    template<class ARG0, class GtkType, void function (const GtkType*, ARG0)>
+    static inline Handle<Value> SetterMethod (const Arguments& args) {
+        return SetterMethod<ARG0, GtkType, const GtkType*, function> (args);
+    }
+
+    template<class ARG0, class GtkType, void function (GtkType*, ARG0)>
+    static inline Handle<Value> SetterMethod (const Arguments& args) {
+        return SetterMethod<ARG0, GtkType, GtkType*, function> (args);
+    }
+
     // Define setter methods
     template<class ARG0, class ARG1,
-             class GtkType, void function (GtkType*, ARG0, ARG1)>
+             class GtkType, class Obj, void function (Obj, ARG0, ARG1)>
     static Handle<Value> SetterMethod (const Arguments& args) {
         HandleScope scope;
 
@@ -141,10 +191,20 @@ protected:
         return Undefined ();
     }
 
+    template<class ARG0, class ARG1, class GtkType, void function (const GtkType*, ARG0, ARG1)>
+    static inline Handle<Value> SetterMethod (const Arguments& args) {
+        return SetterMethod<ARG0, ARG1, GtkType, const GtkType*, function> (args);
+    }
+
+    template<class ARG0, class ARG1, class GtkType, void function (GtkType*, ARG0, ARG1)>
+    static inline Handle<Value> SetterMethod (const Arguments& args) {
+        return SetterMethod<ARG0, ARG1, GtkType, GtkType*, function> (args);
+    }
+
     // Define getter methods
     // Convert from 'gtk_status_icon_get_stock ()' to 'get_name ()'
     template<class ReturnType,
-             class GtkType, ReturnType function (GtkType*)>
+             class GtkType, class Obj, ReturnType function (Obj)>
     static Handle<Value> GetterMethod (const Arguments& args) {
         HandleScope scope;
 
@@ -155,8 +215,18 @@ protected:
         return scope.Close (glue (result));
     }
 
+    template<class ReturnType, class GtkType, ReturnType function (const GtkType*)>
+    static inline Handle<Value> GetterMethod (const Arguments& args) {
+        return GetterMethod<ReturnType, GtkType, const GtkType*, (ReturnType (*) (const GtkType *)) function> (args);
+    }
+
+    template<class ReturnType, class GtkType, ReturnType function (GtkType*)>
+    static inline Handle<Value> GetterMethod (const Arguments& args) {
+        return GetterMethod<ReturnType, GtkType, GtkType*, (ReturnType (*) (GtkType *)) function> (args);
+    }
+
     template<class ReturnType, class ARG0,
-             class GtkType, ReturnType function (GtkType*, ARG0)>
+             class GtkType, class Obj, ReturnType function (Obj, ARG0)>
     static Handle<Value> GetterMethod (const Arguments& args) {
         HandleScope scope;
 
@@ -174,8 +244,18 @@ protected:
         return scope.Close (glue (result));
     }
 
+    template<class ReturnType, class ARG0, class GtkType, ReturnType function (const GtkType*, ARG0)>
+    static inline Handle<Value> GetterMethod (const Arguments& args) {
+        return GetterMethod<ReturnType, ARG0, GtkType, const GtkType*, (ReturnType (*) (const GtkType *, ARG0)) function> (args);
+    }
+
+    template<class ReturnType, class ARG0, class GtkType, ReturnType function (GtkType*, ARG0)>
+    static inline Handle<Value> GetterMethod (const Arguments& args) {
+        return GetterMethod<ReturnType, ARG0, GtkType, GtkType*, (ReturnType (*) (GtkType *, ARG0)) function> (args);
+    }
+
     template<class ReturnType, class ARG0, class ARG1,
-             class GtkType, ReturnType function (GtkType*, ARG0, ARG1)>
+             class GtkType, class Obj, ReturnType function (Obj, ARG0, ARG1)>
     static Handle<Value> GetterMethod (const Arguments& args) {
         HandleScope scope;
 
@@ -193,6 +273,16 @@ protected:
         g_value_unset (&arg1);
 
         return scope.Close (glue (result));
+    }
+
+    template<class ReturnType, class ARG0, class ARG1, class GtkType, ReturnType function (const GtkType*, ARG0, ARG1)>
+    static inline Handle<Value> GetterMethod (const Arguments& args) {
+        return GetterMethod<ReturnType, ARG0, ARG1, GtkType, const GtkType*, (ReturnType (*) (const GtkType *, ARG0, ARG1)) function> (args);
+    }
+
+    template<class ReturnType, class ARG0, class ARG1, class GtkType, ReturnType function (GtkType*, ARG0, ARG1)>
+    static inline Handle<Value> GetterMethod (const Arguments& args) {
+        return GetterMethod<ReturnType, ARG0, ARG1, GtkType, GtkType*, (ReturnType (*) (GtkType *, ARG0, ARG1)) function> (args);
     }
 
 protected:

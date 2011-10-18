@@ -7,3 +7,7 @@ var window = new gui.Window ({
 });
 
 window.show ();
+
+window.on ('delete-event', function () {
+    gui.quit ();
+});
