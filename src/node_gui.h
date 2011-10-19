@@ -12,7 +12,7 @@
 
 // Check is internal object
 #define IS_INTERNAL(obj) \
-    (obj->IsObject () && (v8::Handle<v8::Object>::Cast (obj)->InternalFieldCount () == 1))
+    (obj->IsObject () && (v8::Handle<v8::Object>::Cast (obj)->InternalFieldCount () == 2))
 
 // Wrap around existing object, don't manage its life
 #define WRAP_EXSISTING_OBJECT(T) \
@@ -20,6 +20,12 @@
         void *widget = External::Unwrap (args[0]);\
         args.This ()->SetPointerInInternalField (0, widget);\
         args.This ()->SetPointerInInternalField (1, nullptr);\
+\
+        return args.This ();\
+    } else if (args.Length () == 1 && IS_INTERNAL (args[0])) {\
+        Local<v8::Object> obj = Local<v8::Object>::Cast (args[0]);\
+        args.This ()->SetPointerInInternalField (0, obj->GetPointerFromInternalField (0));\
+        args.This ()->SetPointerInInternalField (1, obj->GetPointerFromInternalField (1));\
 \
         return args.This ();\
     }

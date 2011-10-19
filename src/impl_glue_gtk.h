@@ -76,7 +76,7 @@ inline gpointer raw (const GValue* value) {
 
 template<>
 inline unsigned raw (const GValue* value) {
-    return g_value_get_uint (value);
+    return g_value_get_int (value);
 }
 
 template<>

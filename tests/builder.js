@@ -1,6 +1,6 @@
 var gui = require('gui');
 
-new gui.Builder ('./builder.glade', function (builder) {
+new gui.Builder (__dirname + '/builder.glade', function (builder) {
     var window = builder.get ('window1'   , gui.Window   ) ;
     var text   = builder.get ('textview1' , gui.TextView ) ;
     var label  = builder.get ('label1'    , gui.Label    ) ;

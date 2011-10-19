@@ -18,9 +18,6 @@ GValue&& glue (v8::Handle<v8::Value> value) {
     } else if (value->IsInt32 ()) {
         g_value_init (&a, G_TYPE_INT);
         g_value_set_int (&a, value->Int32Value ());
-    } else if (value->IsUint32 ()) {
-        g_value_init (&a, G_TYPE_UINT);
-        g_value_set_uint (&a, value->Uint32Value ());
     } else if (value->IsBoolean ()) {
         g_value_init (&a, G_TYPE_BOOLEAN);
         g_value_set_boolean (&a, value->BooleanValue ());
