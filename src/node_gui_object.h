@@ -61,9 +61,7 @@ protected:
 
         if (args.Length () == 0) {
             // Just null new
-            gdk_threads_enter();
             widget = g_object_new (get_type (), NULL);
-            gdk_threads_leave();
         } else {
             // Get the parameters object
             Local<v8::Object> params = Local<v8::Object>::Cast (args[0]);
@@ -86,9 +84,7 @@ protected:
             }
 
             // Create object
-            gdk_threads_enter();
             widget = g_object_newv (get_type (), parameters.size (), parameters.data ());
-            gdk_threads_leave();
 
             // Clean parameters
             for (auto it = parameters.begin (); it != parameters.end (); ++it) {
@@ -210,7 +206,9 @@ protected:
 
         GtkType *obj = glue<GtkType> (args.This ());
 
+        gdk_threads_enter ();
         ReturnType result = function (obj);
+        gdk_threads_leave ();
 
         return scope.Close (glue (static_cast<ReturnType> (result)));
     }
@@ -237,7 +235,9 @@ protected:
 
         GValue arg0 = glue (args[0]);
 
+        gdk_threads_enter ();
         ReturnType result = function (obj, raw<ARG0> (&arg0));
+        gdk_threads_leave ();
 
         g_value_unset (&arg0);
 
@@ -267,7 +267,9 @@ protected:
         GValue arg0 = glue (args[0]);
         GValue arg1 = glue (args[1]);
 
+        gdk_threads_enter ();
         ReturnType result = function (obj, raw<ARG0> (&arg0), raw<ARG1> (&arg1));
+        gdk_threads_leave ();
 
         g_value_unset (&arg0);
         g_value_unset (&arg1);
@@ -283,6 +285,95 @@ protected:
     template<class ReturnType, class ARG0, class ARG1, class GtkType, ReturnType function (GtkType*, ARG0, ARG1)>
     static inline Handle<Value> GetterMethod (const Arguments& args) {
         return GetterMethod<ReturnType, ARG0, ARG1, GtkType, GtkType*, (ReturnType (*) (GtkType *, ARG0, ARG1)) function> (args);
+    }
+
+    // Force running in the same thread with node,
+    // mainly used with functions with [out] parameters
+    template<class GtkType, class Obj, void function (Obj)>
+    static Handle<Value> OutterMethod (const Arguments& args) {
+        HandleScope scope;
+
+        GtkType *obj = glue<GtkType> (args.This ());
+
+        gdk_threads_enter ();
+        function (obj);
+        gdk_threads_leave ();
+
+        return Undefined ();
+    }
+
+    template<class GtkType, void function (const GtkType*)>
+    static inline Handle<Value> OutterMethod (const Arguments& args) {
+        return OutterMethod<GtkType, const GtkType*, function> (args);
+    }
+
+    template<class GtkType, void function (GtkType*)>
+    static inline Handle<Value> OutterMethod (const Arguments& args) {
+        return OutterMethod<GtkType, GtkType*, function> (args);
+    }
+
+    template<class ARG0,
+             class GtkType, class Obj, void function (Obj, ARG0)>
+    static Handle<Value> OutterMethod (const Arguments& args) {
+        HandleScope scope;
+
+        if (args.Length () != 1)
+            return THROW_BAD_ARGS;
+
+        GtkType *obj = glue<GtkType> (args.This ());
+
+        GValue value = glue (args[0]);
+
+        gdk_threads_enter ();
+        function (obj, raw<ARG0> (&value));
+        gdk_threads_leave ();
+
+        g_value_unset (&value);
+
+        return Undefined ();
+    }
+
+    template<class ARG0, class GtkType, void function (const GtkType*, ARG0)>
+    static inline Handle<Value> OutterMethod (const Arguments& args) {
+        return OutterMethod<ARG0, GtkType, const GtkType*, function> (args);
+    }
+
+    template<class ARG0, class GtkType, void function (GtkType*, ARG0)>
+    static inline Handle<Value> OutterMethod (const Arguments& args) {
+        return OutterMethod<ARG0, GtkType, GtkType*, function> (args);
+    }
+
+    template<class ARG0, class ARG1,
+             class GtkType, class Obj, void function (Obj, ARG0, ARG1)>
+    static Handle<Value> OutterMethod (const Arguments& args) {
+        HandleScope scope;
+
+        if (args.Length () != 2)
+            return THROW_BAD_ARGS;
+
+        GtkType *obj = glue<GtkType> (args.This ());
+
+        GValue arg0 = glue (args[0]);
+        GValue arg1 = glue (args[1]);
+
+        gdk_threads_enter ();
+        function (obj, raw<ARG0> (&arg0), raw<ARG1> (&arg1));
+        gdk_threads_leave ();
+
+        g_value_unset (&arg0);
+        g_value_unset (&arg1);
+
+        return Undefined ();
+    }
+
+    template<class ARG0, class ARG1, class GtkType, void function (const GtkType*, ARG0, ARG1)>
+    static inline Handle<Value> OutterMethod (const Arguments& args) {
+        return OutterMethod<ARG0, ARG1, GtkType, const GtkType*, function> (args);
+    }
+
+    template<class ARG0, class ARG1, class GtkType, void function (GtkType*, ARG0, ARG1)>
+    static inline Handle<Value> OutterMethod (const Arguments& args) {
+        return OutterMethod<ARG0, ARG1, GtkType, GtkType*, function> (args);
     }
 
 protected:

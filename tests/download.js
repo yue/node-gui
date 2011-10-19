@@ -28,6 +28,7 @@ new gui.Builder (__dirname + '/download.glade', function (builder) {
             });
 
             res.on ('end', function () {
+                download.setLabel ('Download');
                 download.setSensitive (true);
             });
         });
@@ -43,6 +44,7 @@ new gui.Builder (__dirname + '/download.glade', function (builder) {
                 message.destroy ();
             });
 
+            download.setLabel ('Download');
             download.setSensitive (true);
         });
 
@@ -52,6 +54,7 @@ new gui.Builder (__dirname + '/download.glade', function (builder) {
 
         req.end ();
 
+        download.setLabel ('Downloading...');
         download.setSensitive (false);
     };
 

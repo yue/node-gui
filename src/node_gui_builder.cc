@@ -86,7 +86,7 @@ Handle<Value> Builder::Get (const Arguments& args) {
 
     if (args.Length () == 1) {
         // Create GObject by default
-        return scope.Close (glue<Object> (widget));
+        return scope.Close (glue (widget));
     } else {
         v8::Local<v8::Value> external = v8::External::New (widget);
 

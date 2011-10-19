@@ -75,13 +75,13 @@ v8::Handle<Value> glue (const GValue* value) {
             return String::New (g_value_get_string (value));
 
         case G_TYPE_POINTER:
-            return glue<Object> (g_value_get_pointer (value));
+            return glue (g_value_get_pointer (value));
 
         case G_TYPE_OBJECT:
-            return glue<Object> (g_value_get_object (value));
+            return glue (g_value_get_object (value));
 
         case G_TYPE_BOXED:
-            return glue<Object> (g_value_get_boxed (value));
+            return glue (g_value_get_boxed (value));
 
         case G_TYPE_INTERFACE:
             return ThrowException(Exception::TypeError(

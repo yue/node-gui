@@ -18,16 +18,6 @@ inline T* glue (v8::Handle<v8::Value> obj) {
 }
 
 // Convert GTK+ object to javascript object 
-template<class T>
-inline v8::Handle<v8::Object> glue (void *widget) {
-    v8::HandleScope scope;
-
-    v8::Local<v8::Value> external = v8::External::New (widget);
-    v8::Handle<v8::Object> obj = T::constructor_template->GetFunction ()->NewInstance (1, &external);
-
-    return scope.Close (obj);
-}
-
 v8::Handle<v8::Object> glue (void *widget);
 v8::Handle<v8::Object> glue (GtkTextBuffer *widget);
 

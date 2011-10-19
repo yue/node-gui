@@ -45,6 +45,10 @@
     NODE_SET_PROTOTYPE_METHOD (constructor_template, Name, \
             (SetterMethod<Type, Gtk##Class, Method>));
 
+#define OUTTER_METHOD(Class, Name, Method, Type) \
+    NODE_SET_PROTOTYPE_METHOD (constructor_template, Name, \
+            (OutterMethod<Type, Gtk##Class, Method>));
+
 #define GETTER_METHOD(Class, Name, Method, Type) \
     NODE_SET_PROTOTYPE_METHOD (constructor_template, Name, \
             (GetterMethod<Type, Gtk##Class, Method>));
