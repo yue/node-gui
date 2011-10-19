@@ -30,6 +30,10 @@ inline v8::Handle<v8::Value> glue (unsigned int i) {
     return v8::Integer::NewFromUnsigned (i);
 }
 
+inline v8::Handle<v8::Value> glue (long unsigned i) {
+    return v8::Integer::NewFromUnsigned (i);
+}
+
 inline v8::Handle<v8::Value> glue (char *i) {
     g_free (i);
     return v8::String::New (i);
