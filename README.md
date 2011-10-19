@@ -53,6 +53,12 @@ Then you can compile and install the module
 node-waf configure build install
 ````
 
+Or simply
+
+````
+npm install gui
+````
+
 On Windows
 ----------
 
