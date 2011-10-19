@@ -22,10 +22,9 @@ new gui.Builder (__dirname + '/download.glade', function (builder) {
         var data = "";
         var req = http.request (options, function (res) {
             res.on ('data', function (chunk) {
-                // TODO
-                // rewrite after TextBuffer is done
-                data += String (chunk);
-                text.getBuffer().setProperty ('text', data);
+                var buffer = text.getBuffer ();
+                var str = String (chunk);
+                buffer.insertAtCursor (str, str.length);
             });
 
             res.on ('end', function () {

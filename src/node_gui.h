@@ -85,6 +85,17 @@
 #define END_CONSTRUCTOR() \
     target->Set (symbol, t->GetFunction ())
 
+// Generate javascript type from GTK+ object's type
+#define DEFINE_GLUE(Type) \
+    v8::Handle<v8::Object> glue (Gtk##Type *widget) {\
+        v8::HandleScope scope;\
+\
+        v8::Local<v8::Value> external = v8::External::New (widget);\
+        v8::Handle<v8::Object> obj = Type::constructor_template->GetFunction ()->NewInstance (1, &external);\
+\
+        return scope.Close (obj);\
+    }
+
 namespace clip {
 using namespace v8;
 

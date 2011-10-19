@@ -29,6 +29,7 @@ inline v8::Handle<v8::Object> glue (void *widget) {
 }
 
 v8::Handle<v8::Object> glue (void *widget);
+v8::Handle<v8::Object> glue (GtkTextBuffer *widget);
 
 // From c type to v8::Value
 inline v8::Handle<v8::Value> glue (int i) {
@@ -62,7 +63,9 @@ inline v8::Handle<v8::Value> glue (double i) {
 
 // Convert GValue to its raw state
 template<class T>
-T raw (const GValue* value);
+T raw (const GValue* value) {
+    return static_cast<T> (g_value_get_pointer (value));
+}
 
 template<class T*>
 inline T* raw (const GValue* value) {

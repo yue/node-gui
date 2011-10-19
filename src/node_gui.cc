@@ -4,6 +4,7 @@
 #include "node_gui_clipboard.h"
 #include "node_gui_object.h"
 #include "node_gui_text_iter.h"
+#include "node_gui_text_buffer.h"
 #include "node_gui_list_store.h"
 #include "node_gui_widget.h"
 #include "node_gui_entry.h"
@@ -40,6 +41,7 @@ void Init (Handle<v8::Object> target) {
     clip::Type::Init (target);
     clip::Object::Init (target);
     clip::TextIter::Init (target);
+    clip::TextBuffer::Init (target);
     clip::ListStore::Init (target);
     clip::Clipboard::Init (target);
     clip::Widget::Init (target);

@@ -212,10 +212,7 @@ protected:
 
         ReturnType result = function (obj);
 
-		// TODO
-		// return glue (static_cast<ReturnType> (result));
-		// And then overload all `glue`s in individual Classes
-        return scope.Close (glue (result));
+        return scope.Close (glue (static_cast<ReturnType> (result)));
     }
 
     template<class ReturnType, class GtkType, ReturnType function (const GtkType*)>
