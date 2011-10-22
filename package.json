@@ -3,9 +3,12 @@
 , "keywords" :        ["GTK+", "gui"]
 , "version":          "0.0.1"
 , "author" :          "Zhao Cheng <zcbenz@gmail.com>"
-, "repository" :      { "type" :  "git"
-                      , "url" :   "https://github.com/zcbenz/node-gui.git" }
-, "bugs" :            { "web" :   "https://github.com/zcbenz/node-gui/issues" }
+, "repository" :      { "type" :  "git",
+                        "url" :   "https://github.com/zcbenz/node-gui.git"
+                      }
+, "bugs" :            { "web" :   "https://github.com/zcbenz/node-gui/issues",
+                        "url" :   "https://github.com/zcbenz/node-gui/issues"
+                      }
 , "scripts" :         { "preinstall" : "node-waf configure",
                         "install" : "node-waf build install"
                       }
