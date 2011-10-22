@@ -47,6 +47,10 @@ Or on ubuntu
 sudo apt-get install build-essential libgtk2.0-dev
 ````
 
+And also note that, on older versions of Ubuntu, you may not have GCC 4.6 available,
+you should add [PPA for Ubuntu Toolchain Uploads](https://launchpad.net/~ubuntu-toolchain-r/+archive/test)
+before compiling `node-gui`.
+
 Then you can compile and install the module
 
 ````
@@ -80,7 +84,7 @@ A simple example
 var gui = require ('gui');
 
 var window = new gui.Window ({
-    'title': 'node-gui'
+    'title': 'node-gui',
     'window-position': 1,
     'opacity': 0.5
 });
