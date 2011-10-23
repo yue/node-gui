@@ -4,13 +4,13 @@
 , "version":          "0.0.1"
 , "author" :          "Zhao Cheng <zcbenz@gmail.com>"
 , "repository" :      { "type" :  "git",
-                        "url" :   "https://github.com/zcbenz/node-gui.git"
-                      }
+                        "url" :   "https://github.com/zcbenz/node-gui.git" }
 , "bugs" :            { "url" :   "https://github.com/zcbenz/node-gui/issues" }
 , "os" :              [ "linux"
                       , "darwin"
                       , "freebsd"
                       , "windows" ]
+, "main" :            "lib/gui"
 , "homepage":         "https://github.com/zcbenz/node-gui"
 , "config":           { "native" : true }
 , "engines" :         { "node" : ">=0.5.8" }

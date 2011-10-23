@@ -1,4 +1,4 @@
-var gui = require('gui');
+var gui = require('../lib/gui');
 
 new gui.Builder (__dirname + '/builder.glade', function (builder) {
     var window = builder.get ('window1'   , gui.Window   ) ;
