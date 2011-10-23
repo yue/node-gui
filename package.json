@@ -6,13 +6,11 @@
 , "repository" :      { "type" :  "git"
                       , "url" :   "https://github.com/zcbenz/node-gui.git" }
 , "bugs" :            { "web" :   "https://github.com/zcbenz/node-gui/issues" }
-, "scripts" :         { "preinstall" : "node-waf configure",
-                        "install" : "node-waf build install"
-                      }
 , "os" :              [ "linux"
                       , "darwin"
                       , "freebsd"
                       , "windows" ]
+, "main" :            "lib/gui"
 , "homepage":         "https://github.com/zcbenz/node-gui"
 , "config":           { "native" : true }
 , "engines" :         { "node" : ">=0.5.8" }

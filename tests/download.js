@@ -1,4 +1,4 @@
-var gui = require ('gui');
+var gui = require ('../lib/gui');
 var http = require ('http');
 
 new gui.Builder (__dirname + '/download.glade', function (builder) {

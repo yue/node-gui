@@ -1,4 +1,4 @@
-var gui = require('gui');
+var gui = require('../lib/gui');
 
 var window = new gui.Window ({
     'title': 'node-gui',
