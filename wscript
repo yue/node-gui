@@ -12,7 +12,7 @@ def configure(conf):
 
 def build(bld):
   obj = bld.new_task_gen('cxx', 'shlib', 'node_addon')
-  obj.cxxflags = ['-O2', '-Wall', '-std=c++0x']
+  obj.cxxflags = ['-g', '-Wall', '-std=c++0x']
   obj.target = 'gui'
   obj.source = bld.glob("src/*.cc")
   obj.uselib = 'GTK'

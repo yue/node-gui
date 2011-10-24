@@ -48,7 +48,7 @@ sudo apt-get install build-essential libgtk2.0-dev
 ````
 
 And also note that, on older versions of Ubuntu, you may not have GCC 4.6 available,
-you should add [PPA for Ubuntu Toolchain Uploads](https://launchpad.net/~ubuntu-toolchain-r/+archive/test)
+you should add [PPA for Ubuntu Toolchain Uploads](https://wiki.ubuntu.com/ToolChain)
 before compiling `node-gui`.
 
 Then you can compile and install the module
