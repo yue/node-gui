@@ -164,8 +164,8 @@ and a gui.Widget according to the object hierarchy:
 
 ````javascript
 var window = builder.get ('window', gui.Window);
-    window = builder.get ('window', gui.Widget);
-    window = builder.get ('window', gui.Object);
+var window = builder.get ('window', gui.Widget);
+var window = builder.get ('window', gui.Object);
 ````
 
 `gui.Builder` will hold all object's life except for toplevel windows.
