@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/zcbenz/node-gui.png)](http://travis-ci.org/zcbenz/node-gui)
 node-gui
 ========
 
