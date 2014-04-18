@@ -9,7 +9,8 @@
 , "os" :              [ "linux"
                       , "darwin"
                       , "freebsd"
-                      , "windows" ]
+                      , "windows" 
+                      , "win32"]
 , "main" :            "lib/gui"
 , "homepage":         "https://github.com/zcbenz/node-gui"
 , "config":           { "native" : true }
