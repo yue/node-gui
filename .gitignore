@@ -1,0 +1,5 @@
+/node_modules
+/yue.github.io
+config.json
+*.log
+*.swp
