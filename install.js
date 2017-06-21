@@ -17,12 +17,14 @@ if (!runtime)
 let nodever = process.env.npm_config_target
 if (!nodever)
   nodever = process.version
+if (nodever.startsWith('v'))
+  nodever = nodever.substr(1)
 let targetCpu = process.env.npm_config_arch
 if (!targetCpu)
   targetCpu = process.arch
 if (targetCpu == 'ia32')
   targetCpu = 'x86'
-let shortver = nodever.substring(1, nodever.lastIndexOf('.'))
+let shortver = nodever.substring(0, nodever.lastIndexOf('.'))
 if (runtime == 'node')
   shortver = shortver.substring(0, shortver.lastIndexOf('.'))
 const targetOs = {
