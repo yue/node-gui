@@ -7,8 +7,7 @@
 const downloadYue = require('download-yue')
 
 // Version to download.
-// const {version} = 'v' + require('./package.json')
-const version = 'v0.1.0'
+const {version} = 'v' + require('./package.json')
 
 // Which binary to download.
 let runtime = process.env.npm_config_runtime
