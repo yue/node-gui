@@ -9,7 +9,7 @@ const downloadYue = require('download-yue')
 // Version to download.
 const version = 'v' + require('./package.json').version
 
-// Which binary to download.
+// Parse runtimes and versions.
 let runtime = process.env.npm_config_runtime
 if (!runtime)
   runtime = 'node'
@@ -26,6 +26,14 @@ if (targetCpu == 'ia32')
 let shortver = nodever.substring(0, nodever.lastIndexOf('.'))
 if (runtime == 'node')
   shortver = shortver.substring(0, shortver.lastIndexOf('.'))
+
+// Electron 1.8.x is the same with Node 8.x
+if (runtime == 'electron' && shortver == '1.8') {
+  runtime = 'node'
+  shortver = '8'
+}
+
+// Get the filename of binary.
 const targetOs = {
   win32: 'win',
   linux: 'linux',
