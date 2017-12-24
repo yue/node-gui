@@ -14,5 +14,7 @@
   "engines": {
     "node": ">=8",
     "electron": ">=1.6"
-  }
+  },
+  "typings": "index.d.ts"
+  
 }
