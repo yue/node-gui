@@ -27,12 +27,6 @@ let shortver = nodever.substring(0, nodever.lastIndexOf('.'))
 if (runtime == 'node')
   shortver = shortver.substring(0, shortver.lastIndexOf('.'))
 
-// Electron 1.8.x is the same with Node 8.x
-if (runtime == 'electron' && shortver == '1.8') {
-  runtime = 'node'
-  shortver = '8'
-}
-
 // Get the filename of binary.
 const targetOs = {
   win32: 'win',
