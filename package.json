@@ -9,7 +9,7 @@
     "postinstall": "node install.js"
   },
   "dependencies": {
-    "download-yue": "1.x"
+    "download-yue": "2.x"
   },
   "engines": {
     "node": ">=8",
