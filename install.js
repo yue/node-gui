@@ -18,6 +18,9 @@ if (!nodever)
   nodever = process.version
 if (nodever.startsWith('v'))
   nodever = nodever.substr(1)
+let platform = process.platform
+if (process.env.npm_config_platform)
+  platform = process.env.npm_config_platform
 let targetCpu = process.env.npm_config_arch
 if (!targetCpu)
   targetCpu = process.arch
@@ -32,7 +35,7 @@ const targetOs = {
   win32: 'win',
   linux: 'linux',
   darwin: 'mac',
-}[process.platform]
+}[platform]
 const filename = `node_yue_${runtime}_${shortver}_${version}_${targetOs}_${targetCpu}.zip`
 
 // Personal github token.
