@@ -42,6 +42,6 @@ const filename = `node_yue_${runtime}_${shortver}_${version}_${targetOs}_${targe
 const token = process.env.GITHUB_TOKEN
 
 downloadYue('yue', version, filename, __dirname, token).catch((e) => {
-  console.error('Failed to download yue:', e.message)
+  console.error('Failed to install Yue:', e.message)
   process.exit(1)
 })
