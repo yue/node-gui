@@ -5,6 +5,7 @@
   "repository": "https://github.com/yue/node-gui",
   "license": "MIT",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "postinstall": "node install.js"
   },
