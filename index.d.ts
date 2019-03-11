@@ -12,181 +12,115 @@ declare module "gui" {
     }
 
     export interface SizeF {
-        width: number;
         height: number;
+        width: number;
     }
 
     export interface RectF {
+        height: number;
+        width: number;
         x: number;
         y: number;
-        width: number;
-        height: number;
     }
 
     export class App {
         protected constructor();
-
         static setApplicationMenu(menu: MenuBar): void;
-
         static getApplicationMenu(): MenuBar;
-
         static setDockBadgeLabel(label: string): void;
-
         static getDockBadgeLabel(): string;
-
         static getColor(name: AppThemeColor): Color;
-
         static getDefaultFont(): Font;
-
         static getClipboardType(): ClipboardDataType;
     }
 
     export class TableModel {
         static getRowCount(): number;
-
         static getValue(column: number, row: number): any;
-
         static setValue(column: number, row: number, value: any): void;
-
         static notifyRowInsertion(row: number): void;
-
         static notifyValueChange(column: number, row: number): void;
     }
 
     export class View {
-        onMouseDown: (self: this, event: MouseEvent) => void;
-        onMouseUp: (self: this, event: MouseEvent) => void;
-        onMouseMove: (self: this, event: MouseEvent) => void;
-        onMouseEnter: (self: this, event: MouseEvent) => void;
-        onMouseLeave: (self: this, event: MouseEvent) => void;
-        onKeyDown: (self: this, event: KeyEvent) => void;
-        onKeyUp: (self: this, event: KeyEvent) => void;
-        onDragLeave: (self: this, info: DraggingInfo) => void;
-        onSizeChanged: (self: this) => void;
-        onCaptureLost: (self: this) => void;
-        handleDragEnter: (self: this, info: DraggingInfo, point: PointF) => DragOperation;
-        handleDragUpdate: (self: this, info: DraggingInfo, point: PointF) => DragOperation;
-        handleDrop: (self: this, info: DraggingInfo, point: PointF) => boolean;
-
         protected constructor();
-
-        offsetFromView(view: View): Vector2dF;
-
-        offsetFromWindow(): Vector2dF;
-
-        getBounds(): RectF;
-
-        layout(): void;
-
-        schedulePaint(): void;
-
-        schedulePaintRect(rect: RectF): void;
-
-        setVisible(isVisible: boolean): void;
-
-        isVisible(): boolean;
-
-        setEnabled(isEnabled: boolean): void;
-
-        isEnabled(): boolean;
-
-        focus(): void;
-
-        hasFocus(): boolean;
-
-        setFocusable(isFocusable: boolean): void;
-
-        isFocusable(): boolean;
-
-        setCapture(): void;
-
-        releaseCapture(): void;
-
-        hasCapture(): boolean;
-
-        setMouseDownCanMoveWindow(can: boolean): void;
-
-        isMouseDownCanMoveWindow(): boolean;
-
-        doDrag(data: ClipboardData[], operations: DragOperation): number;
-
-        doDragWithOptions(data: ClipboardData[], operations: DragOperation, options: DragOptions): number;
-
         cancelDrag(): void;
-
-        isDragging(): boolean;
-
-        registerDraggedTypes(types: ClipboardDataType[]): void;
-
-        setCursor(cursor: Cursor): void;
-
-        setFont(font: Font): void;
-
-        setColor(color: ColorArg): void;
-
-        setBackgroundColor(color: ColorArg): void;
-
-        setStyle(styles: any): void;
-
+        doDrag(data: ClipboardData[], operations: DragOperation): number;
+        doDragWithOptions(data: ClipboardData[], operations: DragOperation, options: DragOptions): number;
+        focus(): void;
+        getBounds(): RectF;
         getComputedLayout(): string;
-
         getMinimumSize(): SizeF;
-
         getParent(): View;
-
         getWindow(): Window;
+        handleDragEnter(self: this, info: DraggingInfo, point: PointF): DragOperation;
+        handleDragUpdate(self: this, info: DraggingInfo, point: PointF): DragOperation;
+        handleDrop(self: this, info: DraggingInfo, point: PointF): boolean;
+        hasCapture(): boolean;
+        hasFocus(): boolean;
+        isDragging(): boolean;
+        isEnabled(): boolean;
+        isFocusable(): boolean;
+        isMouseDownCanMoveWindow(): boolean;
+        isVisible(): boolean;
+        layout(): void;
+        offsetFromView(view: View): Vector2dF;
+        offsetFromWindow(): Vector2dF;
+        onCaptureLost(self: this): void;
+        onDragLeave(self: this, info: DraggingInfo): void;
+        onKeyDown(self: this, event: KeyEvent): void;
+        onKeyUp(self: this, event: KeyEvent): void;
+        onMouseDown(self: this, event: MouseEvent): void;
+        onMouseEnter(self: this, event: MouseEvent): void;
+        onMouseLeave(self: this, event: MouseEvent): void;
+        onMouseMove(self: this, event: MouseEvent): void;
+        onMouseUp(self: this, event: MouseEvent): void;
+        onSizeChanged(self: this): void;
+        registerDraggedTypes(types: ClipboardDataType[]): void;
+        releaseCapture(): void;
+        schedulePaint(): void;
+        schedulePaintRect(rect: RectF): void;
+        setBackgroundColor(color: ColorArg): void;
+        setCapture(): void;
+        setColor(color: ColorArg): void;
+        setCursor(cursor: Cursor): void;
+        setEnabled(isEnabled: boolean): void;
+        setFocusable(isFocusable: boolean): void;
+        setFont(font: Font): void;
+        setMouseDownCanMoveWindow(can: boolean): void;
+        setStyle(styles: any): void;
+        setVisible(isVisible: boolean): void;
     }
 
     export class Browser extends View {
-        onClose: (self: this) => void;
-        onUpdateCommand: (self: this) => void;
-        onChangeLoading: (self: this) => void;
-        onStartNavigation: (self: this, url: string) => void;
-        onCommitNavigation: (self: this, url: string) => void;
-        onFinishNavigation: (self: this, url: string) => void;
-        onFailNavigation: (self: this, url: string, code: number) => void;
-
-        protected constructor();
-
         static create(options: BrowserOptions): Browser;
-
         static registerProtocol(scheme: string, handler: (url: string) => void): void;
-
         static unregisterProtocol(scheme: string): void;
-
-        loadUrl(url: string): void;
-
-        loadHTML(html: string, baseurl: string): void;
-
-        getURL(): string;
-
-        getTitle(): string;
-
-        setUserAgent(userAgent: string): void;
-
-        executeJavaScript(code: string, callback: (success: boolean, result: any) => void): void;
-
-        goBack(): void;
-
-        canGoBack(): boolean;
-
-        goForward(): void;
-
-        canGoForward(): boolean;
-
-        reload(): void;
-
-        stop(): void;
-
-        isLoading(): boolean;
-
-        setBindingName(name: string): void;
-
+        protected constructor();
         addBinding(name: string, func: Function): void;
-
         addRawBinding(name: string, func: Function): void;
-
+        canGoBack(): boolean;
+        canGoForward(): boolean;
+        executeJavaScript(code: string, callback: (success: boolean, result: any) => void): void;
+        getTitle(): string;
+        getURL(): string;
+        goBack(): void;
+        goForward(): void;
+        isLoading(): boolean;
+        loadHTML(html: string, baseurl: string): void;
+        loadUrl(url: string): void;
+        onChangeLoading(self: this): void;
+        onClose(self: this): void;
+        onCommitNavigation(self: this, url: string): void;
+        onFailNavigation(self: this, url: string, code: number): void;
+        onFinishNavigation(self: this, url: string): void;
+        onStartNavigation(self: this, url: string): void;
+        onUpdateCommand(self: this): void;
+        reload(): void;
         removeBinding(name: string): void;
+        setBindingName(name: string): void;
+        setUserAgent(userAgent: string): void;
+        stop(): void;
     }
 
     export interface CreateButtonOptions {
@@ -195,731 +129,474 @@ declare module "gui" {
     }
 
     export class Button extends View {
-        onClick: (self: this) => void;
-
-        protected constructor();
-
         static create(title: string): Button;
-
         static create(options: CreateButtonOptions): Button;
-
-        setTitle(title: string): void;
-
-        getTitle(): string;
-
-        setChecked(isChecked: boolean): void;
-
-        isChecked(): boolean;
-
-        setImage(image: Image): void;
-
-        getImage(): Image;
-
-        setButtonStyle(style: ButtonStyle): void;
-
+        protected constructor();
         getButtonStyle(): ButtonStyle;
-
-        setHasBoarder(hasBoarder: boolean): void;
-
+        getImage(): Image;
+        getTitle(): string;
         hasBoarder(): boolean;
+        isChecked(): boolean;
+        onClick(self: this): void;
+        setButtonStyle(style: ButtonStyle): void;
+        setChecked(isChecked: boolean): void;
+        setHasBoarder(hasBoarder: boolean): void;
+        setImage(image: Image): void;
+        setTitle(title: string): void;
     }
 
     export class Canvas {
-        protected constructor();
-
         static create(size: SizeF, scaleFactor: number): Canvas;
-
         static createForMainScreen(size: SizeF): Canvas;
-
-        getScaleFactor(): number;
-
+        protected constructor();
         getPainter(): Painter;
-
+        getScaleFactor(): number;
         getSize(): SizeF;
     }
 
     export class Clipboard {
         protected constructor();
-
         clear(): void;
-
-        setText(text: string): void;
-
-        getText(): string;
-
-        isDataAvailable(type: ClipboardDataType): boolean;
-
         getData(type: ClipboardDataType): ClipboardData;
-
+        getText(): string;
+        isDataAvailable(type: ClipboardDataType): boolean;
         setData(objects: ClipboardData[]): void;
+        setText(text: string): void;
     }
 
     export class Color {
         protected constructor();
-
         static rgb(r: number, g: number, b: number): Color;
         static argb(a: number, r: number, g: number, b: number): Color;
     }
 
     type ColorArg = Color | string;
 
-    // Actually inherits Picker, but due to typescript limits we can not "inherit" here.
-    export class ComboBox extends View {
-        onTextChange: (self: this) => void;
-        onSelectionChanged: (self: this) => void;
-
-        protected constructor();
-
+    export class ComboBox extends Picker {
         static create(): ComboBox;
-
-        setText(text: string): void;
-
+        protected constructor();
         getText(): string;
-
-        addItem(title: string): void;
-
-        removeItemAt(index: number): void;
-
-        getItems(): string[];
-
-        selectItemAt(index: number): void;
-
-        getSelectedItem(): string;
-
-        getSelectedItemIndex(): number;
+        onTextChange(self: this): void;
+        setText(text: string): void;
     }
 
     export class Container extends View {
-        onDraw: (self: this, painter: Painter, dirty: RectF) => void;
-
-        protected constructor();
-
         static create(): Container;
-
-        getPreferredSize(): SizeF;
-
-        getPreferredHeightForWidth(width: number): number;
-
-        getPreferredWidthForHeight(height: number): number;
-
+        protected constructor();
         addChildView(view: View): void;
-
         addChildViewAt(view: View, index: number): void;
-
-        removeChildView(view: View): void;
-
-        childCount(): number;
-
         childAt(index: number): View;
+        childCount(): number;
+        getPreferredHeightForWidth(width: number): number;
+        getPreferredSize(): SizeF;
+        getPreferredWidthForHeight(height: number): number;
+        onDraw(self: this, painter: Painter, dirty: RectF): void;
+        removeChildView(view: View): void;
     }
 
     export class Cursor {
         protected constructor();
-
         static createWithType(type: CursorType): Cursor;
     }
 
     export class Entry extends View {
-        onTextChange: (self: this) => void;
-        onActivate: (self: this) => void;
-
-        protected constructor();
-
         static create(): Entry;
-
         static createType(type: EntryType): Entry;
-
+        protected constructor();
+        getText(): string;
+        onActivate(self: this): void;
+        onTextChange(self: this): void;
         setText(text: string): void;
-
-        getTtext(): string;
     }
 
     export class FileDialog {
-        static optionPickFolders: number;
-        static optionMultiSelect: number;
-        static optionShowHidden: number;
-
         protected constructor();
-
+        static optionMultiSelect: number;
+        static optionPickFolders: number;
+        static optionShowHidden: number;
         getResult(): string;
-
         run(): boolean;
-
         runForWindow(window: Window): boolean;
-
-        setTitle(title: string): void;
-
         setButtonLabel(label: Label): void;
-
-        setFolder(folder: string): void;
-
-        setOptions(options: number): void;
-
         setFilters(filters: FileDialogFilter[]): void;
+        setFolder(folder: string): void;
+        setOptions(options: number): void;
+        setTitle(title: string): void;
     }
 
     export class FileOpenDialog extends FileDialog {
         protected constructor();
-
-        static create(): FileOpenDialog;
-
         getResults(): string[];
+        static create(): FileOpenDialog;
     }
 
     export class FileSaveDialog extends FileDialog {
         protected constructor();
-
         static create(): FileSaveDialog;
     }
 
     export class Font {
-        protected constructor();
-
-        static default(): Font;
-
         static create(name: string, size: number, weight: FontWeight, style: FontStyle): Font;
-
+        static default(): Font;
+        protected constructor();
         derive(sizeDetla: number, weight: FontWeight, style: FontStyle): Font;
-
         getName(): string;
-
         getSize(): number;
-
-        getWeight(): FontWeight;
-
         getStyle(): FontStyle;
+        getWeight(): FontWeight;
     }
 
     export class GifPlayer extends View {
-        protected constructor();
-
         static create(): GifPlayer;
-
-        setImage(image: Image): void;
-
+        protected constructor();
         getImage(): Image;
-
-        setAnimating(isAnimating: boolean): void;
-
         isAnimating(): boolean;
+        setAnimating(isAnimating: boolean): void;
+        setImage(image: Image): void;
     }
 
     export class Group extends View {
-        protected constructor();
-
         static create(title: string): Group;
-
-        setContentView(view: View): void;
-
+        protected constructor();
         getContentView(): View;
-
-        setTitle(title: string): void;
-
         getTitle(): string;
+        setContentView(view: View): void;
+        setTitle(title: string): void;
     }
 
     export class Image {
-        protected constructor();
-
         static createEmpty(): Image;
-
-        static createFromPath(path: string): Image;
-
         // Todo: Fix buffer being any
         static createFromBuffer(buffer: any, scaleFactor: number): Image;
-
-        getSize(): SizeF;
-
+        static createFromPath(path: string): Image;
+        protected constructor();
         getScaleFactor(): number;
+        getSize(): SizeF;
     }
 
     export class Label extends View {
-        protected constructor();
-
         static create(text: string): Label;
-
-        setText(text: string): void;
-
+        protected constructor();
         getText(): string;
-
         setAlign(align: TextAlign): void;
-
+        setText(text: string): void;
         setVAlign(align: TextAlign): void;
     }
 
-    // Todo
     export class Lifetime {
+        onActivate(): void;
+        onReady(): void;
     }
 
     export interface MenuItemOptions {
-        type?: MenuItemType;
-        role?: MenuItemRole;
+        accelerator?: Accelerator;
         checked?: boolean;
-        submenu?: Menu;
-        visible?: boolean;
         enabled?: boolean;
         label?: string;
-        accelerator?: Accelerator;
         onClick?: (menuItem: MenuItem) => void;
+        role?: MenuItemRole;
+        submenu?: Menu;
+        type?: MenuItemType;
+        visible?: boolean;
     }
 
     export class MenuItem {
-        onClick: (self: this) => void;
-
-        protected constructor();
-
         static create(type: MenuItemType): MenuItem;
-
         static create(options: MenuItemOptions): MenuItem;
-
+        protected constructor();
         click(): void;
-
-        setLabel(label: string): void;
-
         getLabel(): string;
-
-        setSubmenu(submenu: Menu): void;
-
         getSubmenu(): Menu;
-
-        setChecked(isChecked: boolean): void;
-
         isChecked(): boolean;
-
-        setEnabled(isEnabled: boolean): void;
-
         isEnabled(): boolean;
-
-        setVisible(isVisible: boolean): void;
-
         isVisible(): boolean;
-
+        onClick(self: this): void;
         setAccelerator(accelerator: Accelerator): void;
+        setChecked(isChecked: boolean): void;
+        setEnabled(isEnabled: boolean): void;
+        setLabel(label: string): void;
+        setSubmenu(submenu: Menu): void;
+        setVisible(isVisible: boolean): void;
     }
 
     export class MenuBase {
         append(item: MenuItem): void;
-
         insert(item: MenuItem, index: number): void;
-
-        remove(item: MenuItem): void;
-
-        itemCount(): number;
-
         itemAt(index: number): MenuItem;
+        itemCount(): number;
+        remove(item: MenuItem): void;
     }
 
     export class Menu extends MenuBase {
         protected constructor();
-
-        static create(items: MenuItem[]): Menu;
-
         popup(): void;
+        static create(items: MenuItem[]): Menu;
     }
 
     export class MenuBar extends MenuBase {
         protected constructor();
-
         static create(items: MenuItem[]): MenuBar;
     }
 
     export class MessageLoop {
         static run(): void;
-
         static quit(): void;
-
         static postTask(task: Function): void;
-
         static postDelayedTask(ms: number, task: Function): void;
     }
 
     export class Painter {
-        beginPath: void;
-        closePath: void;
-
-        save(): void;
-
-        restore(): void;
-
-        moveTo(point: PointF): void;
-
-        lineTo(point: PointF): void;
-
-        bezierCurveTo(cp1: PointF, cp2: PointF, ep: PointF): void;
-
         arc(point: PointF, radius: number, sa: number, ea: number): void;
-
-        rect(rect: RectF): void;
-
+        beginPath(): void;
+        bezierCurveTo(cp1: PointF, cp2: PointF, ep: PointF): void;
         clip(): void;
-
         clipRect(rect: RectF): void;
-
-        translate(offset: Vector2dF): void;
-
-        rotate(angle: number): void;
-
-        scale(scale: Vector2dF): void;
-
-        setColor(color: ColorArg): void;
-
-        setStrokeColor(color: ColorArg): void;
-
-        setLineWidth(width: number): void;
-
-        stroke(): void;
-
-        fill(): void;
-
-        strokeRect(rect: RectF): void;
-
-        fillRect(rect: RectF): void;
-
-        drawImage(image: Image, rect: RectF): void;
-
-        drawImageFromRect(image: Image, src: RectF, dest: RectF): void;
-
+        closePath(): void;
         drawCanvas(canvas: Canvas, rect: RectF): void;
-
         drawCanvasFromRect(canvas: Canvas, src: RectF, dest: RectF): void;
-
-        measureText(text: string, width: number, attributes: TextAttributes): void;
-
+        drawImage(image: Image, rect: RectF): void;
+        drawImageFromRect(image: Image, src: RectF, dest: RectF): void;
         drawText(text: string, rect: RectF, attributes: TextAttributes): void;
+        fill(): void;
+        fillRect(rect: RectF): void;
+        lineTo(point: PointF): void;
+        measureText(text: string, width: number, attributes: TextAttributes): void;
+        moveTo(point: PointF): void;
+        rect(rect: RectF): void;
+        restore(): void;
+        rotate(angle: number): void;
+        save(): void;
+        scale(scale: Vector2dF): void;
+        setColor(color: ColorArg): void;
+        setLineWidth(width: number): void;
+        setStrokeColor(color: ColorArg): void;
+        stroke(): void;
+        strokeRect(rect: RectF): void;
+        translate(offset: Vector2dF): void;
     }
 
     export class Picker extends View {
-        onSelectionChanged: (self: this) => void;
-
-        protected constructor();
-
         static create(): Picker;
-
+        protected constructor();
         addItem(title: string): void;
-
-        removeItemAt(index: number): void;
-
         getItems(): string[];
-
-        selectItemAt(index: number): void;
-
         getSelectedItem(): string;
-
         getSelectedItemIndex(): number;
+        onSelectionChanged(self: this): void;
+        removeItemAt(index: number): void;
+        selectItemAt(index: number): void;
     }
 
     export class ProgressBar extends View {
-        protected constructor();
-
         static create(): ProgressBar;
-
-        setValue(percent: number): void;
-
+        protected constructor();
         getValue(): number;
-
-        setIndeterminate(isIndeterminate: boolean): void;
-
         isIndeterminate(): boolean;
+        setIndeterminate(isIndeterminate: boolean): void;
+        setValue(percent: number): void;
     }
 
     export class Scroll extends View {
-        protected constructor();
-
         static create(): Scroll;
-
-        setContentView(view: View): void;
-
-        getContentView(view: View): void;
-
-        setContentSize(size: SizeF): void;
-
+        protected constructor();
         getContentSize(): SizeF;
-
-        setOverlayScrollbar(overlay: boolean): void;
-
-        isOverlayScrollbar(): boolean;
-
-        setScrollbarPolicy(hPolicy: ScrollPolicy, vPolicy: ScrollPolicy): void;
-
+        getContentView(view: View): void;
         getScrollbarPolicy(): [ScrollPolicy, ScrollPolicy];
+        isOverlayScrollbar(): boolean;
+        setContentSize(size: SizeF): void;
+        setContentView(view: View): void;
+        setOverlayScrollbar(overlay: boolean): void;
+        setScrollbarPolicy(hPolicy: ScrollPolicy, vPolicy: ScrollPolicy): void;
     }
 
     export class SimpleTableModel extends TableModel {
         protected constructor();
-
-        static create(columns: number): SimpleTableModel;
-
         addRow(row: any[]): void;
-
         removeRowAt(index: number): void;
+        static create(columns: number): SimpleTableModel;
     }
 
     export class Slider extends View {
-        onValueChange: (self: this) => void;
-        onSlidingComplete: (self: this) => void;
-
-        protected constructor();
-
         static create(): Slider;
-
-        setValue(value: number): void;
-
-        getValue(): number;
-
-        setStep(step: number): void;
-
-        setRange(min: number, max: number): void;
-
+        protected constructor();
         getRange(): [number, number];
+        getValue(): number;
+        onSlidingComplete(self: this): void;
+        onValueChange(self: this): void;
+        setRange(min: number, max: number): void;
+        setStep(step: number): void;
+        setValue(value: number): void;
     }
 
     export class Tab extends View {
-        onSelectedPageChange: (self: this) => void;
-
-        protected constructor();
-
         static create(): Tab;
-
+        protected constructor();
         addPage(title: string, view: View): void;
-
-        removePage(view: View): void;
-
-        pageCount(): number;
-
-        pageAt(index: number): View;
-
-        selectPageAt(index: number): void;
-
-        getSelectedPageIndex(): number;
-
         getSelectedPage(): View;
+        getSelectedPageIndex(): number;
+        onSelectedPageChange(self: this): void;
+        pageAt(index: number): View;
+        pageCount(): number;
+        removePage(view: View): void;
+        selectPageAt(index: number): void;
     }
 
     export class Table extends View {
-        protected constructor();
-
         static create(): Table;
-
-        setModel(model: TableModel): void;
-
-        getModel(): TableModel;
-
+        protected constructor();
         addColumn(title: string): void;
-
         addColumnWithOptions(title: string, options: TableColumnOptions): void;
-
         getColumnCount(): number;
-
-        setColumnsVisible(isColumnsVisible: boolean): void
-
-        isColumnsVisible(): void;
-
-        setRowHeight(height: number): void;
-
+        getModel(): TableModel;
         getRowHeight(): number;
-
-        selectRow(row: number): void;
-
         getSelectedRow(): number;
+        isColumnsVisible(): void;
+        selectRow(row: number): void;
+        setColumnsVisible(isColumnsVisible: boolean): void
+        setModel(model: TableModel): void;
+        setRowHeight(height: number): void;
     }
 
     export class TextEdit extends View {
-        onTextChange: (self: this) => void;
-        shouldInsertNewLine: (self: this) => true;
-
-        protected constructor();
-
         static create(): TextEdit;
-
-        setText(text: string): void;
-
-        getText(): string;
-
-        undo(): void;
-
-        canUndo(): boolean;
-
-        redo(): void;
-
+        protected constructor();
         canRedo(): boolean;
-
-        cut(): void;
-
+        canUndo(): boolean;
         copy(): void;
-
-        paste(): void;
-
-        selectAll(): void;
-
-        getSelectionRange(): [number, number];
-
-        selectRange(start: number, end: number): void;
-
-        getTextInRange(start: number, end: number): string;
-
-        insertTextAt(text: string, position: number): void;
-
+        cut(): void;
         delete(): void;
-
         deleteRange(start: number, end: number): void;
-
-        setOverlayScrollbar(overlay: boolean): void;
-
-        setScrollbarPolicy(hPolicy: ScrollPolicy, vPolicy: ScrollPolicy): void;
-
+        getSelectionRange(): [number, number];
+        getText(): string;
         getTextBounds(): RectF;
+        getTextInRange(start: number, end: number): string;
+        insertTextAt(text: string, position: number): void;
+        onTextChange(self: this): void;
+        paste(): void;
+        redo(): void;
+        selectAll(): void;
+        selectRange(start: number, end: number): void;
+        setOverlayScrollbar(overlay: boolean): void;
+        setScrollbarPolicy(hPolicy: ScrollPolicy, vPolicy: ScrollPolicy): void;
+        setText(text: string): void;
+        shouldInsertNewLine(self: this): true;
+        undo(): void;
     }
 
-    // Todo - for Mac Only
+    export type ToolbarItem = "default" | "icon-and-label" | "icon" | "label";
+
     export class Toolbar {
+        static create(identifier: string): Toolbar;
+        protected constructor();
+        getIdentifier(): string;
+        getItem(toolbar, identifier): ToolbarItem;
+        isVisible(): boolean;
+        setAllowCustomization(allow: boolean): void;
+        setAllowedItemIdentifiers(identifiers: string[]): void;
+        setDefaultItemIdentifiers(identifiers: string[]): void;
+        setDisplayMode(mode: ToolbarDisplayMode): void;
+        setVisible(visible: boolean): void;
     }
 
     export class Tray {
-        onClick: (self: this) => void;
-
-        protected constructor();
-
         static createWithImage(icon: Image): Tray;
-
         static createWithTitle(title: string): Tray;
-
-        setTitle(title: string): void;
-
-        setImage(icon: Image): void;
-
-        setMenu(menu: Menu): void;
-
+        protected constructor();
         getMenu(): Menu;
+        onClick(self: this): void;
+        setImage(icon: Image): void;
+        setMenu(menu: Menu): void;
+        setTitle(title: string): void;
     }
 
-    // Todo - for Mac Only
-    export class Vibrant {
+    export type VibrantMaterial =
+        "appearance-based" |
+        "light" |
+        "dark" |
+        "titlebar";
+
+    export type VibrantBlendingMode =
+        "behind-window" |
+        "within-window";
+
+    export class Vibrant extends Container {
+        static create(): Vibrant;
+        protected constructor();
+        getBlendingMode(): VibrantBlendingMode;
+        getMaterial(): VibrantMaterial;
+        setBlendingMode(mode: VibrantBlendingMode): void;
+        setMaterial(material: VibrantMaterial): void;
     }
 
     export class Window {
-        onClose: (self: this) => void;
-        onFocus: (self: this) => void;
-        onBlur: (self: this) => void;
-        shouldClose: (self: this) => boolean;
-
-        protected constructor();
-
         static create(options: WindowOptions): Window;
-
-        close(): void;
-
-        hasFrame(): boolean;
-
-        isTransparent(): boolean;
-
-        setHasShadow(hasShadow: boolean): void;
-
-        hasShadow(): boolean;
-
-        setContentView(view: View): void;
-
-        getContentView(): View;
-
-        center(): void;
-
-        setContentSize(size: SizeF): void;
-
-        getContentSize(): SizeF;
-
-        setBounds(bounds: RectF): void;
-
-        getBounds(): void;
-
-        setSizeConstrains(minsize: SizeF, maxsize: SizeF): void;
-
-        setContentSizeConstraints(minsize: SizeF, maxsize: SizeF): void;
-
-        getContentSizeConstraints(): [SizeF, SizeF];
-
+        protected constructor();
         activate(): void;
-
-        deactivate(): void;
-
-        isActive(): void;
-
-        setVisible(isVisible: boolean): void;
-
-        isVisible(): boolean;
-
-        setAlwaysOnTop(isAlwaysOnTop: boolean): void;
-
-        isAlwaysOnTop(): boolean;
-
-        setFullscreen(isFullscreen: boolean): void;
-
-        isFullscreen(): boolean;
-
-        maximize(): void;
-
-        unmaximize(): void;
-
-        isMaximized(): boolean;
-
-        minimize(): void;
-
-        restore(): void;
-
-        isMinimized(): boolean;
-
-        setResizable(isResizable: boolean): void;
-
-        isResizeable(): boolean;
-
-        setMaximizable(isMaximizable: boolean): void;
-
-        isMaximizable(): boolean;
-
-        setMinimizable(isMinimizable: boolean): void;
-
-        isMinimizable(): boolean;
-
-        setMovable(isMovable: boolean): void;
-
-        isMovable(): boolean;
-
-        setTitle(title: string): void;
-
-        getTitle(): string;
-
-        setBackgroundColor(color: ColorArg): void;
-
-        setToolbar(toolbar: Toolbar): void;
-
-        getToolbar(toolbar: Toolbar): void;
-
-        setTitleVisible(visible: boolean): void;
-
-        isTitleVisible(): boolean;
-
-        setFullSizeContentView(full: boolean): void;
-
-        isFullSizeContentView(): boolean;
-
-        setMenuBar(menubar: MenuBar): void;
-
-        getMenuBar(): MenuBar;
-
-        getParentWindow(): Window;
-
         addChildWindow(window: Window): void;
-
-        removeChildWindow(window: Window): void;
-
+        center(): void;
+        close(): void;
+        deactivate(): void;
+        getBounds(): void;
         getChildWindows(): Window[];
+        getContentSize(): SizeF;
+        getContentSizeConstraints(): [SizeF, SizeF];
+        getContentView(): View;
+        getMenuBar(): MenuBar;
+        getParentWindow(): Window;
+        getTitle(): string;
+        getToolbar(toolbar: Toolbar): void;
+        hasFrame(): boolean;
+        hasShadow(): boolean;
+        isActive(): void;
+        isAlwaysOnTop(): boolean;
+        isFullscreen(): boolean;
+        isFullSizeContentView(): boolean;
+        isMaximizable(): boolean;
+        isMaximized(): boolean;
+        isMinimizable(): boolean;
+        isMinimized(): boolean;
+        isMovable(): boolean;
+        isResizeable(): boolean;
+        isTitleVisible(): boolean;
+        isTransparent(): boolean;
+        isVisible(): boolean;
+        maximize(): void;
+        minimize(): void;
+        onBlur(self: this): void;
+        onClose(self: this): void;
+        onFocus(self: this): void;
+        removeChildWindow(window: Window): void;
+        restore(): void;
+        setAlwaysOnTop(isAlwaysOnTop: boolean): void;
+        setBackgroundColor(color: ColorArg): void;
+        setBounds(bounds: RectF): void;
+        setContentSize(size: SizeF): void;
+        setContentSizeConstraints(minsize: SizeF, maxsize: SizeF): void;
+        setContentView(view: View): void;
+        setFullscreen(isFullscreen: boolean): void;
+        setFullSizeContentView(full: boolean): void;
+        setHasShadow(hasShadow: boolean): void;
+        setMaximizable(isMaximizable: boolean): void;
+        setMenuBar(menubar: MenuBar): void;
+        setMinimizable(isMinimizable: boolean): void;
+        setMovable(isMovable: boolean): void;
+        setResizable(isResizable: boolean): void;
+        setSizeConstrains(minsize: SizeF, maxsize: SizeF): void;
+        setTitle(title: string): void;
+        setTitleVisible(visible: boolean): void;
+        setToolbar(toolbar: Toolbar): void;
+        setVisible(isVisible: boolean): void;
+        shouldClose(self: this): boolean;
+        unmaximize(): void;
     }
 
     export type Accelerator = string;
     export type AppThemeColor = "text" | "disabled-text";
 
     export interface BrowserOptions {
-        devtools?: boolean;
-        contextMenu?: boolean;
         allowFileAccessFromFiles?: boolean;
+        contextMenu?: boolean;
+        devtools?: boolean;
         hardwareAcceleration?: boolean;
     }
 
@@ -975,15 +652,12 @@ declare module "gui" {
     export type DragOperation = number;
 
     export class DraggingInfo {
-        static dragOperationNone: number;
         static dragOperationCopy: number;
         static dragOperationMove: number;
-
-        isDataAvailable(type: ClipboardDataType): boolean;
-
+        static dragOperationNone: number;
         getData(type: ClipboardDataType): boolean;
-
         getDragOperations(): number
+        isDataAvailable(type: ClipboardDataType): boolean;
     }
 
     export interface DragOptions {
@@ -993,21 +667,17 @@ declare module "gui" {
     export type EntryType = "normal" | "password";
 
     export class Event {
-        static maskShift: number;
-        static maskControl: number;
         static maskAlt: number;
+        static maskControl: number;
         static maskMeta: number;
-        type: any; // TODO
+        static maskShift: number;
         modifiers: number;
         timestamp: number;
-
-        isShiftPressed(): boolean;
-
-        isControlPressed(): boolean;
-
+        type: any; // TODO - docs 404 error
         isAltPressed(): boolean;
-
+        isControlPressed(): boolean;
         isMetaPressed(): boolean;
+        isShiftPressed(): boolean;
     }
 
     export interface FileDialogFilter {
@@ -1063,9 +733,9 @@ declare module "gui" {
     export type ScrollPolicy = "always" | "never" | "automatic";
 
     export interface TableColumnOptions {
-        type?: TableColumnType;
-        onDraw?: (painter: Painter, rect: RectF, value: any) => void;
         column?: number;
+        onDraw?: (painter: Painter, rect: RectF, value: any) => void;
+        type?: TableColumnType;
         width?: number;
     }
 
@@ -1073,12 +743,12 @@ declare module "gui" {
     export type TextAlign = "start" | "center" | "end";
 
     export interface TextAttributes {
-        font?: Font;
-        color?: ColorArg;
         align?: TextAlign;
+        color?: ColorArg;
+        ellipsis?: boolean;
+        font?: Font;
         valign?: TextAlign;
         wrap?: boolean;
-        ellipsis?: boolean;
     }
 
     export interface TextMetrics {
@@ -1089,8 +759,8 @@ declare module "gui" {
 
     export interface WindowOptions {
         frame?: boolean;
-        transparent?: boolean;
         showTrafficLights?: boolean;
+        transparent?: boolean;
     }
 
 }
