@@ -1,0 +1,25 @@
+{
+  "rules": {
+    "object-literal-sort-keys": true,
+    "member-ordering": [
+      true,
+      {
+        "order": [
+          "public-constructor",
+          "protected-constructor",
+          "private-constructor",
+          "public-static-field",
+          "protected-static-field",
+          "private-static-field",
+          "public-instance-field",
+          "public-instance-method",
+          "protected-instance-field",
+          "protected-instance-method",
+          "private-instance-field",
+          "private-instance-method"
+        ],
+        "alphabetize": true
+      }
+    ]
+  }
+}
