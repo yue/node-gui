@@ -1,6 +1,18 @@
 // Definitions by Kevin Gravier <kevin@mrkmg.com>
 
 declare module "gui" {
+
+    global {
+        namespace NodeJS {
+            interface ProcessVersions {
+                /**
+                 * Yode library version number. Is defined after the library takes control of the event loop.
+                 */
+                yode?: string;
+            }
+        }
+    }
+
     export interface Vector2dF {
         x: number;
         y: number;
@@ -33,6 +45,11 @@ declare module "gui" {
         static getDefaultFont(): Font;
         static getClipboardType(): ClipboardDataType;
     }
+
+    /**
+     * Current Application instance.
+     */
+    export const app: typeof App;
 
     export class TableModel {
         static getRowCount(): number;
@@ -88,10 +105,9 @@ declare module "gui" {
         setFocusable(isFocusable: boolean): void;
         setFont(font: Font): void;
         setMouseDownCanMoveWindow(can: boolean): void;
-        setStyle(styles: any): void;
+        setStyle(styles: any): void; 
         setVisible(isVisible: boolean): void;
     }
-
     export class Browser extends View {
         static create(options: BrowserOptions): Browser;
         static registerProtocol(scheme: string, handler: (url: string) => void): void;
@@ -222,6 +238,7 @@ declare module "gui" {
         setFolder(folder: string): void;
         setOptions(options: number): void;
         setTitle(title: string): void;
+        setFilename(filename: string):void;
     }
 
     export class FileOpenDialog extends FileDialog {
@@ -266,8 +283,15 @@ declare module "gui" {
 
     export class Image {
         static createEmpty(): Image;
-        // Todo: Fix buffer being any
-        static createFromBuffer(buffer: any, scaleFactor: number): Image;
+        /**
+         * Creates an image from given buffer containing an image encoded with a supported format like jpg or png. 
+         * 
+         * Any ArrayBuffer, Node's Buffer or views (like UInt8Array) can be passed, example:
+         * 
+         * ```let image = gui.Image.createFromBuffer(readFileSync('lenna.jpg'), 1)```
+         * 
+         */
+        static createFromBuffer(buffer: ArrayBuffer | ArrayBufferView, scaleFactor: number): Image;
         static createFromPath(path: string): Image;
         protected constructor();
         getScaleFactor(): number;
@@ -295,7 +319,7 @@ declare module "gui" {
         label?: string;
         onClick?: (menuItem: MenuItem) => void;
         role?: MenuItemRole;
-        submenu?: Menu;
+        submenu?: MenuItemOptions[];
         type?: MenuItemType;
         visible?: boolean;
     }
@@ -335,7 +359,7 @@ declare module "gui" {
 
     export class MenuBar extends MenuBase {
         protected constructor();
-        static create(items: MenuItem[]): MenuBar;
+        static create(items: MenuItemOptions[] | MenuItem[]): MenuBar;
     }
 
     export class MessageLoop {
@@ -350,6 +374,14 @@ declare module "gui" {
         beginPath(): void;
         bezierCurveTo(cp1: PointF, cp2: PointF, ep: PointF): void;
         clip(): void;
+        /**
+         * Set the color used for shapes' outlines.
+         */
+        setStrokeColor(color: ColorArg): void;
+        /**
+         * Set the color used when filling shapes.
+         */
+        setFillColor(color: ColorArg): void;
         clipRect(rect: RectF): void;
         closePath(): void;
         drawCanvas(canvas: Canvas, rect: RectF): void;
@@ -369,7 +401,6 @@ declare module "gui" {
         scale(scale: Vector2dF): void;
         setColor(color: ColorArg): void;
         setLineWidth(width: number): void;
-        setStrokeColor(color: ColorArg): void;
         stroke(): void;
         strokeRect(rect: RectF): void;
         translate(offset: Vector2dF): void;
@@ -489,7 +520,7 @@ declare module "gui" {
         static create(identifier: string): Toolbar;
         protected constructor();
         getIdentifier(): string;
-        getItem(toolbar, identifier): ToolbarItem;
+        getItem(toolbar: any, identifier: string): ToolbarItem;
         isVisible(): boolean;
         setAllowCustomization(allow: boolean): void;
         setAllowedItemIdentifiers(identifiers: string[]): void;
@@ -529,14 +560,14 @@ declare module "gui" {
     }
 
     export class Window {
-        static create(options: WindowOptions): Window;
+        static create(options?: WindowOptions): Window;
         protected constructor();
         activate(): void;
         addChildWindow(window: Window): void;
         center(): void;
         close(): void;
         deactivate(): void;
-        getBounds(): void;
+        getBounds(): RectF;
         getChildWindows(): Window[];
         getContentSize(): SizeF;
         getContentSizeConstraints(): [SizeF, SizeF];
