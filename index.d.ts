@@ -1000,8 +1000,8 @@ declare module "gui" {
      * 
      * When the content is larger than the Scroll view, scrollbars will be optionally showed. When the content view is smaller then the Scroll view, the content view will be resized to the size of the Scroll view.
      */
-    export class Scroll<T extends boolean = false> extends View {
-        static create<T extends boolean = false>(): Scroll;
+    export class Scroll extends View {
+        static create(): Scroll;
         protected constructor();
         getContentSize(): SizeF;
         getContentView(view: View): void;
@@ -1129,8 +1129,8 @@ declare module "gui" {
         "behind-window" |
         "within-window";
 
-    export class Vibrant<T extends boolean = false> extends Container {
-        static create<T extends boolean = false>(): Vibrant;
+    export class Vibrant extends Container {
+        static create(): Vibrant;
         protected constructor();
         getBlendingMode(): VibrantBlendingMode;
         getMaterial(): VibrantMaterial;
