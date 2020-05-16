@@ -1,5 +1,11 @@
 {
+  "extends": [
+    "tslint:recommended"
+  ],
   "rules": {
+    "max-classes-per-file": false,
+    "ban-types": false,
+    "unified-signatures": false,
     "object-literal-sort-keys": true,
     "member-ordering": [
       true,
@@ -11,6 +17,9 @@
           "public-static-field",
           "protected-static-field",
           "private-static-field",
+          "public-static-method",
+          "protected-static-method",
+          "private-static-method",
           "public-instance-field",
           "public-instance-method",
           "protected-instance-field",

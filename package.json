@@ -7,13 +7,17 @@
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "postinstall": "node install.js"
+    "postinstall": "node install.js",
+    "lint": "tslint -c tslint.json index.d.ts"
   },
   "dependencies": {
     "download-yue": "2.x"
   },
   "engines": {
-    "node": ">=8",
-    "electron": ">=1.7"
+    "node": ">=8"
+  },
+  "devDependencies": {
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.2"
   }
 }
