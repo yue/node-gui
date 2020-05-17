@@ -1,1 +1,3 @@
 test/
+azure-pipelines.yml
+gui.node
