@@ -1,5 +1,7 @@
 /test/out
 /node_modules
-gui.node
+/index.d.ts
+/gui.node
+*.tgz
 *.log
 *.swp

@@ -36,12 +36,20 @@ const targetOs = {
   linux: 'linux',
   darwin: 'mac',
 }[platform]
-const filename = `node_yue_${runtime}_${shortver}_${version}_${targetOs}_${targetCpu}.zip`
+const guinode = `node_yue_${runtime}_${shortver}_${version}_${targetOs}_${targetCpu}.zip`
+const indexdts = `node_yue_types_${version}.zip`
 
 // Personal github token.
 const token = process.env.GITHUB_TOKEN
 
-downloadYue('yue', version, filename, __dirname, token).catch((e) => {
-  console.error('Failed to install Yue:', e.message)
-  process.exit(1)
-})
+main()
+
+async function main() {
+  try {
+    await downloadYue('yue', version, guinode, __dirname, token)
+    await downloadYue('yue', version, indexdts, __dirname, token)
+  } catch (e) {
+    console.error('Failed to install Yue:', e.message)
+    process.exit(1)
+  }
+}
