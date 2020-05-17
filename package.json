@@ -1,6 +1,6 @@
 {
   "name": "gui",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "Bindings to Yue's GUI library",
   "repository": "https://github.com/yue/node-gui",
   "license": "MIT",
@@ -16,7 +16,7 @@
     "download-yue": "2.x"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=12"
   },
   "devDependencies": {
     "@types/node": "^14.0.1",
