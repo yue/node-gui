@@ -8,7 +8,9 @@
   "types": "index.d.ts",
   "scripts": {
     "postinstall": "node install.js",
-    "lint": "tslint -c tslint.json index.d.ts"
+    "prepare": "npm run lint && npm run test",
+    "lint": "tslint -c test/tslint.json index.d.ts",
+    "test": "tsc --project test --outDir test/out"
   },
   "dependencies": {
     "download-yue": "2.x"
@@ -17,6 +19,7 @@
     "node": ">=8"
   },
   "devDependencies": {
+    "@types/node": "^14.0.1",
     "tslint": "^6.1.2",
     "typescript": "^3.9.2"
   }

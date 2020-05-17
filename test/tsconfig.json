@@ -1,0 +1,14 @@
+{
+  "files": [
+    "smoke.ts"
+  ],
+  "compilerOptions": {
+    "module": "commonjs",
+    "outDir": "out",
+    "noImplicitAny": true,
+    "typeRoots": [
+      "../node_modules/@types",
+      "types"
+    ]
+  }
+}

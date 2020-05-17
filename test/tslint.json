@@ -1,0 +1,12 @@
+{
+  "extends": [
+    "tslint:recommended"
+  ],
+  "rules": {
+    "max-classes-per-file": false,
+    "ban-types": false,
+    "unified-signatures": false,
+    "object-literal-sort-keys": false,
+    "member-ordering": false
+  }
+}
