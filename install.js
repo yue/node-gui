@@ -7,7 +7,12 @@
 const downloadYue = require('download-yue')
 
 // Version to download.
-const version = 'v' + require('./package.json').version
+let version = 'v' + require('./package.json').version
+
+// Ignore -x suffix.
+const index = version.indexOf('-')
+if (index > -1)
+  version = version.substr(0, index)
 
 // Parse runtimes and versions.
 let runtime = process.env.npm_config_runtime
