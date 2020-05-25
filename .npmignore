@@ -1,3 +1,7 @@
-test/
-azure-pipelines.yml
-gui.node
+/test
+/azure-pipelines.yml
+/index.d.ts
+/gui.node
+*.tgz
+*.log
+*.swp
