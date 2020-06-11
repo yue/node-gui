@@ -1,6 +1,6 @@
 {
   "name": "gui",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "description": "Bindings to Yue's GUI library",
   "repository": "https://github.com/yue/node-gui",
   "license": "MIT",
