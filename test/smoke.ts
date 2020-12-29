@@ -20,3 +20,9 @@ import * as gui from 'gui'
   dialog.run()
   dialog.getResults()
 }
+
+{
+  // Singletons.
+  gui.screen.getPrimaryDisplay().scaleFactor
+  gui.app.activate(true)
+}
