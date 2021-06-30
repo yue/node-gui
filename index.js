@@ -10,8 +10,8 @@ function isBrokenVersion(v) {
   return false
 }
 
-if (!process.versions.electron && !process.versions.yode) {
-  console.warn("Using this module in Node.js is experimental.")
+if (!process.versions.electron && !process.versions.yode && !process.env.YODE_DISABLE_NODE_WARNING) {
+  console.warn("Using node-gui in upstream Node.js is experimental.")
 
   if (process.platform === 'darwin') {
     const v = process.version.substr(1).split('.').map(n => Number(n))
