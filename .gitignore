@@ -1,7 +1,19 @@
-/test/out
+# npm generated files
 /node_modules
-/index.d.ts
-/gui.node
+/yarn.lock
+/package-lock.json
+
+# generated files
+/build
+/test/typings/out
+/filenames_libyue.gypi
+/filenames_src.gypi
 *.tgz
 *.log
 *.swp
+
+# downloaded files
+/src
+/deps/libyue
+/gui.node
+/index.d.ts

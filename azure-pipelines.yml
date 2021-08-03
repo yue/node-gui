@@ -2,32 +2,55 @@ trigger:
 - refs/heads/*
 - refs/pull/*/merge
 
+strategy:
+  matrix:
+    Windows buildFromSource:
+      vmImage: 'windows-2019'
+      buildFromSource: true
+    Windows prebuilt:
+      vmImage: 'windows-2019'
+      buildFromSource: false
+    macOS buildFromSource:
+      vmImage: 'macOS-11'
+      buildFromSource: true
+    macOS prebuilt:
+      vmImage: 'macOS-11'
+      buildFromSource: false
+    Linux buildFromSource:
+      vmImage: 'ubuntu-20.04'
+      buildFromSource: true
+    Linux prebuilt:
+      vmImage: 'ubuntu-20.04'
+      buildFromSource: false
+
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: $(vmImage)
 
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '12.x'
-  displayName: 'Install Node.js'
+- bash: |
+    set -e
+    sudo apt update
+    sudo apt install -y libgtk-3-dev libwebkit2gtk-4.0-dev
+    /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+  condition: eq(variables['Agent.OS'], 'Linux')
+  displayName: Install dependencies and start xvfb
 
-- script: |
+- bash: |
+    set -e
+    npm install --build-from-source
+    npm test
+    npm publish --dry-run
+  env:
+    DISPLAY: ':99.0'
+  condition: and(succeeded(), eq(variables['buildFromSource'], true))
+  displayName: 'npm install --build-from-source'
+
+- bash: |
+    set -e
     npm install
+    npm test
+    npm publish --dry-run
+  env:
+    DISPLAY: ':99.0'
+  condition: and(succeeded(), eq(variables['buildFromSource'], false))
   displayName: 'npm install'
-
-- script: |
-    npm pack
-  displayName: 'Package for npm release'
-
-- task: CopyFiles@2
-  inputs:
-    sourceFolder: '$(Build.SourcesDirectory)'
-    contents: '*.tgz'
-    targetFolder: $(Build.ArtifactStagingDirectory)/npm
-  displayName: 'Copy npm package'
-
-- task: PublishBuildArtifacts@1
-  inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)/npm'
-    artifactName: npm
-  displayName: 'Publish npm artifact'

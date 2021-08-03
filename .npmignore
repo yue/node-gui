@@ -1,7 +1,0 @@
-/test
-/azure-pipelines.yml
-/index.d.ts
-/gui.node
-*.tgz
-*.log
-*.swp
