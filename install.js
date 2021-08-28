@@ -31,9 +31,7 @@ if (!targetCpu)
   targetCpu = process.arch
 if (targetCpu == 'ia32')
   targetCpu = 'x86'
-let shortver = nodever.substring(0, nodever.lastIndexOf('.'))
-if (runtime == 'node')
-  shortver = shortver.substring(0, shortver.lastIndexOf('.'))
+const shortver = nodever.substring(0, nodever.indexOf('.'))
 
 // Get the filename of binary.
 const targetOs = {
