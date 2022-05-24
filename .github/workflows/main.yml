@@ -56,5 +56,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Publish
-        run: echo 'npm publish'
+      - uses: actions/checkout@v3
+      - run: npm install
+      - uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
