@@ -51,6 +51,7 @@
             'pkg_libs': 'fontconfig pangoft2 gtk+-3.0 x11 webkit2gtk-4.0',
           },
           'cflags_cc': [
+            '-std=c++17',
             '-fexceptions',  # required by yoga
             '-fdata-sections',
             '-ffunction-sections',
@@ -89,6 +90,11 @@
             4244,
           ],
           'msvs_settings': {
+            'VCCLCompilerTool': {
+              'AdditionalOptions': [
+                '/std:c++17',
+              ]
+            },
             'VCLinkerTool': {
               'DelayLoadDLLs': [
                 'comctl32.dll',

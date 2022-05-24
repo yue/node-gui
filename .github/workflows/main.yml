@@ -31,6 +31,10 @@ jobs:
           DISPLAY: ':99.0'
         run: |
           set -e
+          if [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+            export CC=clang
+            export CXX=clang++
+          fi
           npm install --build-from-source
           npm test
           npm publish --dry-run
