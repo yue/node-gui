@@ -1,0 +1,56 @@
+name: node-gui
+
+on: push
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    continue-on-error: false
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, windows-2019, macos-11]
+        buildFromSource: [true, false]
+
+    steps:
+      - name: Install Linux Dependencies
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          sudo apt update
+          sudo apt install -y libgtk-3-dev libwebkit2gtk-4.0-dev
+          /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build from source code
+        if: matrix.buildFromSource == true
+        shell: bash
+        env:
+          DISPLAY: ':99.0'
+        run: |
+          set -e
+          npm install --build-from-source
+          npm test
+          npm publish --dry-run
+
+      - name: Build from prebuilt binaries
+        if: matrix.buildFromSource == false
+        shell: bash
+        env:
+          DISPLAY: ':99.0'
+        run: |
+          set -e
+          npm install
+          npm test
+          npm publish --dry-run
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [build]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Publish
+        run: echo 'npm publish'
