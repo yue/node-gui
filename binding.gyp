@@ -11,12 +11,13 @@
       'include_dirs': [
         '.',
         'src',
+        'src/third_party/kizunapi',
         'deps/libyue/include',
         'deps/libyue/src/<(OS)',
       ],
       'sources': [
         '<@(libyue_sources)',
-        '<@(node_yue_sources)',
+        '<@(napi_yue_sources)',
       ],
 
       'conditions': [
@@ -36,8 +37,8 @@
           },
           'xcode_settings': {
             'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',  # required by yoga
-            'CLANG_CXX_LANGUAGE_STANDARD': 'c++17',
-            'MACOSX_DEPLOYMENT_TARGET': '10.10',
+            'CLANG_CXX_LANGUAGE_STANDARD': 'c++20',
+            'MACOSX_DEPLOYMENT_TARGET': '10.13',
             'DEAD_CODE_STRIPPING': 'YES',
             'WARNING_CFLAGS': [
               '-Wno-deprecated-declarations',
@@ -51,7 +52,7 @@
             'pkg_libs': 'fontconfig pangoft2 gtk+-3.0 x11 webkit2gtk-4.0',
           },
           'cflags_cc': [
-            '-std=c++17',
+            '-std=c++20',
             '-fexceptions',  # required by yoga
             '-fdata-sections',
             '-ffunction-sections',
@@ -92,7 +93,7 @@
           'msvs_settings': {
             'VCCLCompilerTool': {
               'AdditionalOptions': [
-                '/std:c++17',
+                '/std:c++20',
               ]
             },
             'VCLinkerTool': {

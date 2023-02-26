@@ -6,14 +6,11 @@
 # generated files
 /build
 /test/typings/out
-/filenames_libyue.gypi
-/filenames_src.gypi
 *.tgz
 *.log
 *.swp
 
 # downloaded files
-/src
-/deps/libyue
+/LICENSE
 /gui.node
 /index.d.ts

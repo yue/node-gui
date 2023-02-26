@@ -10,8 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, windows-2019, macos-11]
-        buildFromSource: [true, false]
+        os: [ubuntu-22.04, windows-2022, macos-12]
 
     steps:
       - name: Install Linux Dependencies
@@ -24,23 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Build from source code
-        if: matrix.buildFromSource == true
-        shell: bash
-        env:
-          DISPLAY: ':99.0'
-        run: |
-          set -e
-          if [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
-            export CC=clang
-            export CXX=clang++
-          fi
-          npm install --build-from-source
-          npm test
-          npm publish --dry-run
-
-      - name: Build from prebuilt binaries
-        if: matrix.buildFromSource == false
+      - name: Build and test
         shell: bash
         env:
           DISPLAY: ':99.0'
