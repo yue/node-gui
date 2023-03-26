@@ -897,7 +897,7 @@ declare module "gui" {
 
   export type ClipboardType = "copy-paste" | "drag" | "find" | "font" | "selection";
 
-  export type ColorName = "text" | "disabled-text" | "control" | "window-background";
+  export type ColorName = "text" | "disabled-text" | "disabled-text-edit-background" | "control" | "window-background";
 
   export type CursorType = "default" | "hand" | "crosshair" | "progress" | "text" | "not-allowed" | "help" | "move" | "resize-ew" | "resize-ns" | "resize-nesw" | "resize-nwse";
 
